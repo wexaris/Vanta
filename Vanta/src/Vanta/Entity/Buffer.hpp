@@ -93,11 +93,15 @@ namespace Vanta {
 
         template<usize N, typename... Unbuffered, class Dispatcher> requires (N == sizeof...(Types))
         void View_(entt::registry&, const Dispatcher&) {
-            VANTA_CORE_INFO("Iteration: {}; buffer: {}", N, m_BufferIdx);
-            VANTA_UNREACHABLE("Buffer index out of bounds!");
+            VANTA_UNREACHABLE("Buffer index out of bounds; iterator {}/{}!", N, m_BufferIdx);
         }
     };
 
+    /// <summary>
+    /// Dispatcher that iterates over a collection of entities in parallel,
+    /// on the engine's thread pool.
+    /// </summary>
+    /// <typeparam name="Functor">Functor to execute for every entity and its components.</typeparam>
     template<typename Functor>
     class ParalelDispatch {
     public:
@@ -148,6 +152,11 @@ namespace Vanta {
         ParalelDispatch operator=(const ParalelDispatch&) = delete;
     };
 
+    /// <summary>
+    /// Dispatcher that iterates over a collection of entities in sequence,
+    /// on the calling thread.
+    /// </summary>
+    /// <typeparam name="Functor">Functor to execute for every entity and its components.</typeparam>
     template<typename Functor>
     class LinearDispatch {
     public:
