@@ -1,0 +1,9 @@
+# Directories
+.vs/
+.vscode/
+build/
+
+# Files
+CMakeSettings.json
+*.idb
+*.pdb
