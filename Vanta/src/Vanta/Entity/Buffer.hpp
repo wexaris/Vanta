@@ -1,6 +1,4 @@
 #pragma once
-#include "Vanta/Util/Util.hpp"
-
 #include <entt/entt.hpp>
 
 #include <execution>

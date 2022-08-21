@@ -25,6 +25,9 @@
 #include "Vanta/Core/Log.hpp"
 #include "Vanta/Core/Fibers.hpp"
 
+// Util
+#include "Vanta/Util/Util.hpp"
+
 // Telemetry
 #include "Vanta/Debug/Instrumentor.hpp"
 
