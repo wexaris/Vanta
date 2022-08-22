@@ -19,8 +19,8 @@ namespace Vanta {
         /// </summary>
         template<typename Component>
         static void AttachTriggers(entt::registry& registry) {
-            registry.on_construct<Component>().connect<ComponentList::AttachAll>();
-            registry.on_destroy<Component>().connect<ComponentList::DetachAll>();
+            registry.on_construct<Component>().template connect<ComponentList::AttachAll>();
+            registry.on_destroy<Component>().template connect<ComponentList::DetachAll>();
         }
 
         static void AttachAll(entt::registry& registry, entt::entity entity) {
@@ -33,144 +33,60 @@ namespace Vanta {
 
         template<typename Component>
         static void Attach(entt::registry& registry, entt::entity entity) {
-            auto c = Component();
             if (!registry.any_of<Component>(entity))
                 registry.emplace<Component>(entity);
         }
 
         template<typename Component>
         static void Detach(entt::registry& registry, entt::entity entity) {
-            auto c = Component();
             if (registry.any_of<Component>(entity))
                 registry.remove<Component>(entity);
         }
     };
 
-    template<usize N, typename... Types>
-    struct Get {
-        using type = typename std::tuple_element<N, std::tuple<Types...>>::type;
-    };
+    namespace detail {
+        template<usize N, typename... Types>
+        struct Get {
+            using type = typename std::tuple_element<N, std::tuple<Types...>>::type;
+        };
 
-    template<usize N, typename... Types>
-    struct Get<N, ComponentList<Types...>> {
-        using type = typename Get<N, Types...>::type;
-    };
+        template<usize N, typename... Types>
+        struct Get<N, ComponentList<Types...>> {
+            using type = typename Get<N, Types...>::type;
+        };
 
-    template<typename... ComponentLists>
-    class Buffer;
+        template<typename Comp>
+        class GetterDispatch {
+        public:
+            Comp* Component = nullptr;
 
-    template<typename... Components, typename... ComponentLists>
-    class Buffer<ComponentList<Components...>, ComponentLists...> {
-    public:
-        Buffer() = default;
+            GetterDispatch(entt::entity entity)
+                : m_Entity(entity) {}
 
-        static void Setup(entt::registry& registry) {
-            ComponentList<Components...>::Setup(registry);
-            (ComponentLists::Setup(registry), ...);
-        }
-
-        /// <summary>
-        /// Run given function on current active data buffer.
-        /// </summary>
-        /// <typeparam name="Unbuffered">Other non-buffered types to retrieve.</typeparam>
-        /// <param name="registry">Entity registry.</param>
-        /// <param name="dispatcher">Dispatcher that will handle the view.</param>
-        template<typename... Unbuffered, class Dispatcher>
-        void View(entt::registry& registry, const Dispatcher& dispatcher) {
-            View_<0, Unbuffered...>(registry, dispatcher);
-        }
-
-        /// <summary>
-        /// Switch to the next buffer.
-        /// </summary>
-        void Next() {
-            m_BufferIdx = (m_BufferIdx + 1) % sizeof...(Components);
-        }
-
-    private:
-        using FirstIdents = entt::identifier<Components...>;
-
-        usize m_BufferIdx = 0; // Current buffer index
-
-        /// <summary>
-        /// Iterate through variadic params looking for the buffer that matches current index.
-        /// </summary>
-        /// <typeparam name="N">Current iteration.</typeparam>
-        /// <typeparam name="Unbuffered">Other non-buffered types to retrieve.</typeparam>
-        /// <param name="registry">Entity registry.</param>
-        /// <param name="dispatcher">Dispatcher that will handle the view.</param>
-        template<usize N, typename... Unbuffered, class Dispatcher> requires (N < sizeof...(Components))
-        void View_(entt::registry& registry, const Dispatcher& dispatcher) {
-            if (m_BufferIdx == N) {
-                auto view = registry.view<
-                    typename Get<N, Components...>::type,
-                    typename Get<N, ComponentLists>::type..., Unbuffered...>();
-                dispatcher(view);
-            } else {
-                View_<N + 1, Unbuffered...>(registry, dispatcher);
+            template<typename... Components>
+            void operator()(const entt::view<entt::get_t<Components...>>& view) {
+                Get_<0>(std::forward_as_tuple(view.template get<Components...>(m_Entity)));
             }
-        }
 
-        template<usize N, typename... Unbuffered, class Dispatcher> requires (N == sizeof...(Components))
-        void View_(entt::registry&, const Dispatcher&) {
-            VANTA_UNREACHABLE("Buffer index out of bounds; iterator {}/{}!", N, m_BufferIdx);
-        }
-    };
+        private:
+            entt::entity m_Entity;
 
-    /// <summary>
-    /// Dispatcher that iterates over a collection of entities in parallel,
-    /// on the engine's thread pool.
-    /// </summary>
-    /// <typeparam name="Functor">Functor to execute for every entity and its components.</typeparam>
-    template<typename Functor>
-    class ParalelDispatch {
-    public:
-        template<typename... Args>
-        ParalelDispatch(Args&&... args)
-            : m_Functor(std::forward<Args>(args)...) {}
-
-        template<typename... Components>
-        void operator()(const entt::view<entt::get_t<Components...>>& view) const {
-            auto beg = view.begin();
-            auto end = view.end();
-
-            if (beg == end)
-                return;
-
-            auto func = [&](auto&&... args) {
-                m_Functor(args...);
-            };
-
-            auto threads = Util::DistanceMin(beg, end, Fibers::THREAD_COUNT);
-
-            if (threads > 1) {
-                fibers::barrier bar(threads);
-                for (; beg != end; ++beg) {
-                    Fibers::SpawnDetached([=, &bar]() {
-                        entt::entity entity = *beg;
-                        auto components = view.template get<Components...>(entity);
-                        auto args = std::tuple_cat(std::make_tuple(entity), components);
-                        std::apply(func, args);
-                        bar.wait();
-                    });
+            template<usize N, typename... Components> requires (N < sizeof...(Components))
+                void Get_(const std::tuple<Components...>& components) {
+                if constexpr (std::is_base_of_v<Comp, std::remove_reference_t<detail::Get<N, Components...>::type>>) {
+                    Component = &std::get<N>(components);
                 }
-                bar.wait();
+                else {
+                    Get_<N + 1>(components);
+                }
             }
-            else {
-                entt::entity entity = *beg;
-                auto components = view.template get<Components...>(entity);
-                auto args = std::tuple_cat(std::make_tuple(entity), components);
-                std::apply(func, args);
+
+            template<usize N, typename... Components> requires (N >= sizeof...(Components))
+                void Get_(const std::tuple<Components...>&) {
+                VANTA_UNREACHABLE("Buffer index out of bounds; iterator {}/{}!", N, sizeof...(Components));
             }
-        }
-
-    private:
-        Functor m_Functor;
-
-        ParalelDispatch(ParalelDispatch&&) = delete;
-        ParalelDispatch(const ParalelDispatch&) = delete;
-        ParalelDispatch operator=(const ParalelDispatch&) = delete;
-    };
+        };
+    }
 
     /// <summary>
     /// Dispatcher that iterates over a collection of entities in sequence,
@@ -210,6 +126,230 @@ namespace Vanta {
         LinearDispatch(LinearDispatch&&) = delete;
         LinearDispatch(const LinearDispatch&) = delete;
         LinearDispatch operator=(const LinearDispatch&) = delete;
+    };
+
+    /// <summary>
+    /// Dispatcher that iterates over a collection of entities in parallel,
+    /// on the engine's thread pool.
+    /// </summary>
+    /// <typeparam name="Functor">Functor to execute for every entity and its components.</typeparam>
+    template<typename Functor>
+    class ParalelDispatch {
+    public:
+        template<typename... Args>
+        ParalelDispatch(Args&&... args)
+            : m_Functor(std::forward<Args>(args)...) {}
+
+        template<typename... Components>
+        void operator()(const entt::view<entt::get_t<Components...>>& view) const {
+            auto beg = view.begin();
+            auto end = view.end();
+
+            if (beg == end)
+                return;
+
+            auto func = [&](auto&&... args) {
+                m_Functor(args...);
+            };
+
+            auto threads = Util::DistanceMin(beg, end, Fibers::THREAD_COUNT);
+
+            if (threads > 1) {
+                fibers::barrier bar(threads);
+                for (; beg != end; ++beg) {
+                    Fibers::SpawnDetached([=, &bar]() {
+                        entt::entity entity = *beg;
+                        auto components = view.template get<Components...>(entity);
+                        auto args = std::tuple_cat(std::make_tuple(entity), components);
+                        std::apply(func, args);
+                        bar.wait();
+                        });
+                }
+                bar.wait();
+            }
+            else {
+                entt::entity entity = *beg;
+                auto components = view.template get<Components...>(entity);
+                auto args = std::tuple_cat(std::make_tuple(entity), components);
+                std::apply(func, args);
+            }
+        }
+
+    private:
+        Functor m_Functor;
+
+        ParalelDispatch(ParalelDispatch&&) = delete;
+        ParalelDispatch(const ParalelDispatch&) = delete;
+        ParalelDispatch operator=(const ParalelDispatch&) = delete;
+    };
+
+    template<typename... ComponentLists>
+    class Buffer;
+
+    template<typename... Components, typename... ComponentLists>
+    class Buffer<ComponentList<Components...>, ComponentLists...> {
+    public:
+        Buffer() = default;
+
+        static void Setup(entt::registry& registry) {
+            ComponentList<Components...>::Setup(registry);
+            (ComponentLists::Setup(registry), ...);
+        }
+
+        /// <summary>
+        /// Run given function on the last and current data buffers.
+        /// </summary>
+        /// <typeparam name="Unbuffered">Other non-buffered types to retrieve.</typeparam>
+        /// <param name="registry">Entity registry.</param>
+        /// <param name="dispatcher">Dispatcher that will handle the view.</param>
+        template<typename... Unbuffered, class Dispatcher>
+        void View(entt::registry& registry, const Dispatcher& dispatcher) {
+            ViewTwo_<0, Unbuffered...>(m_BufferIdx, registry, dispatcher);
+        }
+
+        template<typename... Unbuffered, class Dispatcher>
+        void View(entt::registry& registry, Dispatcher& dispatcher) {
+            ViewTwo_<0, Unbuffered...>(m_BufferIdx, registry, dispatcher);
+        }
+
+        /// <summary>
+        /// Run given function on the current data buffer.
+        /// </summary>
+        /// <typeparam name="Unbuffered">Other non-buffered types to retrieve.</typeparam>
+        /// <param name="registry">Entity registry.</param>
+        /// <param name="dispatcher">Dispatcher that will handle the view.</param>
+        template<typename... Unbuffered, class Dispatcher>
+        void ViewCurr(entt::registry& registry, const Dispatcher& dispatcher) {
+            ViewOne_<0, Unbuffered...>(m_BufferIdx, registry, dispatcher);
+        }
+
+        template<typename... Unbuffered, class Dispatcher>
+        void ViewCurr(entt::registry& registry, Dispatcher& dispatcher) {
+            ViewOne_<0, Unbuffered...>(m_BufferIdx, registry, dispatcher);
+        }
+
+        /// <summary>
+        /// Run given function on the previous data buffer.
+        /// </summary>
+        /// <typeparam name="Unbuffered">Other non-buffered components to retrieve.</typeparam>
+        /// <param name="registry">Entity registry.</param>
+        /// <param name="dispatcher">Dispatcher that will handle the view.</param>
+        template<typename... Unbuffered, class Dispatcher>
+        void ViewPrev(entt::registry& registry, const Dispatcher& dispatcher) {
+            ViewOne_<0, Unbuffered...>((m_BufferIdx - 1) % sizeof...(Components), registry, dispatcher);
+        }
+
+        template<typename... Unbuffered, class Dispatcher>
+        void ViewPrev(entt::registry& registry, Dispatcher& dispatcher) {
+            ViewOne_<0, Unbuffered...>((m_BufferIdx - 1) % sizeof...(Components), registry, dispatcher);
+        }
+
+        /// <summary>
+        /// Get the current instance of a buffered component.
+        /// </summary>
+        template<typename Component>
+        Component& Get(entt::registry& registry, entt::entity entity) {
+            detail::GetterDispatch<Component> getter(entity);
+            ViewCurr(registry, getter);
+            VANTA_ASSERT(getter.Component, "Entity does not have component: {}", typeid(Component).name());
+            return *getter.Component;
+        }
+
+        /// <summary>
+        /// Switch to the next buffer.
+        /// </summary>
+        void Next() {
+            m_BufferIdx = (m_BufferIdx + 1) % sizeof...(Components);
+        }
+
+    private:
+        using FirstIdents = entt::identifier<Components...>;
+
+        usize m_BufferIdx = 0; // Current buffer index
+
+        /// <summary>
+        /// Iterate through variadic params looking for the previous buffer.
+        /// </summary>
+        /// <typeparam name="N">Current iteration.</typeparam>
+        /// <typeparam name="Unbuffered">Other non-buffered components to retrieve.</typeparam>
+        /// <param name="registry">Entity registry.</param>
+        /// <param name="dispatcher">Dispatcher that will handle the view.</param>
+        template<usize N, typename... Unbuffered, class Dispatcher> requires (N < sizeof...(Components))
+        static void ViewOne_(usize idx, entt::registry& registry, const Dispatcher& dispatcher) {
+            if (idx == N) {
+                auto view = registry.view<
+                    typename detail::Get<(N - 1) % sizeof...(Components), Components...>::type,
+                    typename detail::Get<(N - 1) % sizeof...(Components), ComponentLists>::type...,
+                    Unbuffered...>();
+                dispatcher(view);
+            }
+            else {
+                ViewOne_<N + 1, Unbuffered...>(idx, registry, dispatcher);
+            }
+        }
+        
+        template<usize N, typename... Unbuffered, class Dispatcher> requires (N < sizeof...(Components))
+        static void ViewOne_(usize idx, entt::registry& registry, Dispatcher& dispatcher) {
+            if (idx == N) {
+                auto view = registry.view<
+                    typename detail::Get<(N - 1) % sizeof...(Components), Components...>::type,
+                    typename detail::Get<(N - 1) % sizeof...(Components), ComponentLists>::type...,
+                    Unbuffered...>();
+                dispatcher(view);
+            }
+            else {
+                ViewOne_<N + 1, Unbuffered...>(idx, registry, dispatcher);
+            }
+        }
+
+        /// <summary>
+        /// Iterate through variadic params looking for the last and current buffer.
+        /// </summary>
+        /// <typeparam name="N">Current iteration.</typeparam>
+        /// <typeparam name="Unbuffered">Other non-buffered types to retrieve.</typeparam>
+        /// <param name="registry">Entity registry.</param>
+        /// <param name="dispatcher">Dispatcher that will handle the view.</param>
+        template<usize N, typename... Unbuffered, class Dispatcher> requires (N < sizeof...(Components))
+        static void ViewTwo_(usize idx, entt::registry& registry, const Dispatcher& dispatcher) {
+            if (idx == N) {
+                auto view = registry.view<
+                    typename detail::Get<(N - 1) % sizeof...(Components), Components...>::type,
+                    typename detail::Get<(N - 1) % sizeof...(Components), ComponentLists>::type...,
+                    typename detail::Get<N, Components...>::type,
+                    typename detail::Get<N, ComponentLists>::type...,
+                    Unbuffered...>();
+                dispatcher(view);
+            }
+            else {
+                ViewTwo_<N + 1, Unbuffered...>(idx, registry, dispatcher);
+            }
+        }
+
+        template<usize N, typename... Unbuffered, class Dispatcher> requires (N < sizeof...(Components))
+        static void ViewTwo_(usize idx, entt::registry& registry, Dispatcher& dispatcher) {
+            if (idx == N) {
+                auto view = registry.view<
+                    typename detail::Get<(N - 1) % sizeof...(Components), Components...>::type,
+                    typename detail::Get<(N - 1) % sizeof...(Components), ComponentLists>::type...,
+                    typename detail::Get<N, Components...>::type,
+                    typename detail::Get<N, ComponentLists>::type...,
+                    Unbuffered...>();
+                dispatcher(view);
+            }
+            else {
+                ViewTwo_<N + 1, Unbuffered...>(idx, registry, dispatcher);
+            }
+        }
+
+        template<usize N, typename... Unbuffered, class Dispatcher> requires (N >= sizeof...(Components))
+        static void ViewOne_(usize idx, entt::registry&, const Dispatcher&) {
+            VANTA_UNREACHABLE("Buffer index out of bounds; iterator {}/{}!", N, idx);
+        }
+
+        template<usize N, typename... Unbuffered, class Dispatcher> requires (N >= sizeof...(Components))
+        static void ViewTwo_(usize idx, entt::registry&, const Dispatcher&) {
+            VANTA_UNREACHABLE("Buffer index out of bounds; iterator {}/{}!", N, idx);
+        }
     };
 }
 

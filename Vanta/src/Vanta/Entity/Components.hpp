@@ -14,25 +14,36 @@ namespace Vanta {
     };
 
     struct TransformComponent {
-        glm::vec3 Position = { 0.f, 0.f, 0.f };
-        glm::vec3 Rotation = { 0.f, 0.f, 0.f };
-        glm::vec3 Scale    = { 1.f, 1.f, 1.f };
-
-        glm::mat4 Transform = glm::mat4(1.f);
-
         TransformComponent() = default;
         TransformComponent(const TransformComponent& other) = default;
         TransformComponent(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale)
-            : Position(position), Rotation(rotation), Scale(scale)
+            : m_Position(position), m_Rotation(rotation), m_Scale(scale)
         {
             Recalculate();
         }
 
+        void SetTransform(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale) {
+            m_Position = position;
+            m_Rotation = rotation;
+            m_Scale = scale;
+            Recalculate();
+        }
+
+        void SetTransform(const glm::mat4& transform) { m_Transform = transform; }
+        const glm::mat4& GetTransform()               { return m_Transform; }
+
+    private:
+        glm::vec3 m_Position = { 0.f, 0.f, 0.f };
+        glm::vec3 m_Rotation = { 0.f, 0.f, 0.f };
+        glm::vec3 m_Scale = { 1.f, 1.f, 1.f };
+
+        glm::mat4 m_Transform = glm::mat4(1.f);
+
         void Recalculate() {
-            auto position = glm::translate(glm::mat4(1.f), Position);
-            auto rotation = glm::mat4_cast(glm::quat(Rotation));
-            auto scale = glm::scale(glm::mat4(1.f), Scale);
-            Transform = (glm::mat4)(position * rotation * scale);
+            auto position = glm::translate(glm::mat4(1.f), m_Position);
+            auto rotation = glm::mat4_cast(glm::quat(m_Rotation));
+            auto scale = glm::scale(glm::mat4(1.f), m_Scale);
+            m_Transform = (glm::mat4)(position * rotation * scale);
         }
     };
 

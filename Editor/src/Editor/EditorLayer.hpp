@@ -12,7 +12,7 @@ namespace Vanta {
             void OnAttach() override;
             void OnDetach() override;
 
-            void OnUpdate(double delta);
+            void OnUpdate(double delta) override;
             void OnGUIRender() override;
 
             void OnEvent(Event& e) override;

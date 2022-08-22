@@ -5,9 +5,11 @@
 #include <functional>
 #include <fstream>
 #include <memory>
+#include <optional>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <thread>
 #include <utility>
 #include <vector>
 

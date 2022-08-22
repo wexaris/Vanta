@@ -27,7 +27,9 @@ public:
         float camX = sin((float)Vanta::Duration::SinceLaunch().AsSecondsf()) * radius;
         float camY = cos((float)Vanta::Duration::SinceLaunch().AsSecondsf()) * radius;
         auto view = glm::lookAt(glm::vec3(camX, camY, 5), glm::vec3(0, 0, 0), glm::vec3(0.f, 1.f, 0.f));
-        m_ActiveScene.GetActiveCamera().SetView(view);
+        m_ActiveScene.GetActiveCamera()
+            .GetComponent<Vanta::TransformComponent>()
+            .SetTransform(glm::inverse(view));
 
         m_ActiveScene.OnUpdateRuntime(delta);
     }

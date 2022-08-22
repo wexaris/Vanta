@@ -28,19 +28,21 @@ namespace Vanta {
         Entity DuplicateEntity(Entity entity);
         void DestroyEntity(Entity entity);
 
-        template<typename... Components>
-        auto GetAllEntitiesWith() { return m_Registry.view<Components...>(); }
+        template<typename Component>
+        Component& GetComponent(Entity entity) {
+            return m_DataBuffer.Get<Component>(m_Registry, entity);
+        }
 
         void OnWindowResize(WindowResizeEvent& e);
 
-        void SetActiveCamera(CameraComponent& camera) { m_ActiveCamera = camera.Camera; }
-        Camera& GetActiveCamera()                     { return *m_ActiveCamera.get(); }
+        void SetActiveCamera(Entity& camera);
+        Entity GetActiveCamera();
 
         entt::registry& GetRegistry() { return m_Registry; }
 
     private:
         entt::registry m_Registry;
-        Ref<Camera> m_ActiveCamera = nullptr;
+        std::optional<entt::entity> m_ActiveCamera = std::nullopt;
         glm::uvec2 m_ViewportSize;
 
         Buffer<TransformComponentBuffers> m_DataBuffer;
@@ -50,13 +52,13 @@ namespace Vanta {
         void OnRender(double delta);
 
         template<typename T>
-        void OnComponentAdded(Entity& /*entity*/, T& /*component*/) {}
+        void OnComponentAdded(entt::entity /*entity*/, T& /*component*/) {}
 
         template<>
-        void OnComponentAdded<CameraComponent>(Entity&, CameraComponent& component) {
+        void OnComponentAdded<CameraComponent>(entt::entity entity, CameraComponent& component) {
             // Set active camera, if one's not set
-            if (!m_ActiveCamera)
-                m_ActiveCamera = component.Camera;
+            if (!m_ActiveCamera.has_value())
+                m_ActiveCamera = entity;
 
             component.Camera->Resize(m_ViewportSize.x, m_ViewportSize.y);
         }
