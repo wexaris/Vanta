@@ -5,8 +5,46 @@
 
 namespace Vanta {
 
-    template<typename... T>
-    using ComponentList = entt::type_list<T...>;
+    template<typename... Components>
+    struct ComponentList {
+        using types = entt::type_list<Components...>;
+
+        static void Setup(entt::registry& registry) {
+            (AttachTriggers<Components>(registry), ...);
+        }
+
+    private:
+        /// <summary>
+        /// Ensure that when one of the buffers is attached, all others are as well.
+        /// </summary>
+        template<typename Component>
+        static void AttachTriggers(entt::registry& registry) {
+            registry.on_construct<Component>().connect<ComponentList::AttachAll>();
+            registry.on_destroy<Component>().connect<ComponentList::DetachAll>();
+        }
+
+        static void AttachAll(entt::registry& registry, entt::entity entity) {
+            (Attach<Components>(registry, entity), ...);
+        }
+
+        static void DetachAll(entt::registry& registry, entt::entity entity) {
+            (Detach<Components>(registry, entity), ...);
+        }
+
+        template<typename Component>
+        static void Attach(entt::registry& registry, entt::entity entity) {
+            auto c = Component();
+            if (!registry.any_of<Component>(entity))
+                registry.emplace<Component>(entity);
+        }
+
+        template<typename Component>
+        static void Detach(entt::registry& registry, entt::entity entity) {
+            auto c = Component();
+            if (registry.any_of<Component>(entity))
+                registry.remove<Component>(entity);
+        }
+    };
 
     template<usize N, typename... Types>
     struct Get {
@@ -18,33 +56,17 @@ namespace Vanta {
         using type = typename Get<N, Types...>::type;
     };
 
-    /*template<typename Type>
-    struct BufferInstanceHandler {
-        void Create(entt::registry& registry, entt::entity entity) {
-            if (!registry.all_of<Type>(entity))
-                registry.emplace_or_replace<Type>(entity);
-        }
-
-        void Destroy(entt::registry& registry, entt::entity entity) {
-            if (registry.all_of<Type>(entity))
-                registry.remove<Type>(entity);
-        }
-    };*/
-
     template<typename... ComponentLists>
     class Buffer;
 
-    template<typename... Types, typename... ComponentLists>
-    class Buffer<ComponentList<Types...>, ComponentLists...> {
+    template<typename... Components, typename... ComponentLists>
+    class Buffer<ComponentList<Components...>, ComponentLists...> {
     public:
         Buffer() = default;
 
-        static void InitBuffers(entt::registry& registry) {
-            // TODO: Automatically set up all buffers when one is added
-            //([&]() {
-            //    registry.on_construct<Types>().template connect<&BufferInstanceHandler<Types>::Create>(BufferInstanceHandler<Types>());
-            //    registry.on_destroy<Types>().template connect<&BufferInstanceHandler<Types>::Destroy>(BufferInstanceHandler<Types>());
-            //}(), ...);
+        static void Setup(entt::registry& registry) {
+            ComponentList<Components...>::Setup(registry);
+            (ComponentLists::Setup(registry), ...);
         }
 
         /// <summary>
@@ -62,11 +84,11 @@ namespace Vanta {
         /// Switch to the next buffer.
         /// </summary>
         void Next() {
-            m_BufferIdx = (m_BufferIdx + 1) % sizeof...(Types);
+            m_BufferIdx = (m_BufferIdx + 1) % sizeof...(Components);
         }
 
     private:
-        using FirstIdents = entt::identifier<Types...>;
+        using FirstIdents = entt::identifier<Components...>;
 
         usize m_BufferIdx = 0; // Current buffer index
 
@@ -77,11 +99,11 @@ namespace Vanta {
         /// <typeparam name="Unbuffered">Other non-buffered types to retrieve.</typeparam>
         /// <param name="registry">Entity registry.</param>
         /// <param name="dispatcher">Dispatcher that will handle the view.</param>
-        template<usize N, typename... Unbuffered, class Dispatcher> requires (N < sizeof...(Types))
+        template<usize N, typename... Unbuffered, class Dispatcher> requires (N < sizeof...(Components))
         void View_(entt::registry& registry, const Dispatcher& dispatcher) {
             if (m_BufferIdx == N) {
                 auto view = registry.view<
-                    typename Get<N, Types...>::type,
+                    typename Get<N, Components...>::type,
                     typename Get<N, ComponentLists>::type..., Unbuffered...>();
                 dispatcher(view);
             } else {
@@ -89,7 +111,7 @@ namespace Vanta {
             }
         }
 
-        template<usize N, typename... Unbuffered, class Dispatcher> requires (N == sizeof...(Types))
+        template<usize N, typename... Unbuffered, class Dispatcher> requires (N == sizeof...(Components))
         void View_(entt::registry&, const Dispatcher&) {
             VANTA_UNREACHABLE("Buffer index out of bounds; iterator {}/{}!", N, m_BufferIdx);
         }
@@ -191,32 +213,29 @@ namespace Vanta {
     };
 }
 
+#define VANTA_COMPONENT_BUFFER_nth(name, n) \
+    struct CONCAT(name, CONCAT(_, n)) : name { using Base = name; };
+
 #define VANTA_COMPONENT_BUFFER_2(name) \
-    struct CONCAT(name, _1) : name {}; \
-    struct CONCAT(name, _2) : name {};
+    VANTA_COMPONENT_BUFFER_nth(name, 1)
 
 #define VANTA_COMPONENT_BUFFER_3(name) \
     VANTA_COMPONENT_BUFFER_2(name)     \
-    struct CONCAT(name, _3) : name {};
+    VANTA_COMPONENT_BUFFER_nth(name, 2)
 
 #define VANTA_COMPONENT_BUFFER_4(name) \
     VANTA_COMPONENT_BUFFER_3(name)     \
-    struct CONCAT(name, _4) : name {};
-
-#define VANTA_COMPONENT_BUFFFER_LIST_0(name) \
-    using CONCAT(name, List) = int;
-
-#define VANTA_COMPONENT_BUFFFER_LIST_1(name) \
-    using CONCAT(name, List) = ComponentList<CONCAT(name, _1)>;
+    VANTA_COMPONENT_BUFFER_nth(name, 3)
 
 #define VANTA_COMPONENT_BUFFFER_LIST_2(name) \
-    using CONCAT(name, List) = ComponentList<CONCAT(name, _1), CONCAT(name, _2)>;
+    using CONCAT(name, Buffers) = ComponentList<name, CONCAT(name, _1)>;
 
 #define VANTA_COMPONENT_BUFFFER_LIST_3(name) \
-    using CONCAT(name, List) = ComponentList<CONCAT(name, _1), CONCAT(name, _2), CONCAT(name, _3)>;
+    using CONCAT(name, Buffers) = ComponentList<name, CONCAT(name, _1), CONCAT(name, _2)>;
 
 #define VANTA_COMPONENT_BUFFFER_LIST_4(name) \
-    using CONCAT(name, List) = ComponentList<CONCAT(name, _1), CONCAT(name, _2), CONCAT(name, _3), CONCAT(name, _4)>;
+    using CONCAT(name, Buffers) = ComponentList<name, CONCAT(name, _1), CONCAT(name, _2), CONCAT(name, _3)>;
+
 
 #define VANTA_COMPONENT_BUFFER(name, count) \
     CONCAT(VANTA_COMPONENT_BUFFER, CONCAT(_, count))(name) \

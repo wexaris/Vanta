@@ -8,8 +8,6 @@ public:
         camera_e.AddComponent<Vanta::CameraComponent>(Vanta::NewRef<Vanta::PerspectiveCamera>());
 
         auto sprite_e = m_ActiveScene.CreateEntity("Sprite");
-        sprite_e.AddComponent<Vanta::TransformComponent_1>();
-        sprite_e.AddComponent<Vanta::TransformComponent_2>();
         sprite_e.AddComponent<Vanta::PhysicsComponent>();
         sprite_e.AddComponent<Vanta::SpriteComponent>();
 

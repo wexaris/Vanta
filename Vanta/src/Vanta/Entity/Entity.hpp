@@ -18,7 +18,10 @@ namespace Vanta {
         /// Add or replace a component of a certain type.
         template<typename T, typename... Args>
         T& AddComponent(Args&&... args) {
-            VANTA_ASSERT(!HasComponent<T>(), "Entity already has component");
+#ifdef VANTA_DEBUG
+            if(HasComponent<T>())
+                VANTA_WARN("Entity already has component: {}", typeid(T).name());
+#endif
             T& component = m_Scene->GetRegistry().emplace_or_replace<T>(m_Handle, std::forward<Args>(args)...);
             m_Scene->OnComponentAdded(*this, component);
             return component;

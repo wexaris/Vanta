@@ -7,7 +7,7 @@
 namespace Vanta {
 
     Scene::Scene() : m_ViewportSize(Engine::Get().GetWindow().GetWidth(), Engine::Get().GetWindow().GetHeight()) {
-        Buffer<TransformComponentList>::InitBuffers(m_Registry);
+        TransformComponentBuffers::Setup(m_Registry);
     }
 
     Scene::~Scene() {}

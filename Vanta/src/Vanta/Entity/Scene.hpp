@@ -43,7 +43,7 @@ namespace Vanta {
         Ref<Camera> m_ActiveCamera = nullptr;
         glm::uvec2 m_ViewportSize;
 
-        Buffer<TransformComponentList> m_DataBuffer;
+        Buffer<TransformComponentBuffers> m_DataBuffer;
 
         void OnScriptUpdate(double delta);
         void OnPhysicsUpdate(double delta);
