@@ -44,32 +44,14 @@ namespace Vanta {
         }
     };
 
+    template<usize N, typename... Types>
+    struct Get<N, ComponentList<Types...>> : Get<N, Types...> {};
+
+    template <typename T, typename... Types>
+    struct Contains<T, ComponentList<Types...>> : Contains<Types...> {};
+
     namespace detail {
-        template<usize N, typename... Types>
-        struct Get {
-            using type = typename std::tuple_element<N, std::tuple<Types...>>::type;
-        };
 
-        template<usize N, typename... Types>
-        struct Get<N, ComponentList<Types...>> {
-            using type = typename Get<N, Types...>::type;
-        };
-
-        template <typename T, typename... Types>
-        struct HasType;
-
-        template <typename T>
-        struct HasType<T> : std::false_type {};
-
-        template <typename T, typename... Types>
-        struct HasType<T, T, Types...> : std::true_type {};
-
-        template <typename T, typename U, typename... Types>
-        struct HasType<T, U, Types...> : HasType<T, Types...> {};
-
-        template <typename T, typename... Types>
-        struct HasType<T, ComponentList<Types...>> : HasType<Types...> {};
-        
         template<typename Comp>
         class GetterDispatch {
         public:
@@ -88,7 +70,7 @@ namespace Vanta {
 
             template<usize N, typename... Components> requires (N < sizeof...(Components))
                 void Get_(const std::tuple<Components...>& components) {
-                if constexpr (std::is_base_of_v<Comp, std::remove_reference_t<typename detail::Get<N, Components...>::type>>) {
+                if constexpr (IsBase_v<Comp, RemoveRef_t<Get_t<N, Components...>>>) {
                     Component = &std::get<N>(components);
                 }
                 else {
@@ -178,7 +160,7 @@ namespace Vanta {
                         auto args = std::tuple_cat(std::make_tuple(entity), components);
                         std::apply(func, args);
                         bar.wait();
-                        });
+                    });
                 }
                 bar.wait();
             }
@@ -272,7 +254,7 @@ namespace Vanta {
 
         template<typename Component>
         static constexpr bool HasComponent() {
-            return detail::HasType<Component, Components..., ComponentLists...>::value;
+            return Contains_v<Component, Components..., ComponentLists...>;
         }
 
         /// <summary>
@@ -298,8 +280,8 @@ namespace Vanta {
         static void ViewOne_(usize idx, entt::registry& registry, const Dispatcher& dispatcher) {
             if (idx == N) {
                 auto view = registry.view<
-                    typename detail::Get<(N - 1) % sizeof...(Components), Components...>::type,
-                    typename detail::Get<(N - 1) % sizeof...(Components), ComponentLists>::type...,
+                    Get_t<(N - 1) % sizeof...(Components), Components...>,
+                    Get_t<(N - 1) % sizeof...(Components), ComponentLists>...,
                     Unbuffered...>();
                 dispatcher(view);
             }
@@ -312,8 +294,8 @@ namespace Vanta {
         static void ViewOne_(usize idx, entt::registry& registry, Dispatcher& dispatcher) {
             if (idx == N) {
                 auto view = registry.view<
-                    typename detail::Get<(N - 1) % sizeof...(Components), Components...>::type,
-                    typename detail::Get<(N - 1) % sizeof...(Components), ComponentLists>::type...,
+                    Get_t<(N - 1) % sizeof...(Components), Components...>,
+                    Get_t<(N - 1) % sizeof...(Components), ComponentLists>...,
                     Unbuffered...>();
                 dispatcher(view);
             }
@@ -333,10 +315,10 @@ namespace Vanta {
         static void ViewTwo_(usize idx, entt::registry& registry, const Dispatcher& dispatcher) {
             if (idx == N) {
                 auto view = registry.view<
-                    typename detail::Get<(N - 1) % sizeof...(Components), Components...>::type,
-                    typename detail::Get<(N - 1) % sizeof...(Components), ComponentLists>::type...,
-                    typename detail::Get<N, Components...>::type,
-                    typename detail::Get<N, ComponentLists>::type...,
+                    Get_t<(N - 1) % sizeof...(Components), Components...>,
+                    Get_t<(N - 1) % sizeof...(Components), ComponentLists>...,
+                    Get_t<N, Components...>,
+                    Get_t<N, ComponentLists>...,
                     Unbuffered...>();
                 dispatcher(view);
             }
@@ -349,10 +331,10 @@ namespace Vanta {
         static void ViewTwo_(usize idx, entt::registry& registry, Dispatcher& dispatcher) {
             if (idx == N) {
                 auto view = registry.view<
-                    typename detail::Get<(N - 1) % sizeof...(Components), Components...>::type,
-                    typename detail::Get<(N - 1) % sizeof...(Components), ComponentLists>::type...,
-                    typename detail::Get<N, Components...>::type,
-                    typename detail::Get<N, ComponentLists>::type...,
+                    Get_t<(N - 1) % sizeof...(Components), Components...>,
+                    Get_t<(N - 1) % sizeof...(Components), ComponentLists>...,
+                    Get_t<N, Components...>,
+                    Get_t<N, ComponentLists>...,
                     Unbuffered...>();
                 dispatcher(view);
             }

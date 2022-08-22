@@ -80,6 +80,42 @@ namespace Vanta {
     Ref<To> RefCast(Ref<From>&& from) {
         return std::static_pointer_cast<To>(from);
     }
+
+    template<typename T>
+    using RemoveRef   = std::remove_reference<T>;
+
+    template<typename T>
+    using RemoveRef_t = typename RemoveRef<T>::type;
+
+
+    template<typename Base, typename Derived>
+    using IsBase = std::is_base_of<Base, Derived>;
+
+    template<typename Base, typename Derived>
+    constexpr bool IsBase_v = IsBase<Base, Derived>::value;
+
+
+    template<usize N, typename... Types>
+    struct Get : std::tuple_element<N, std::tuple<Types...>> {};
+
+    template<usize N, typename... Types>
+    using Get_t = typename Get<N, Types...>::type;
+
+
+    template <typename T, typename... Types>
+    struct Contains;
+
+    template <typename T>
+    struct Contains<T> : std::false_type {};
+
+    template <typename T, typename... Types>
+    struct Contains<T, T, Types...> : std::true_type {};
+
+    template <typename T, typename U, typename... Types>
+    struct Contains<T, U, Types...> : Contains<T, Types...> {};
+
+    template <typename T, typename... Types>
+    constexpr bool Contains_v = Contains<T, Types...>::value;
 }
 
 #include "Vanta/Util/Time.hpp"
