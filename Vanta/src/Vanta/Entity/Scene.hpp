@@ -28,9 +28,29 @@ namespace Vanta {
         Entity DuplicateEntity(Entity entity);
         void DestroyEntity(Entity entity);
 
+        template<typename T, typename... Args>
+        T& AddComponent(Entity entity, Args&&... args) {
+            T& component = m_Registry.emplace_or_replace<T>(entity, std::forward<Args>(args)...);
+            OnComponentAdded(entity, component);
+            return component;
+        }
+
+        template<typename T>
+        void RemoveComponent(Entity entity) {
+            return m_Registry.remove<T>(entity);
+        }
+
         template<typename Component>
         Component& GetComponent(Entity entity) {
-            return m_DataBuffer.Get<Component>(m_Registry, entity);
+            if constexpr (Buffers::HasComponent<Component>())
+                return m_DataBuffer.Get<Component>(m_Registry, entity);
+            else 
+                return m_Registry.get<Component>(entity);
+        }
+
+        template<typename Component>
+        bool HasComponent(Entity entity) {
+            return m_Registry.any_of<Component>(entity);
         }
 
         void OnWindowResize(WindowResizeEvent& e);
@@ -41,11 +61,13 @@ namespace Vanta {
         entt::registry& GetRegistry() { return m_Registry; }
 
     private:
+        using Buffers = Buffer<TransformComponentBuffers>;
+
         entt::registry m_Registry;
         std::optional<entt::entity> m_ActiveCamera = std::nullopt;
         glm::uvec2 m_ViewportSize;
 
-        Buffer<TransformComponentBuffers> m_DataBuffer;
+        Buffers m_DataBuffer;
 
         void OnScriptUpdate(double delta);
         void OnPhysicsUpdate(double delta);
@@ -62,7 +84,5 @@ namespace Vanta {
 
             component.Camera->Resize(m_ViewportSize.x, m_ViewportSize.y);
         }
-
-        friend class Entity;
     };
 }

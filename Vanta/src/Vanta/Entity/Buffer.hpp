@@ -55,6 +55,21 @@ namespace Vanta {
             using type = typename Get<N, Types...>::type;
         };
 
+        template <typename T, typename... Types>
+        struct HasType;
+
+        template <typename T>
+        struct HasType<T> : std::false_type {};
+
+        template <typename T, typename... Types>
+        struct HasType<T, T, Types...> : std::true_type {};
+
+        template <typename T, typename U, typename... Types>
+        struct HasType<T, U, Types...> : HasType<T, Types...> {};
+
+        template <typename T, typename... Types>
+        struct HasType<T, ComponentList<Types...>> : HasType<Types...> {};
+        
         template<typename Comp>
         class GetterDispatch {
         public:
@@ -73,7 +88,7 @@ namespace Vanta {
 
             template<usize N, typename... Components> requires (N < sizeof...(Components))
                 void Get_(const std::tuple<Components...>& components) {
-                if constexpr (std::is_base_of_v<Comp, std::remove_reference_t<detail::Get<N, Components...>::type>>) {
+                if constexpr (std::is_base_of_v<Comp, std::remove_reference_t<typename detail::Get<N, Components...>::type>>) {
                     Component = &std::get<N>(components);
                 }
                 else {
@@ -249,10 +264,15 @@ namespace Vanta {
         /// </summary>
         template<typename Component>
         Component& Get(entt::registry& registry, entt::entity entity) {
+            VANTA_ASSERT(HasComponent<Component>(), "Entity does not have component: {}", typeid(Component).name());
             detail::GetterDispatch<Component> getter(entity);
             ViewCurr(registry, getter);
-            VANTA_ASSERT(getter.Component, "Entity does not have component: {}", typeid(Component).name());
             return *getter.Component;
+        }
+
+        template<typename Component>
+        static constexpr bool HasComponent() {
+            return detail::HasType<Component, Components..., ComponentLists...>::value;
         }
 
         /// <summary>

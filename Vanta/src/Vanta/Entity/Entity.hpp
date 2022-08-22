@@ -19,16 +19,14 @@ namespace Vanta {
         template<typename T, typename... Args>
         T& AddComponent(Args&&... args) {
             VANTA_ASSERT(!HasComponent<T>(), "Entity already has component: {}", typeid(T).name());
-            T& component = m_Scene->GetRegistry().emplace_or_replace<T>(m_Handle, std::forward<Args>(args)...);
-            m_Scene->OnComponentAdded(*this, component);
-            return component;
+            return m_Scene->AddComponent<T>(*this, std::forward<Args>(args)...);
         }
 
         /// Remove a component of a certain type.
         template<typename T>
         void RemoveComponent() {
             VANTA_ASSERT(HasComponent<T>(), "Entity does not have component: {}", typeid(T).name());
-            return m_Scene->GetRegistry().remove<T>(m_Handle);
+            return m_Scene->RemoveComponent<T>(*this);
         }
 
         /// Get a component of a certain type.
@@ -40,7 +38,7 @@ namespace Vanta {
 
         template<typename T>
         bool HasComponent() {
-            return m_Scene->GetRegistry().any_of<T>(m_Handle);
+            return m_Scene->HasComponent<T>(*this);
         }
 
         const std::string& GetName();
