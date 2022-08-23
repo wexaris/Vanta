@@ -3,8 +3,6 @@
 #include "Vanta/Render/Texture.hpp"
 #include "Vanta/Scene/Buffer.hpp"
 
-#include "Vanta/Render/Renderer2D.hpp"
-
 namespace Vanta {
 
     struct IDComponent {
@@ -72,9 +70,7 @@ namespace Vanta {
         SpriteComponent(const Ref<Texture2D>& texture)
             : Texture(texture) {}
 
-        void Render(double /*delta*/, const glm::mat4& transform) {
-            Renderer2D::DrawQuad(transform, {0.8, 0.3, 0.6, 1.0});
-        }
+        void Render(double /*delta*/, const glm::mat4& transform);
     };
 
     using AllComponents = ComponentList<TransformComponent, PhysicsComponent, CameraComponent, SpriteComponent>;
