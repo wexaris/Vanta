@@ -19,7 +19,7 @@ target_compile_options(${PROJECT_NAME} PUBLIC
     #DEBUG
     $<$<CONFIG:DEBUG>:
         $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
-            -Wall -Werror -Wextra -pedantic -O0 -g -Wno-unused-parameter -Wno-unused-function>
+            -Wall -Wextra -pedantic -O0 -g -Wno-unused-function -Wno-format-security -Wno-language-extension-token>
         $<$<CXX_COMPILER_ID:MSVC>:
             /W3 /ZI /RTC1 /sdl /Od>>
     #RELEASE

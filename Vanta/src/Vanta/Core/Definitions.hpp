@@ -39,7 +39,7 @@
 /// VANTA_DISTRIB - set externally
 
 #ifndef VANTA_DISTRIB
-    #ifdef _DEBUG
+    #ifndef NDEBUG
         #define VANTA_DEBUG
     #else
         #define VANTA_RELEASE

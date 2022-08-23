@@ -13,7 +13,9 @@ namespace Vanta {
         Entity(const Entity& other) = default;
         virtual ~Entity() = default;
 
-        virtual void OnEvent(Event&) {}
+        bool IsValid() const {
+            return m_Scene ? m_Scene->IsValid(*this) : false;
+        }
 
         /// Add or replace a component of a certain type.
         template<typename T, typename... Args>
@@ -41,8 +43,11 @@ namespace Vanta {
             return m_Scene->HasComponent<T>(*this);
         }
 
+        virtual void OnEvent(Event&) {}
+
         const std::string& GetName();
 
+        operator bool() const         { return IsValid(); }
         operator entt::entity() const { return m_Handle; }
 
         bool operator==(const Entity& other) const {

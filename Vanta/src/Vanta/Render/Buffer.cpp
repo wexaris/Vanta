@@ -6,7 +6,7 @@
 
 namespace Vanta {
 
-    Ref<VertexBuffer> Vanta::VertexBuffer::Create(usize size) {
+    Ref<VertexBuffer> VertexBuffer::Create(usize size) {
         switch (GraphicsAPI::GetAPI()) {
         case GraphicsAPI::OpenGL: return NewBox<OpenGLVertexBuffer>(size);
         default:
@@ -15,7 +15,7 @@ namespace Vanta {
         }
     }
 
-    Ref<VertexBuffer> Vanta::VertexBuffer::Create(float* vertices, uint count) {
+    Ref<VertexBuffer> VertexBuffer::Create(float* vertices, uint count) {
         switch (GraphicsAPI::GetAPI()) {
         case GraphicsAPI::OpenGL: return NewBox<OpenGLVertexBuffer>(vertices, count);
         default:
@@ -24,7 +24,7 @@ namespace Vanta {
         }
     }
 
-    Ref<IndexBuffer> Vanta::IndexBuffer::Create(uint* indices, uint count) {
+    Ref<IndexBuffer> IndexBuffer::Create(uint* indices, uint count) {
         switch (GraphicsAPI::GetAPI()) {
         case GraphicsAPI::OpenGL: return NewBox<OpenGLIndexBuffer>(indices, count);
         default:

@@ -94,11 +94,6 @@ namespace Vanta {
         }
     }
 
-    void ImGuiLayer::OnGUIRender() {
-        VANTA_PROFILE_RENDER_FUNCTION();
-        ImGuiConsole::Get().OnGUIRender();
-    }
-
     void ImGuiLayer::OnEvent(Event& e) {
         VANTA_PROFILE_FUNCTION();
 

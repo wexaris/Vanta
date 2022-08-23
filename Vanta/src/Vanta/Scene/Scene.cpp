@@ -6,6 +6,23 @@
 
 namespace Vanta {
 
+    namespace detail {
+        template<typename... Components>
+        void CopyComponents(Entity from, Entity to) {
+            ((from.HasComponent<Components>() ?
+                (void)to.AddComponent<Components>(from.GetComponent<Components>()) : void()), ...);
+        }
+
+        template<typename... Components>
+        void CopyComponents(ComponentList<Components...>, Entity from, Entity to) {
+            CopyComponents<Components...>(from, to);
+        }
+
+        void CopyComponents(Entity from, Entity to) {
+            CopyComponents(AllComponents(), from, to);
+        }
+    }
+
     Scene::Scene() : m_ViewportSize(Engine::Get().GetWindow().GetWidth(), Engine::Get().GetWindow().GetHeight()) {
         TransformComponentBuffers::Setup(m_Registry);
     }
@@ -33,16 +50,16 @@ namespace Vanta {
     void Scene::OnUpdateRuntime(double delta) {
         OnScriptUpdate(delta);
         OnPhysicsUpdate(delta);
-        OnRender(delta);
+        OnRender(delta, m_ActiveCamera.get());
     }
 
-    void Scene::OnUpdateSimulation(double delta) {
+    void Scene::OnUpdateSimulation(double delta, Camera* camera) {
         OnPhysicsUpdate(delta);
-        OnRender(delta);
+        OnRender(delta, camera);
     }
 
-    void Scene::OnUpdateEditor(double delta) {
-        OnRender(delta);
+    void Scene::OnUpdateEditor(double delta, Camera* camera) {
+        OnRender(delta, camera);
     }
 
     void Scene::OnScriptUpdate(double) {
@@ -81,30 +98,19 @@ namespace Vanta {
         }
     };
 
-    void Scene::OnRender(double delta) {
-        if (m_ActiveCamera) {
+    void Scene::OnRender(double delta, Camera* camera) {
+        if (camera) {
             m_DataBuffer.ViewPrev<CameraComponent>(m_Registry, LinearDispatch<CameraUpdate>(delta));
 
-            Renderer2D::SceneBegin(GetActiveCamera().GetComponent<CameraComponent>().Camera.get());
+            Renderer2D::SceneBegin(camera);
             m_DataBuffer.ViewPrev<SpriteComponent>(m_Registry, LinearDispatch<Render>(delta));
             Renderer2D::SceneEnd();
         }
         m_DataBuffer.Next();
     }
 
-    template<typename... Components>
-    void CopyComponents(Entity from, Entity to) {
-        ((from.HasComponent<Components>() ?
-            (void)to.AddComponent<Components>(from.GetComponent<Components>()) : void()), ...);
-    }
-
-    template<typename... Components>
-    void CopyComponents(ComponentList<Components...>, Entity from, Entity to) {
-        CopyComponents<Components...>(from, to);
-    }
-
-    void CopyComponents(Entity from, Entity to) {
-        CopyComponents(AllComponents(), from, to);
+    bool Scene::IsValid(Entity entity) const {
+        return m_Registry.valid(entity);
     }
 
     Entity Scene::CreateEntity(const std::string& name/*, UUID id*/) {
@@ -116,7 +122,7 @@ namespace Vanta {
 
     Entity Scene::DuplicateEntity(Entity entity) {
         Entity newEntity = CreateEntity(entity.GetName());
-        CopyComponents(entity, newEntity);
+        detail::CopyComponents(entity, newEntity);
         return newEntity;
     }
 
@@ -124,18 +130,19 @@ namespace Vanta {
         m_Registry.destroy(entity);
     }
 
-    void Scene::OnWindowResize(WindowResizeEvent& e) {
-        m_ViewportSize.x = e.Width;
-        m_ViewportSize.y = e.Height;
-        GetActiveCamera().GetComponent<CameraComponent>().Camera->Resize(e.Width, e.Height);
+    void Scene::OnViewportResize(uint width, uint height) {
+        m_ViewportSize.x = width;
+        m_ViewportSize.y = height;
+        if (m_ActiveCamera) {
+            GetActiveCamera()->Resize(width, height);
+        }
     }
 
-    void Scene::SetActiveCamera(Entity& camera) {
-        m_ActiveCamera = camera.operator entt::entity();
+    void Scene::SetActiveCameraEntity(Entity& camera) {
+        m_ActiveCameraEntity = camera.operator entt::entity();
     }
 
-    Entity Scene::GetActiveCamera() {
-        //return m_Registry.get<CameraComponent>(m_ActiveCamera.value()).Camera.get();
-        return Entity(m_ActiveCamera.value(), this);
+    Entity Scene::GetActiveCameraEntity() {
+        return m_ActiveCameraEntity ? Entity(m_ActiveCameraEntity.value(), this) : Entity();
     }
 }

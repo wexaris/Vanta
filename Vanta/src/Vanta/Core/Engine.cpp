@@ -2,7 +2,6 @@
 #include "Vanta/Core/Engine.hpp"
 #include "Vanta/Input/Input.hpp"
 #include "Vanta/Render/Renderer.hpp"
-#include "Vanta/Render/Renderer2D.hpp"
 #include "Vanta/Scene/Scene.hpp"
 
 namespace Vanta {
@@ -49,8 +48,6 @@ namespace Vanta {
 
             Input::PollInputs();
 
-            RenderCommand::Clear(glm::vec4(0.3, 0.2, 0.4, 1.0));
-
             for (Layer* layer : m_LayerStack) {
                 layer->OnUpdate(m_DeltaTime);
             }
@@ -66,8 +63,6 @@ namespace Vanta {
             Time newFrameTime;
             m_DeltaTime = (newFrameTime - lastFrameTime).AsSecondsf();
             lastFrameTime = newFrameTime;
-
-            VANTA_CORE_INFO("FPS: {}", GetFPS());
         }
     }
 

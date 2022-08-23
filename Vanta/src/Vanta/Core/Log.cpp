@@ -16,11 +16,15 @@ namespace Vanta {
         std::vector<spdlog::sink_ptr> sinks;
         sinks.push_back(NewRef<ConsoleSink_mt>()); // GUI console
         sinks.push_back(NewRef<spdlog::sinks::basic_file_sink_mt>(path.string(), true)); // logfile
-        //sinks.push_back(NewRef<spdlog::sinks::stdout_color_sink_mt>()); // text console
+#ifndef VANTA_DISTRIB
+        sinks.push_back(NewRef<spdlog::sinks::stdout_color_sink_mt>()); // text console
+#endif
 
         sinks[0]->set_pattern("%^[%T] %n: %v%$");
         sinks[1]->set_pattern("[%T] [%1] %n: %v");
-        //sinks[2]->set_pattern("%^[%T] %n: %v%$");
+#ifndef VANTA_DISTRIB
+        sinks[2]->set_pattern("%^[%T] %n: %v%$");
+#endif
 
         // Create loggers
         s_CoreLogger = NewRef<spdlog::logger>("VANTA", sinks.begin(), sinks.end());

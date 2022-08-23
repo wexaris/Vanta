@@ -21,6 +21,8 @@ namespace Vanta {
             RepeatCount(Input::IncrementKeyRepeatCount(key))
         {}
 
+        bool IsRepeat() const { return RepeatCount > 0; }
+
         std::string ToString() const override {
             return FMT("KeyPress: {} ({} repeats)",
                 Key,

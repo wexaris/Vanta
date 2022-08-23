@@ -21,9 +21,10 @@ namespace Vanta {
         void OnSimulationEnd();
 
         void OnUpdateRuntime(double delta);
-        void OnUpdateSimulation(double delta);
-        void OnUpdateEditor(double delta);
+        void OnUpdateSimulation(double delta, Camera* camera);
+        void OnUpdateEditor(double delta, Camera* camera);
 
+        bool IsValid(Entity entity) const;
         Entity CreateEntity(const std::string& name/*, UUID id*/);
         Entity DuplicateEntity(Entity entity);
         void DestroyEntity(Entity entity);
@@ -49,14 +50,15 @@ namespace Vanta {
         }
 
         template<typename Component>
-        bool HasComponent(Entity entity) {
+        bool HasComponent(Entity entity) const {
             return m_Registry.any_of<Component>(entity);
         }
 
-        void OnWindowResize(WindowResizeEvent& e);
+        void OnViewportResize(uint width, uint height);
 
-        void SetActiveCamera(Entity& camera);
-        Entity GetActiveCamera();
+        void SetActiveCameraEntity(Entity& camera);
+        Entity GetActiveCameraEntity();
+        Camera* GetActiveCamera() { return m_ActiveCamera.get(); }
 
         entt::registry& GetRegistry() { return m_Registry; }
 
@@ -64,14 +66,15 @@ namespace Vanta {
         using Buffers = Buffer<TransformComponentBuffers>;
 
         entt::registry m_Registry;
-        std::optional<entt::entity> m_ActiveCamera = std::nullopt;
+        Ref<Camera> m_ActiveCamera = nullptr;
+        std::optional<entt::entity> m_ActiveCameraEntity = std::nullopt;
         glm::uvec2 m_ViewportSize;
 
         Buffers m_DataBuffer;
 
         void OnScriptUpdate(double delta);
         void OnPhysicsUpdate(double delta);
-        void OnRender(double delta);
+        void OnRender(double delta, Camera* camera);
 
         template<typename T>
         void OnComponentAdded(entt::entity /*entity*/, T& /*component*/) {}
@@ -79,8 +82,10 @@ namespace Vanta {
         template<>
         void OnComponentAdded<CameraComponent>(entt::entity entity, CameraComponent& component) {
             // Set active camera, if one's not set
-            if (!m_ActiveCamera.has_value())
-                m_ActiveCamera = entity;
+            if (!m_ActiveCamera) {
+                m_ActiveCamera = component.Camera;
+                m_ActiveCameraEntity = entity;
+            }
 
             component.Camera->Resize(m_ViewportSize.x, m_ViewportSize.y);
         }

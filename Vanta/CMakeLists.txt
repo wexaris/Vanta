@@ -33,6 +33,7 @@ set(${PROJECT_NAME}_SOURCE
     "src/Vanta/IO/File.cpp"
     "src/Vanta/Render/Buffer.cpp"
     "src/Vanta/Render/Camera.cpp"
+    "src/Vanta/Render/Framebuffer.cpp"
     "src/Vanta/Render/GraphicsAPI.cpp"
     "src/Vanta/Render/GraphicsContext.cpp"
     "src/Vanta/Render/RenderCommand.cpp"
@@ -47,6 +48,7 @@ set(${PROJECT_NAME}_SOURCE
     "src/Vanta/Util/Util.cpp"
     "src/Platform/OpenGL/Render/Buffer.cpp"
     "src/Platform/OpenGL/Render/Context.cpp"
+    "src/Platform/OpenGL/Render/Framebuffer.cpp"
     "src/Platform/OpenGL/Render/GraphicsAPI.cpp"
     "src/Platform/OpenGL/Render/Shader.cpp"
     "src/Platform/OpenGL/Render/Texture.cpp"
@@ -75,7 +77,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE
     #DEBUG
     $<$<CONFIG:DEBUG>:
         $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
-            -Wall -O0 -g -Wno-unused-function>
+            -Wall -Wextra -pedantic -O0 -g -Wno-unused-function -Wno-format-security -Wno-language-extension-token>
         $<$<CXX_COMPILER_ID:MSVC>:
             /MDd /W4 /ZI /RTC1 /sdl /Od>>
     #RELEASE
