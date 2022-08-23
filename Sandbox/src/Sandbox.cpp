@@ -23,6 +23,8 @@ public:
     void OnUpdate(double delta) override {
         VANTA_PROFILE_FUNCTION();
 
+        Vanta::RenderCommand::Clear({ 0.1f, 0.1f, 0.1f, 0.1f });
+
         constexpr float radius = 10.f;
         float camX = sin((float)Vanta::Duration::SinceLaunch().AsSecondsf()) * radius;
         float camY = cos((float)Vanta::Duration::SinceLaunch().AsSecondsf()) * radius;
