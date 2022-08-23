@@ -1,6 +1,6 @@
 #pragma once
-#include "Vanta/Entity/Components.hpp"
 #include "Vanta/Event/WindowEvent.hpp"
+#include "Vanta/Scene/Components.hpp"
 #include "Vanta/Render/Camera.hpp"
 
 #include <entt/entt.hpp>

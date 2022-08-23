@@ -5,6 +5,9 @@
 
 namespace Vanta {
 
+    /// <summary>
+    /// Helper type for grouping and shuttling components around.
+    /// </summary>
     template<typename... Components>
     struct ComponentList {
         using types = entt::type_list<Components...>;

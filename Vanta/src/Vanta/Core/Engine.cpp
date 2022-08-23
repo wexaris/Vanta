@@ -3,7 +3,7 @@
 #include "Vanta/Input/Input.hpp"
 #include "Vanta/Render/Renderer.hpp"
 #include "Vanta/Render/Renderer2D.hpp"
-#include "Vanta/Entity/Scene.hpp"
+#include "Vanta/Scene/Scene.hpp"
 
 namespace Vanta {
     Engine* Engine::s_Instance = nullptr;

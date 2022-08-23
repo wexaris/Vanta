@@ -1,8 +1,8 @@
 #include "vantapch.hpp"
 #include "Vanta/Core/Engine.hpp"
-#include "Vanta/Entity/Entity.hpp"
-#include "Vanta/Entity/Scene.hpp"
 #include "Vanta/Render/Renderer2D.hpp"
+#include "Vanta/Scene/Entity.hpp"
+#include "Vanta/Scene/Scene.hpp"
 
 namespace Vanta {
 

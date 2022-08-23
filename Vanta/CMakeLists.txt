@@ -25,12 +25,10 @@ set(${PROJECT_NAME}_SOURCE
     "src/Vanta/Core/Log.cpp"
     "src/Vanta/Core/Window.cpp"
     "src/Vanta/Debug/Instrumentor.cpp"
-    "src/Vanta/Entity/Entity.cpp"
-    "src/Vanta/Entity/Scene.cpp"
-    "src/Vanta/Input/Input.cpp"
     "src/Vanta/GUI/ImGui.cpp"
     "src/Vanta/GUI/ImGuiConsole.cpp"
     "src/Vanta/GUI/ImGuiLayer.cpp"
+    "src/Vanta/Input/Input.cpp"
     "src/Vanta/IO/Image.cpp"
     "src/Vanta/IO/File.cpp"
     "src/Vanta/Render/Buffer.cpp"
@@ -43,6 +41,8 @@ set(${PROJECT_NAME}_SOURCE
     "src/Vanta/Render/Shader.cpp"
     "src/Vanta/Render/Texture.cpp"
     "src/Vanta/Render/VertexArray.cpp"
+    "src/Vanta/Scene/Entity.cpp"
+    "src/Vanta/Scene/Scene.cpp"
     "src/Vanta/Util/Util.cpp"
     "src/Platform/OpenGL/Render/Buffer.cpp"
     "src/Platform/OpenGL/Render/Context.cpp"
@@ -96,4 +96,4 @@ target_link_options(${PROJECT_NAME} PUBLIC
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
-                       ${CMAKE_SOURCE_DIR}/Assets ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Assets)
+                       ${CMAKE_CURRENT_SOURCE_DIR}/assets ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Assets)

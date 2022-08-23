@@ -1,6 +1,6 @@
 #pragma once
-#include "Vanta/Entity/Scene.hpp"
 #include "Vanta/Event/Event.hpp"
+#include "Vanta/Scene/Scene.hpp"
 
 #include <entt/entt.hpp>
 

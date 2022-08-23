@@ -1,7 +1,7 @@
 #pragma once
-#include "Vanta/Entity/Buffer.hpp"
 #include "Vanta/Render/Camera.hpp"
 #include "Vanta/Render/Texture.hpp"
+#include "Vanta/Scene/Buffer.hpp"
 
 #include "Vanta/Render/Renderer2D.hpp"
 
