@@ -8,8 +8,7 @@ namespace Vanta {
     namespace Editor {
 
         EditorLayer::EditorLayer() :
-            Layer("Editor Layer")
-        {}
+            Layer("Editor Layer") {}
 
         void EditorLayer::OnAttach() {
             VANTA_PROFILE_FUNCTION();
@@ -35,16 +34,20 @@ namespace Vanta {
                 m_ActiveScene = serializer.Deserialize(scenePath);
             }*/
 
-            m_EditorCamera = PerspectiveCamera();
             //Renderer2D::SetLineWidth(4.f);
 
             auto camera_e = m_ActiveScene->CreateEntity("Camera");
             camera_e.AddComponent<Vanta::CameraComponent>(Vanta::NewRef<Vanta::PerspectiveCamera>());
 
-            auto sprite_e = m_ActiveScene->CreateEntity("Sprite");
+            auto sprite_e = m_ActiveScene->CreateEntity("Sprite_1");
             sprite_e.AddComponent<Vanta::PhysicsComponent>();
-            sprite_e.AddComponent<Vanta::SpriteComponent>();
+            sprite_e.AddComponent<Vanta::SpriteComponent>(glm::vec4{ 0.8, 0.2, 0.3, 1.0 });
             sprite_e.GetComponent<Vanta::TransformComponent>().SetTransform({ 0, 0, 0 }, {0, 0, 0}, {1, 1, 1});
+        
+            auto sprite_b = m_ActiveScene->CreateEntity("Sprite_2");
+            sprite_b.AddComponent<Vanta::PhysicsComponent>();
+            sprite_b.AddComponent<Vanta::SpriteComponent>(glm::vec4{ 0.3, 0.3, 0.9, 1.0 });
+            sprite_b.GetComponent<Vanta::TransformComponent>().SetTransform({ 0, 2, 0 }, { 0, 0, 0 }, { 1, 1, 1 });
         }
 
         void EditorLayer::OnDetach() {

@@ -6,6 +6,6 @@
 namespace Vanta {
 
     void SpriteComponent::Render(double /*delta*/, const glm::mat4& transform) {
-        Renderer2D::DrawQuad(transform, { 0.8, 0.3, 0.6, 1.0 });
+        Renderer2D::DrawQuad(transform, Texture, Tint);
     }
 }

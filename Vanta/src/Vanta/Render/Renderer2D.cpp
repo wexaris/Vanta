@@ -242,6 +242,9 @@ namespace Vanta {
     }
 
     uint Renderer2D::BatchTexture(const Ref<Texture2D>& tex) {
+        if (!tex)
+            return 0;
+
         // Find texture, if it's already queued
         for (uint i = 1; i < s_Data.TextureSlotIdx; i++) {
             if (*s_Data.TextureSlots[i] == *tex) {
