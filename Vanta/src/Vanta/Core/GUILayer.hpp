@@ -3,10 +3,10 @@
 
 namespace Vanta {
 
-    class GuiLayer : public Layer {
+    class GUILayer : public Layer {
     public:
-        GuiLayer();
-        virtual ~GuiLayer() = default;
+        GUILayer();
+        virtual ~GUILayer() = default;
 
         void OnAttach() override;
         void OnDetach() override;

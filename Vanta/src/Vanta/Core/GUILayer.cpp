@@ -1,6 +1,6 @@
 #include "vantapch.hpp"
 #include "Vanta/Core/Engine.hpp"
-#include "Vanta/GUI/GuiLayer.hpp"
+#include "Vanta/Core/GUILayer.hpp"
 
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -12,11 +12,11 @@
 #include <ImGuizmo.h>
 
 namespace Vanta {
-    GuiLayer::GuiLayer()
+    GUILayer::GUILayer()
         : Layer("ImGuiLayer")
     {}
 
-    void GuiLayer::OnAttach() {
+    void GUILayer::OnAttach() {
         VANTA_PROFILE_FUNCTION();
 
         {
@@ -60,14 +60,14 @@ namespace Vanta {
         }
     }
 
-    void GuiLayer::OnDetach() {
+    void GUILayer::OnDetach() {
         VANTA_PROFILE_FUNCTION();
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
     }
 
-    void GuiLayer::Begin() {
+    void GUILayer::Begin() {
         VANTA_PROFILE_FUNCTION();
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -75,7 +75,7 @@ namespace Vanta {
         ImGuizmo::BeginFrame();
     }
 
-    void GuiLayer::End() {
+    void GUILayer::End() {
         VANTA_PROFILE_FUNCTION();
 
         ImGuiIO& io = ImGui::GetIO();
@@ -94,7 +94,7 @@ namespace Vanta {
         }
     }
 
-    void GuiLayer::OnEvent(Event& e) {
+    void GUILayer::OnEvent(Event& e) {
         VANTA_PROFILE_FUNCTION();
         if (m_BlockEvents) {
             ImGuiIO& io = ImGui::GetIO();

@@ -28,8 +28,8 @@ namespace Vanta {
 
         Renderer::Init();
 
-        m_GuiLayer = new GuiLayer();
-        PushOverlay(m_GuiLayer);
+        m_GUILayer = new GUILayer();
+        PushOverlay(m_GUILayer);
     }
 
     Engine::~Engine() {
@@ -52,11 +52,11 @@ namespace Vanta {
                 layer->OnUpdate(m_DeltaTime);
             }
 
-            m_GuiLayer->Begin();
+            m_GUILayer->Begin();
             for (Layer* layer : m_LayerStack) {
                 layer->OnGUIRender();
             }
-            m_GuiLayer->End();
+            m_GUILayer->End();
 
             m_Window->Update();
 

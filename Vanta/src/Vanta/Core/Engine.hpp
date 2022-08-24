@@ -1,10 +1,10 @@
 #pragma once
+#include "Vanta/Core/GUILayer.hpp"
 #include "Vanta/Core/LayerStack.hpp"
 #include "Vanta/Core/Window.hpp"
 #include "Vanta/Event/KeyEvent.hpp"
 #include "Vanta/Event/MouseEvent.hpp"
 #include "Vanta/Event/WindowEvent.hpp"
-#include "Vanta/GUI/GuiLayer.hpp"
 #include "Vanta/Render/Camera.hpp"
 #include "Vanta/Render/GraphicsAPI.hpp"
 
@@ -36,12 +36,12 @@ namespace Vanta {
 
         static Engine& Get()      { return *s_Instance; }
         Window& GetWindow()       { return *m_Window; }
-        GuiLayer* GetGUILayer() { return m_GuiLayer; }
+        GUILayer* GetGUILayer()   { return m_GUILayer; }
 
     protected:
         Box<Window> m_Window;
         LayerStack m_LayerStack;
-        GuiLayer* m_GuiLayer;
+        GUILayer* m_GUILayer;
 
         uint m_MinTickRate;
         uint m_MaxSubsteps;
