@@ -259,8 +259,8 @@ namespace Vanta {
             }
 
             ImGuiConsole::Get().OnGUIRender();
-            //m_ScenePanel.OnImGuiRender();
-            //m_ContentBrowserPanel.OnImGuiRender();
+            //m_ScenePanel.OnGUIRender();
+            //m_ContentBrowserPanel.OnGUIRender();
 
             {
                 ImGui::Begin("Stats");
@@ -300,7 +300,7 @@ namespace Vanta {
 
                 m_ViewportFocused = ImGui::IsWindowFocused();
                 m_ViewportHovered = ImGui::IsWindowHovered();
-                //Engine::Get().GetGUILayer()->BlockEvents(m_ViewportFocused || m_ViewportHovered);
+                Engine::Get().GetGUILayer()->BlockEvents(m_ViewportFocused || m_ViewportHovered);
 
                 ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
                 m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
@@ -418,9 +418,8 @@ namespace Vanta {
         }
 
         void EditorLayer::OnEvent(Event& e) {
-            //m_CameraController.OnEvent(e);
             if (m_State == State::Edit) {
-                //m_EditorCamera.OnEvent(e);
+                //m_CameraController.OnEvent(e);
             }
 
             EventDispatcher dispatcher(e);

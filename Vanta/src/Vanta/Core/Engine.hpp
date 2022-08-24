@@ -35,8 +35,9 @@ namespace Vanta {
 
         bool IsMinimized() const { return m_Minimized; }
 
-        static Engine& Get() { return *s_Instance; }
-        Window& GetWindow()  { return *m_Window; }
+        static Engine& Get()      { return *s_Instance; }
+        Window& GetWindow()       { return *m_Window; }
+        ImGuiLayer* GetGUILayer() { return m_GuiLayer; }
 
     protected:
         Box<Window> m_Window;

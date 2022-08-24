@@ -96,9 +96,10 @@ namespace Vanta {
 
     void ImGuiLayer::OnEvent(Event& e) {
         VANTA_PROFILE_FUNCTION();
-
-        ImGuiIO& io = ImGui::GetIO();
-        e.Handled |= e.IsCategory(Event::Category::Mouse) & io.WantCaptureMouse;
-        e.Handled |= e.IsCategory(Event::Category::Keyboard) & io.WantCaptureKeyboard;
+        if (m_BlockEvents) {
+            ImGuiIO& io = ImGui::GetIO();
+            e.Handled |= e.IsCategory(Event::Category::Mouse) & io.WantCaptureMouse;
+            e.Handled |= e.IsCategory(Event::Category::Keyboard) & io.WantCaptureKeyboard;
+        }
     }
 }
