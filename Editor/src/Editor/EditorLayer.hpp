@@ -1,6 +1,4 @@
 #pragma once
-#include "Editor/EditorCamera.hpp"
-
 #include <Vanta/Vanta.hpp>
 #include <Vanta/Render/Framebuffer.hpp>
 

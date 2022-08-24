@@ -1,4 +1,5 @@
 #include <Vanta/Vanta.hpp>
+#include <Vanta/EntryPoint.hpp>
 
 class TestLayer : public Vanta::Layer {
 public:
@@ -60,6 +61,7 @@ public:
 };
 
 namespace Vanta {
+
     Engine* CreateEngine() {
         EngineParams params;
         params.Window.Height = 800;

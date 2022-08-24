@@ -1,4 +1,8 @@
 #include "Editor/EditorLayer.hpp"
+#include "Editor/Panel/Console.hpp"
+
+#define VANTA_CUSTOM_LOG_SINKS
+#include <Vanta/EntryPoint.hpp>
 
 namespace Vanta {
     namespace Editor {
@@ -9,6 +13,12 @@ namespace Vanta {
                 PushLayer(new EditorLayer());
             }
         };
+    }
+
+    void CreateLogSinks(Log::SinkList& sinks) {
+        auto console_sink = NewRef<Editor::ConsoleSink_mt>();
+        //console_sink->set_pattern("[%T] [%1] %n: %v");
+        sinks.push_back(console_sink);
     }
 
     Engine* CreateEngine() {

@@ -53,9 +53,11 @@
 ///
 /// VANTA_DISABLE_ASSERTS
 
-#define NOMINMAX            // Prevent Windows min/max definitions
+#define NOMINMAX                      // Prevent Windows min/max definitions
 
-#define GLFW_INCLUDE_NONE   // GLFW shouldn't include its own OpenGL
+#define GLFW_INCLUDE_NONE             // GLFW shouldn't include its own OpenGL
+
+#define IMGUI_IMPL_OPENGL_LOADER_GLAD // ImGui should use GLAD for OpenGL
 
 #ifdef VANTA_DEBUG
     #define VANTA_ENABLE_PROFILE

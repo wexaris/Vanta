@@ -3,7 +3,9 @@ project(Editor)
 
 set(${PROJECT_NAME}_SOURCE
     "src/Editor/Editor.cpp"
- "src/Editor/EditorLayer.cpp")
+    "src/Editor/EditorLayer.cpp"
+    "src/Editor/Panel/Console.cpp"
+)
 
 if(WIN32)
     add_executable(${PROJECT_NAME} WIN32 ${${PROJECT_NAME}_SOURCE})

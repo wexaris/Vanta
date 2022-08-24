@@ -1,30 +1,30 @@
 #include "vantapch.hpp"
 #include "Vanta/Core/Log.hpp"
-#include "Vanta/GUI/ImGuiConsole.hpp"
 
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/basic_file_sink.h>
 
 namespace Vanta {
+    extern void CreateLogSinks(Log::SinkList& sinks);
 
     Ref<spdlog::logger> Log::s_CoreLogger;
     Ref<spdlog::logger> Log::s_ClientLogger;
 
-    void Log::Init(const Path& path) {
+    void Log::Init(const Path& logfile) {
+        SinkList sinks;
 
         // Create sinks
-        std::vector<spdlog::sink_ptr> sinks;
-        sinks.push_back(NewRef<ConsoleSink_mt>()); // GUI console
-        sinks.push_back(NewRef<spdlog::sinks::basic_file_sink_mt>(path.string(), true)); // logfile
+        auto logfile_sink = NewRef<spdlog::sinks::basic_file_sink_mt>(logfile.string(), true);
+        logfile_sink->set_pattern("[%T] [%1] %n: %v");
+        sinks.push_back(logfile_sink);
+
 #ifndef VANTA_DISTRIB
-        sinks.push_back(NewRef<spdlog::sinks::stdout_color_sink_mt>()); // text console
+        auto stdout_sink = NewRef<spdlog::sinks::stdout_color_sink_mt>();
+        stdout_sink->set_pattern("[%T] [%1] %n: %v");
+        sinks.push_back(stdout_sink);
 #endif
 
-        sinks[0]->set_pattern("%^[%T] %n: %v%$");
-        sinks[1]->set_pattern("[%T] [%1] %n: %v");
-#ifndef VANTA_DISTRIB
-        sinks[2]->set_pattern("%^[%T] %n: %v%$");
-#endif
+        CreateLogSinks(sinks);
 
         // Create loggers
         s_CoreLogger = NewRef<spdlog::logger>("VANTA", sinks.begin(), sinks.end());

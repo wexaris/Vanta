@@ -28,7 +28,7 @@ namespace Vanta {
 
         Renderer::Init();
 
-        m_GuiLayer = new ImGuiLayer();
+        m_GuiLayer = new GuiLayer();
         PushOverlay(m_GuiLayer);
     }
 

@@ -1,4 +1,5 @@
 #include "Editor/EditorLayer.hpp"
+#include "Editor/Panel/Console.hpp"
 
 #include <imgui.h>
 #include <ImGuizmo.h>
@@ -258,7 +259,7 @@ namespace Vanta {
                 ImGui::EndMenuBar();
             }
 
-            ImGuiConsole::Get().OnGUIRender();
+            Console::Get().OnGUIRender();
             //m_ScenePanel.OnGUIRender();
             //m_ContentBrowserPanel.OnGUIRender();
 

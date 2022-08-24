@@ -6,7 +6,9 @@
 namespace Vanta {
     class Log {
     public:
-        static void Init(const Path& path);
+        using SinkList = std::vector<spdlog::sink_ptr>;
+
+        static void Init(const Path& logfile);
 
         static Ref<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
         static Ref<spdlog::logger>& GetClientLogger() { return s_ClientLogger; }

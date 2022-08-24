@@ -4,8 +4,7 @@
 #include "Vanta/Event/KeyEvent.hpp"
 #include "Vanta/Event/MouseEvent.hpp"
 #include "Vanta/Event/WindowEvent.hpp"
-#include "Vanta/GUI/ImGuiConsole.hpp"
-#include "Vanta/GUI/ImGuiLayer.hpp"
+#include "Vanta/GUI/GuiLayer.hpp"
 #include "Vanta/Render/Camera.hpp"
 #include "Vanta/Render/GraphicsAPI.hpp"
 
@@ -37,12 +36,12 @@ namespace Vanta {
 
         static Engine& Get()      { return *s_Instance; }
         Window& GetWindow()       { return *m_Window; }
-        ImGuiLayer* GetGUILayer() { return m_GuiLayer; }
+        GuiLayer* GetGUILayer() { return m_GuiLayer; }
 
     protected:
         Box<Window> m_Window;
         LayerStack m_LayerStack;
-        ImGuiLayer* m_GuiLayer;
+        GuiLayer* m_GuiLayer;
 
         uint m_MinTickRate;
         uint m_MaxSubsteps;
