@@ -27,7 +27,7 @@ namespace Vanta {
         CreateLogSinks(sinks);
 
         // Create loggers
-        s_CoreLogger = NewRef<spdlog::logger>("VANTA", sinks.begin(), sinks.end());
+        s_CoreLogger = NewRef<spdlog::logger>("CORE", sinks.begin(), sinks.end());
         spdlog::register_logger(s_CoreLogger);
         s_CoreLogger->set_level(spdlog::level::trace);
         s_CoreLogger->flush_on(spdlog::level::trace);

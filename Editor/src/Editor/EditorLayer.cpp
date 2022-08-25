@@ -37,17 +37,18 @@ namespace Vanta {
             //Renderer2D::SetLineWidth(4.f);
 
             auto camera_e = m_ActiveScene->CreateEntity("Camera");
-            camera_e.AddComponent<Vanta::CameraComponent>(Vanta::NewRef<Vanta::PerspectiveCamera>());
+            camera_e.AddComponent<CameraComponent>(NewRef<PerspectiveCamera>());
+            camera_e.GetComponent<TransformComponent>().SetTransform({-5, 0, 0}, { 0, 0, 0 }, {1, 1, 1});
 
             auto sprite_e = m_ActiveScene->CreateEntity("Sprite_1");
-            sprite_e.AddComponent<Vanta::PhysicsComponent>();
-            sprite_e.AddComponent<Vanta::SpriteComponent>(glm::vec4{ 0.8, 0.2, 0.3, 1.0 });
-            sprite_e.GetComponent<Vanta::TransformComponent>().SetTransform({ 0, 0, 0 }, {0, 0, 0}, {1, 1, 1});
-        
+            sprite_e.AddComponent<PhysicsComponent>();
+            sprite_e.AddComponent<SpriteComponent>(glm::vec4{ 0.8, 0.2, 0.3, 1.0 });
+            sprite_e.GetComponent<TransformComponent>().SetTransform({ 0, 0, 0 }, {0, 0, 0}, {1, 1, 1});
+
             auto sprite_b = m_ActiveScene->CreateEntity("Sprite_2");
-            sprite_b.AddComponent<Vanta::PhysicsComponent>();
-            sprite_b.AddComponent<Vanta::SpriteComponent>(glm::vec4{ 0.3, 0.3, 0.9, 1.0 });
-            sprite_b.GetComponent<Vanta::TransformComponent>().SetTransform({ 0, 2, 0 }, { 0, 0, 0 }, { 1, 1, 1 });
+            sprite_b.AddComponent<PhysicsComponent>();
+            sprite_b.AddComponent<SpriteComponent>(glm::vec4{ 0.3, 0.3, 0.9, 1.0 });
+            sprite_b.GetComponent<TransformComponent>().SetTransform({ 0, 2, 0 }, { 0, 0, 0 }, { 1, 1, 1 });
         }
 
         void EditorLayer::OnDetach() {
@@ -73,6 +74,7 @@ namespace Vanta {
             float camY = cos((float)Vanta::Duration::SinceLaunch().AsSecondsf()) * radius;
             auto view = glm::lookAt(glm::vec3(camX, camY, 5), glm::vec3(0, 0, 0), glm::vec3(0.f, 1.f, 0.f));
             m_EditorCamera.SetTransform(glm::inverse(view));
+            m_ActiveScene->GetActiveCameraEntity().GetComponent<TransformComponent>().SetTransform(glm::inverse(view));
 
             // Render
             Renderer2D::ResetStats();
@@ -173,7 +175,7 @@ namespace Vanta {
                 }
             }*/
 
-            // Draw selected entity outline 
+            // Draw selected entity outline
             /*if (Entity selectedEntity = m_ScenePanel.GetSelected()) {
                 const TransformComponent& transform = selectedEntity.GetComponent<TransformComponent>();
                 Renderer2D::DrawRect(transform.GetTransform(), glm::vec4(1.0f, 0.5f, 0.0f, 1.0f));
@@ -213,9 +215,9 @@ namespace Vanta {
                 windowFlags |= ImGuiWindowFlags_NoBackground;
 
             // Important: note that we proceed even if Begin() returns false (aka window is collapsed).
-            // This is because we want to keep our DockSpace() active. If a DockSpace() is inactive, 
+            // This is because we want to keep our DockSpace() active. If a DockSpace() is inactive,
             // all active windows docked into it will lose their parent and become undocked.
-            // We cannot preserve the docking relationship between an active window and an inactive docking, otherwise 
+            // We cannot preserve the docking relationship between an active window and an inactive docking, otherwise
             // any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
             ImGui::Begin("DockSpace", &dockspaceOpen, windowFlags);
@@ -238,7 +240,7 @@ namespace Vanta {
 
             if (ImGui::BeginMenuBar()) {
                 if (ImGui::BeginMenu("File")) {
-                    // Disabling fullscreen would allow the window to be moved to the front of other windows, 
+                    // Disabling fullscreen would allow the window to be moved to the front of other windows,
                     // which we can't undo at the moment without finer window depth/z control.
                     //ImGui::MenuItem("Fullscreen", NULL, &isFullscreenPersistant);1
                     if (ImGui::MenuItem("New", "Ctrl+N"))
@@ -386,7 +388,7 @@ namespace Vanta {
             const auto& buttonActive = colors[ImGuiCol_ButtonActive];
             ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(buttonActive.x, buttonActive.y, buttonActive.z, 0.5f));
 
-            ImGui::Begin("Toolbar", nullptr, /*ImGuiWindowFlags_NoDecoration |*/ ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+            ImGui::Begin("Toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
             bool toolbarEnabled = (bool)m_ActiveScene;
 
@@ -515,7 +517,7 @@ namespace Vanta {
             m_State = State::Play;
 
             //m_ActiveScene = Scene::Copy(m_EditorScene);
-            //m_ActiveScene->OnRuntimeBegin();
+            m_ActiveScene->OnRuntimeBegin();
 
             //m_ScenePanel.SetContext(m_ActiveScene);
         }
@@ -527,7 +529,7 @@ namespace Vanta {
             m_State = State::Simulate;
 
             //m_ActiveScene = Scene::Copy(m_EditorScene);
-            //m_ActiveScene->OnSimulationBegin();
+            m_ActiveScene->OnSimulationBegin();
 
             //m_ScenePanel.SetContext(m_ActiveScene);
         }
