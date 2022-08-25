@@ -40,21 +40,23 @@ namespace Vanta {
             // As a specific feature guaranteed by the library, after calling Begin() the last Item represent the title bar.
             // So e.g. IsItemHovered() will return true when hovering the title bar.
             // Here we create a context menu only available from the title bar.
-            if (ImGui::BeginPopupContextItem()) {
+            /*if (ImGui::BeginPopupContextItem()) {
                 if (ImGui::MenuItem("Close"))
                     m_Open = false;
                 ImGui::EndPopup();
-            }
+            }*/
 
             // Reserve enough left-over height for 1 separator + 1 input text
             const float footer_height_to_reserve = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
             ImGui::BeginChild("ConsoleTextBox", ImVec2(0, -footer_height_to_reserve), false, ImGuiWindowFlags_HorizontalScrollbar);
             if (ImGui::BeginPopupContextWindow()) {
-                ImGui::Checkbox("Auto Scroll", &m_AutoScroll);
                 if (ImGui::Selectable("Clear"))
                     Clear();
                 ImGui::EndPopup();
             }
+
+            // Disable auto scroll if user has scrolled away from bottom
+            m_AutoScroll = !(ImGui::GetScrollY() < ImGui::GetScrollMaxY());
 
             // Display every line as a separate entry so we can change their color or add custom widgets.
             // If you only want raw text you can use ImGui::TextUnformatted(log.begin(), log.end());
