@@ -12,36 +12,45 @@ namespace Vanta {
     };
 
     struct TransformComponent {
+        glm::vec3 Position = { 0.f, 0.f, 0.f }; // Position
+        glm::vec3 Rotation = { 0.f, 0.f, 0.f }; // Rotation in radians
+        glm::vec3 Scale    = { 1.f, 1.f, 1.f }; // Scale
+
+        glm::mat4 Transform = glm::mat4(1.f);
+
         TransformComponent() = default;
         TransformComponent(const TransformComponent& other) = default;
-        TransformComponent(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale)
-            : m_Position(position), m_Rotation(rotation), m_Scale(scale)
-        {
+        TransformComponent(const glm::mat4& transform) {
+            SetTransform(transform);
+        }
+        TransformComponent(const glm::vec3& position, const glm::vec3& degrees, const glm::vec3& scale) {
+            SetTransform(position, degrees, scale);
+        }
+
+        void SetTransform(const glm::vec3& position, const glm::vec3& degrees, const glm::vec3& scale) {
+            Position = position;
+            Rotation = glm::radians(degrees);
+            Scale = scale;
             Recalculate();
         }
 
-        void SetTransform(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale) {
-            m_Position = position;
-            m_Rotation = rotation;
-            m_Scale = scale;
-            Recalculate();
+        void SetTransform(const glm::mat4& transform) {
+            Math::Decompose(transform, Position, Rotation, Scale);
+            Transform = transform;
         }
 
-        void SetTransform(const glm::mat4& transform) { m_Transform = transform; }
-        const glm::mat4& GetTransform()               { return m_Transform; }
+        void SetRotationDegrees(const glm::vec3& degrees) { Rotation = glm::radians(degrees); }
+        void SetRotationRadians(const glm::vec3& radians) { Rotation = radians; }
+
+        const glm::vec3& GetRotationDegrees() const  { return glm::degrees(Rotation); }
+        const glm::vec3& GetRotationRadians() const  { return Rotation; }
 
     private:
-        glm::vec3 m_Position = { 0.f, 0.f, 0.f };
-        glm::vec3 m_Rotation = { 0.f, 0.f, 0.f };
-        glm::vec3 m_Scale = { 1.f, 1.f, 1.f };
-
-        glm::mat4 m_Transform = glm::mat4(1.f);
-
         void Recalculate() {
-            auto position = glm::translate(glm::mat4(1.f), m_Position);
-            auto rotation = glm::mat4_cast(glm::quat(m_Rotation));
-            auto scale = glm::scale(glm::mat4(1.f), m_Scale);
-            m_Transform = (glm::mat4)(position * rotation * scale);
+            auto position = glm::translate(glm::mat4(1.f), Position);
+            auto rotation = glm::mat4_cast(glm::quat(Rotation));
+            auto scale = glm::scale(glm::mat4(1.f), Scale);
+            Transform = (glm::mat4)(position * rotation * scale);
         }
     };
 
@@ -65,14 +74,14 @@ namespace Vanta {
 
     struct SpriteComponent {
         Ref<Texture2D> Texture;
-        glm::vec4 Tint = { 1.f, 1.f, 1.f, 1.f };
+        glm::vec4 Color = { 1.f, 1.f, 1.f, 1.f };
 
         SpriteComponent() = default;
         SpriteComponent(const SpriteComponent& other) = default;
-        SpriteComponent(const glm::vec4& tint)
-            : SpriteComponent(nullptr, tint) {}
+        SpriteComponent(const glm::vec4& color)
+            : SpriteComponent(nullptr, color) {}
         SpriteComponent(const Ref<Texture2D>& texture, const glm::vec4& tint)
-            : Texture(texture), Tint(tint) {}
+            : Texture(texture), Color(tint) {}
 
         void Render(double delta, const glm::mat4& transform);
     };
