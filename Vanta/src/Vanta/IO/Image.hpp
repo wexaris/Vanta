@@ -7,6 +7,8 @@ namespace Vanta {
             uint32 Width, Height;
             uint Channels;
 
+            operator bool() const { return Data != nullptr; }
+
             Image(const Path& path);
             ~Image();
         };

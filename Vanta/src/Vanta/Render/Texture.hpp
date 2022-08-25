@@ -13,6 +13,8 @@ namespace Vanta {
         virtual uint32 GetWidth() const = 0;
         virtual uint32 GetHeight() const = 0;
 
+        virtual uint32 GetRendererID() const = 0;
+
         virtual bool operator==(const Texture& other) const = 0;
         virtual bool operator!=(const Texture& other) const = 0;
 

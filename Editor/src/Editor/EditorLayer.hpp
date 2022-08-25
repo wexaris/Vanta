@@ -44,6 +44,10 @@ namespace Vanta {
             Entity m_HoveredEntity;
             int m_GizmoType = -1;
 
+            Ref<Texture2D> m_IconPlay;
+            Ref<Texture2D> m_IconSimulate;
+            Ref<Texture2D> m_IconStop;
+
             void RenderOverlay();
 
             void RenderToolbar();

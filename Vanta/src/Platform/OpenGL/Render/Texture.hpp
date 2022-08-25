@@ -16,6 +16,8 @@ namespace Vanta {
         uint32 GetWidth() const override  { return m_Width; }
         uint32 GetHeight() const override { return m_Height; }
 
+        uint32 GetRendererID() const override { return m_RendererID; };
+
         bool operator==(const Texture& other) const override {
             return m_RendererID == reinterpret_cast<const OpenGLTexture2D&>(other).m_RendererID;
         }

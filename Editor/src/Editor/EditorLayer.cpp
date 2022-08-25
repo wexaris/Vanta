@@ -13,9 +13,9 @@ namespace Vanta {
         void EditorLayer::OnAttach() {
             VANTA_PROFILE_FUNCTION();
 
-            //m_IconPlay = Texture2D::Create("Icons/PlayButton.png");
-            //m_IconSimulate = Texture2D::Create("Icons/SimulateButton.png");
-            //m_IconStop = Texture2D::Create("Icons/StopButton.png");
+            m_IconPlay = Texture2D::Create("Icons/PlayButton.png");
+            m_IconSimulate = Texture2D::Create("Icons/SimulateButton.png");
+            m_IconStop = Texture2D::Create("Icons/StopButton.png");
 
             FramebufferParams fbParams;
             fbParams.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
@@ -376,8 +376,8 @@ namespace Vanta {
         }
 
         void EditorLayer::RenderToolbar() {
-            ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
-            ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(128, 128));
             ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 
             auto& colors = ImGui::GetStyle().Colors;
@@ -386,35 +386,41 @@ namespace Vanta {
             const auto& buttonActive = colors[ImGuiCol_ButtonActive];
             ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(buttonActive.x, buttonActive.y, buttonActive.z, 0.5f));
 
-            ImGui::Begin("Toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+            ImGui::Begin("Toolbar", nullptr, /*ImGuiWindowFlags_NoDecoration |*/ ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
             bool toolbarEnabled = (bool)m_ActiveScene;
 
-            ImVec4 tintColor = ImVec4(1, 1, 1, 1);
+            ImVec4 tintColor = { 1, 1, 1, 1 };
             if (!toolbarEnabled)
                 tintColor.w = 0.5f;
 
-            /*float size = ImGui::GetWindowHeight() - 4.0f;
+            auto windowSize = ImGui::GetContentRegionAvail();
+            float size = std::min(windowSize.y, windowSize.x / 2);
             {
                 Ref<Texture2D> icon = (m_State == State::Edit || m_State == State::Simulate) ? m_IconPlay : m_IconStop;
-                ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
-                if (ImGui::ImageButton((ImTextureID)icon->GetRendererID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tintColor) && toolbarEnabled) {
+                usize texID = icon->GetRendererID();
+
+                ImGui::SetCursorPosX((ImGui::GetContentRegionMax().x * 0.5f) - size - 8);
+
+                if (ImGui::ImageButton((ImTextureID)texID, ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tintColor) && toolbarEnabled) {
                     if (m_State == State::Edit || m_State == State::Simulate)
                         OnPlay();
                     else if (m_State == State::Play)
                         OnStop();
                 }
-            }*/
-            ImGui::SameLine();
-            /*{
+            }
+            ImGui::SameLine(0.f, 16.f);
+            {
                 Ref<Texture2D> icon = (m_State == State::Edit || m_State == State::Play) ? m_IconSimulate : m_IconStop;		//ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
-                if (ImGui::ImageButton((ImTextureID)icon->GetRendererID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tintColor) && toolbarEnabled) {
+                usize texID = icon->GetRendererID();
+
+                if (ImGui::ImageButton((ImTextureID)texID, ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tintColor) && toolbarEnabled) {
                     if (m_State == State::Edit || m_State == State::Play)
                         OnSimulate();
                     else if (m_State == State::Simulate)
                         OnStop();
                 }
-            }*/
+            }
 
             ImGui::PopStyleVar(2);
             ImGui::PopStyleColor(3);

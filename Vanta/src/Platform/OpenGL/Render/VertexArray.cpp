@@ -67,6 +67,7 @@ namespace Vanta {
             if (e.Type == Shader::DataType::Mat3 || e.Type == Shader::DataType::Mat4) {
                 for (usize i = 0; i < itemCount; i++) {
                     auto offset = i * itemCount * sizeof(float);
+                glEnableVertexArrayAttrib(m_VertexBufferIndex);
 
                     glEnableVertexArrayAttrib(m_RendererID, m_VertexBufferIndex);
                     glVertexArrayVertexBuffer(m_RendererID, m_VertexBufferIndex, vbo->m_RendererID, offset, (uint)layout.GetStride());

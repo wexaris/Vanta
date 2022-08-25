@@ -31,6 +31,9 @@ namespace Vanta {
 
         auto image = IO::Image(path);
 
+        if (!image)
+            return;
+
         m_Width = image.Width;
         m_Height = image.Height;
 
