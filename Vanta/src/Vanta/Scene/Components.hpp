@@ -65,7 +65,7 @@ namespace Vanta {
 
     struct SpriteComponent {
         Ref<Texture2D> Texture;
-        glm::vec4 Tint = { 0.f, 0.f, 0.f, 0.f };
+        glm::vec4 Tint = { 1.f, 1.f, 1.f, 1.f };
 
         SpriteComponent() = default;
         SpriteComponent(const SpriteComponent& other) = default;
