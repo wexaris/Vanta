@@ -280,8 +280,8 @@ namespace Vanta {
                 ImGui::Text(FMT("FPS: {}", Engine::Get().GetFPS()).c_str());
                 ImGui::Text(FMT("Draw Calls: {}", stats.DrawCalls).c_str());
                 ImGui::Text(FMT("Quads: {}", stats.QuadCount).c_str());
-                ImGui::Text(FMT("Vertices: {}", 0/*stats.GetVertexCount()*/).c_str());
-                ImGui::Text(FMT("Indices: {}", 0/*stats.GetIndexCount()*/).c_str());
+                ImGui::Text(FMT("Vertices: {}", stats.GetVertexCount()).c_str());
+                ImGui::Text(FMT("Indices: {}", stats.GetIndexCount()).c_str());
 
                 ImGui::End();
             }

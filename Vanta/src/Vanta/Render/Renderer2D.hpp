@@ -9,6 +9,8 @@ namespace Vanta {
         struct Statistics {
             usize DrawCalls = 0;
             usize QuadCount = 0;
+            usize GetVertexCount() const { return QuadCount * 4; }
+            usize GetIndexCount() const  { return QuadCount * 6; }
         };
 
         static void Init();
