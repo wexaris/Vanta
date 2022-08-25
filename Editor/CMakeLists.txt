@@ -4,7 +4,8 @@ project(Editor)
 set(${PROJECT_NAME}_SOURCE
     "src/Editor/Editor.cpp"
     "src/Editor/EditorLayer.cpp"
-    "src/Editor/Panel/Console.cpp"
+    "src/Editor/Window/Console.cpp"
+    "src/Editor/Window/SceneHierarchy.cpp"
 )
 
 if(WIN32)

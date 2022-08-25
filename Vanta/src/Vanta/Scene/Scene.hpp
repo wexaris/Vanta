@@ -38,7 +38,7 @@ namespace Vanta {
 
         template<typename T>
         void RemoveComponent(Entity entity) {
-            return m_Registry.remove<T>(entity);
+            m_Registry.remove<T>(entity);
         }
 
         template<typename Component>

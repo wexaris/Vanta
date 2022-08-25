@@ -1,5 +1,4 @@
 #include "Editor/EditorLayer.hpp"
-#include "Editor/Panel/Console.hpp"
 
 #define VANTA_CUSTOM_LOG_SINKS
 #include <Vanta/EntryPoint.hpp>

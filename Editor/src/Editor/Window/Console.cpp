@@ -1,4 +1,4 @@
-#include "Editor/Panel/Console.hpp"
+#include "Editor/Window/Console.hpp"
 
 #include <imgui.h>
 #include <imgui_stdlib.h>

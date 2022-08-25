@@ -13,6 +13,8 @@ namespace Vanta {
 
         void SetData(const void* data, usize size) override;
 
+        bool IsValid() const override { return m_RendererID != 0; }
+
         uint32 GetWidth() const override  { return m_Width; }
         uint32 GetHeight() const override { return m_Height; }
 

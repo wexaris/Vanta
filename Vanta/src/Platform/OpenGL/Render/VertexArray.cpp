@@ -64,28 +64,64 @@ namespace Vanta {
             GLenum type = OpenGLDataType(e.Type);
             GLboolean normalized = e.Normalized ? GL_TRUE : GL_FALSE;
            
-            if (e.Type == Shader::DataType::Mat3 || e.Type == Shader::DataType::Mat4) {
-                for (usize i = 0; i < itemCount; i++) {
-                    auto offset = i * itemCount * sizeof(float);
-                glEnableVertexArrayAttrib(m_VertexBufferIndex);
-
-                    glEnableVertexArrayAttrib(m_RendererID, m_VertexBufferIndex);
-                    glVertexArrayVertexBuffer(m_RendererID, m_VertexBufferIndex, vbo->m_RendererID, offset, (uint)layout.GetStride());
-                    glVertexArrayAttribFormat(m_RendererID, m_VertexBufferIndex, itemCount, type, normalized, 0);
-
-                    glVertexAttribDivisor(m_VertexBufferIndex, 1);
-                    glVertexArrayAttribBinding(m_RendererID, m_VertexBufferIndex, m_VertexBufferIndex);
-                }
-            }
-            else {
+            switch (e.Type) {
+            case Shader::DataType::Float:  [[fallthrough]];
+            case Shader::DataType::Float2: [[fallthrough]];
+            case Shader::DataType::Float3: [[fallthrough]];
+            case Shader::DataType::Float4: {
                 glEnableVertexArrayAttrib(m_RendererID, m_VertexBufferIndex);
                 glVertexArrayVertexBuffer(m_RendererID, m_VertexBufferIndex, vbo->m_RendererID, e.Offset, (uint)layout.GetStride());
                 glVertexArrayAttribFormat(m_RendererID, m_VertexBufferIndex, itemCount, type, normalized, 0);
 
                 glVertexArrayAttribBinding(m_RendererID, m_VertexBufferIndex, m_VertexBufferIndex);
+                m_VertexBufferIndex++;
+                break;
             }
 
-            m_VertexBufferIndex++;
+            case Shader::DataType::Int:   [[fallthrough]];
+            case Shader::DataType::Int2:  [[fallthrough]];
+            case Shader::DataType::Int3:  [[fallthrough]];
+            case Shader::DataType::Int4:  [[fallthrough]];
+            case Shader::DataType::UInt:  [[fallthrough]];
+            case Shader::DataType::UInt2: [[fallthrough]];
+            case Shader::DataType::UInt3: [[fallthrough]];
+            case Shader::DataType::UInt4: [[fallthrough]];
+            case Shader::DataType::Bool: {
+                glEnableVertexArrayAttrib(m_RendererID, m_VertexBufferIndex);
+                glVertexArrayVertexBuffer(m_RendererID, m_VertexBufferIndex, vbo->m_RendererID, e.Offset, (uint)layout.GetStride());
+                glVertexArrayAttribIFormat(m_RendererID, m_VertexBufferIndex, itemCount, type, 0);
+
+                glVertexArrayAttribBinding(m_RendererID, m_VertexBufferIndex, m_VertexBufferIndex);
+                m_VertexBufferIndex++;
+                break;
+            }
+
+            case Shader::DataType::Mat3: [[fallthrough]];
+            case Shader::DataType::Mat4: {
+                for (uint i = 0; i < itemCount; i++) {
+                    auto offset = i * itemCount * sizeof(float);
+
+                    glEnableVertexArrayAttrib(m_VertexBufferIndex, m_VertexBufferIndex);
+
+                    glEnableVertexArrayAttrib(m_RendererID, m_VertexBufferIndex);
+                    glVertexArrayVertexBuffer(m_RendererID, m_VertexBufferIndex, vbo->m_RendererID, offset, (GLsizei)layout.GetStride());
+                    glVertexArrayAttribFormat(m_RendererID, m_VertexBufferIndex, itemCount, type, normalized, 0);
+
+                    glVertexAttribDivisor(m_VertexBufferIndex, 1);
+                    glVertexArrayAttribBinding(m_RendererID, m_VertexBufferIndex, m_VertexBufferIndex);
+
+                    glEnableVertexArrayAttrib(m_RendererID, m_VertexBufferIndex);
+                    glVertexArrayAttribFormat(m_RendererID, m_VertexBufferIndex, itemCount, type, normalized, (GLuint)e.Offset);
+                    glVertexArrayBindingDivisor(m_RendererID, m_VertexBufferIndex, 1);
+                    m_VertexBufferIndex++;
+                }
+                break;
+            }
+
+            default:
+                VANTA_UNREACHABLE("Invalid shader data type!");
+                break;
+            }
         }
 
         m_VertexBuffers.push_back(vertexBuffer);

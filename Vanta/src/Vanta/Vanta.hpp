@@ -26,6 +26,7 @@
 #include <Vanta/Core/Fibers.hpp>
 
 // Util
+#include <Vanta/Util/Math.hpp>
 #include <Vanta/Util/Util.hpp>
 
 // Telemetry

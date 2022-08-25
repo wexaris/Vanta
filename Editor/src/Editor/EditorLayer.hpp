@@ -2,6 +2,9 @@
 #include <Vanta/Vanta.hpp>
 #include <Vanta/Render/Framebuffer.hpp>
 
+#include "Editor/Window/Console.hpp"
+#include "Editor/Window/SceneHierarchy.hpp"
+
 namespace Vanta {
     namespace Editor {
 
@@ -29,6 +32,8 @@ namespace Vanta {
 
             Ref<Scene> m_ActiveScene;
             Ref<Scene> m_EditorScene;
+
+            SceneHierarchy m_ScenePanel;
 
             PerspectiveCamera m_EditorCamera;
 

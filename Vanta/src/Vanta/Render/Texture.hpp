@@ -10,6 +10,8 @@ namespace Vanta {
 
         virtual void SetData(const void* data, usize size) = 0;
 
+        virtual bool IsValid() const = 0;
+
         virtual uint32 GetWidth() const = 0;
         virtual uint32 GetHeight() const = 0;
 

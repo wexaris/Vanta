@@ -40,11 +40,13 @@ namespace Vanta {
 
         template<typename T>
         bool HasComponent() {
+            VANTA_ASSERT(IsValid(), "Attempting to access invalid entity!");
             return m_Scene->HasComponent<T>(*this);
         }
 
         virtual void OnEvent(Event&) {}
 
+        entt::entity GetHandle() const { return m_Handle; }
         const std::string& GetName();
 
         operator bool() const         { return IsValid(); }

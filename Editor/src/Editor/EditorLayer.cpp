@@ -1,5 +1,4 @@
 #include "Editor/EditorLayer.hpp"
-#include "Editor/Panel/Console.hpp"
 
 #include <imgui.h>
 #include <ImGuizmo.h>
@@ -49,6 +48,8 @@ namespace Vanta {
             sprite_b.AddComponent<PhysicsComponent>();
             sprite_b.AddComponent<SpriteComponent>(glm::vec4{ 0.3, 0.3, 0.9, 1.0 });
             sprite_b.GetComponent<TransformComponent>().SetTransform({ 0, 2, 0 }, { 0, 0, 0 }, { 1, 1, 1 });
+
+            m_ScenePanel.SetContext(m_ActiveScene);
         }
 
         void EditorLayer::OnDetach() {
@@ -74,7 +75,9 @@ namespace Vanta {
             float camY = cos((float)Vanta::Duration::SinceLaunch().AsSecondsf()) * radius;
             auto view = glm::lookAt(glm::vec3(camX, camY, 5), glm::vec3(0, 0, 0), glm::vec3(0.f, 1.f, 0.f));
             m_EditorCamera.SetTransform(glm::inverse(view));
-            m_ActiveScene->GetActiveCameraEntity().GetComponent<TransformComponent>().SetTransform(glm::inverse(view));
+            if (auto camera = m_ActiveScene->GetActiveCameraEntity()) {
+                camera.GetComponent<TransformComponent>().SetTransform(glm::inverse(view));
+            }
 
             // Render
             Renderer2D::ResetStats();
@@ -265,7 +268,7 @@ namespace Vanta {
             }
 
             Console::Get().OnGUIRender();
-            //m_ScenePanel.OnGUIRender();
+            m_ScenePanel.OnGUIRender();
             //m_ContentBrowserPanel.OnGUIRender();
 
             {
@@ -442,7 +445,7 @@ namespace Vanta {
         bool EditorLayer::OnMouseButtonPress(MouseButtonPressEvent& e) {
             if (e.Button == Mouse::ButtonLeft) {
                 if (m_ViewportHovered && !ImGuizmo::IsOver() && Input::IsKeyPressed(Key::LeftAlt)) {
-                    //m_ScenePanel.SetSelected(m_Hovered);
+                    m_ScenePanel.SetSelected(m_HoveredEntity);
                 }
             }
 
@@ -519,7 +522,7 @@ namespace Vanta {
             //m_ActiveScene = Scene::Copy(m_EditorScene);
             m_ActiveScene->OnRuntimeBegin();
 
-            //m_ScenePanel.SetContext(m_ActiveScene);
+            m_ScenePanel.SetContext(m_ActiveScene);
         }
 
         void EditorLayer::OnSimulate() {
@@ -531,7 +534,7 @@ namespace Vanta {
             //m_ActiveScene = Scene::Copy(m_EditorScene);
             m_ActiveScene->OnSimulationBegin();
 
-            //m_ScenePanel.SetContext(m_ActiveScene);
+            m_ScenePanel.SetContext(m_ActiveScene);
         }
 
         void EditorLayer::OnStop() {
@@ -552,7 +555,7 @@ namespace Vanta {
 
             m_ActiveScene = m_EditorScene;
 
-            //m_ScenePanel.SetContext(m_ActiveScene);
+            m_ScenePanel.SetContext(m_ActiveScene);
         }
 
         void EditorLayer::OnDuplicateEntity() {
@@ -560,15 +563,16 @@ namespace Vanta {
                 return;
 
             VANTA_UNIMPLEMENTED();
-            //Entity selectedEntity = m_ScenePanel.GetSelected();
-            //if (selectedEntity)
-            //    m_EditorScene->DuplicateEntity(selectedEntity);
+            Entity selectedEntity = m_ScenePanel.GetSelected();
+            if (selectedEntity)
+                m_EditorScene->DuplicateEntity(selectedEntity);
         }
 
         void EditorLayer::NewScene() {
             m_ActiveScene = NewRef<Scene>();
             m_ActiveScene->OnViewportResize((uint)m_ViewportSize.x, (uint)m_ViewportSize.y);
-            //m_ScenePanel.SetContext(m_ActiveScene);
+
+            m_ScenePanel.SetContext(m_ActiveScene);
 
             //m_EditorScenePath = std::filesystem::path();
         }

@@ -87,7 +87,7 @@ namespace Vanta {
         CameraUpdate(double delta) : Delta(delta) {}
 
         void operator()(entt::entity, TransformComponent& tr, CameraComponent& camera) const {
-            camera.Camera->SetTransform(tr.GetTransform());
+            camera.Camera->SetTransform(tr.Transform);
         }
     };
 
@@ -96,7 +96,7 @@ namespace Vanta {
         Render(double delta) : Delta(delta) {}
 
         void operator()(entt::entity, TransformComponent& tr, SpriteComponent& sp) const {
-            sp.Render(Delta, tr.GetTransform());
+            sp.Render(Delta, tr.Transform);
         }
     };
 
