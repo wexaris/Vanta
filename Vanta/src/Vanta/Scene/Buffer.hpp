@@ -155,7 +155,7 @@ namespace Vanta {
             auto threads = Util::DistanceMin(beg, end, Fibers::THREAD_COUNT);
 
             if (threads > 1) {
-                fibers::barrier bar(threads);
+                fibers::barrier bar(threads + 1);
                 for (; beg != end; ++beg) {
                     Fibers::SpawnDetached([=, &bar]() {
                         entt::entity entity = *beg;

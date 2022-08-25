@@ -23,14 +23,15 @@ namespace Vanta {
         }
     }
 
-    Scene::Scene() : m_ViewportSize(Engine::Get().GetWindow().GetWidth(), Engine::Get().GetWindow().GetHeight()) {
+    Scene::Scene()
+        : m_ViewportSize(Engine::Get().GetWindow().GetWidth(), Engine::Get().GetWindow().GetHeight())
+    {
         TransformComponentBuffers::Setup(m_Registry);
     }
 
     Scene::~Scene() {}
 
     void Scene::OnRuntimeBegin() {
-        m_DataBuffer.Next();
         // Start Physics
     }
 
@@ -39,7 +40,6 @@ namespace Vanta {
     }
 
     void Scene::OnSimulationBegin() {
-        m_DataBuffer.Next();
         // Start Physics
     }
 
@@ -50,15 +50,18 @@ namespace Vanta {
     void Scene::OnUpdateRuntime(double delta) {
         OnScriptUpdate(delta);
         OnPhysicsUpdate(delta);
+        m_DataBuffer.Next();
         OnRender(delta, m_ActiveCamera.get());
     }
 
     void Scene::OnUpdateSimulation(double delta, Camera* camera) {
         OnPhysicsUpdate(delta);
+        m_DataBuffer.Next();
         OnRender(delta, camera);
     }
 
     void Scene::OnUpdateEditor(double delta, Camera* camera) {
+        m_DataBuffer.Next();
         OnRender(delta, camera);
     }
 
@@ -76,8 +79,7 @@ namespace Vanta {
     };
 
     void Scene::OnPhysicsUpdate(double delta) {
-        m_DataBuffer.View<PhysicsComponent>(m_Registry, ParalelDispatch<PhysicsUpdate>(delta));
-        m_DataBuffer.Next();
+        m_DataBuffer.View<PhysicsComponent>(m_Registry, LinearDispatch<PhysicsUpdate>(delta));
     }
 
     struct CameraUpdate {
