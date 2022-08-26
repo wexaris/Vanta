@@ -322,10 +322,22 @@ namespace Vanta {
             m_Data.Width, m_Data.Height, m_VideoMode->refreshRate);
     }
 
-    void WindowsWindow::SetIcon(const Path&) {
+    void WindowsWindow::SetIcon(const Path& path) {
         VANTA_PROFILE_FUNCTION();
-        // TODO: Load icon from path
-        glfwSetWindowIcon(m_Window, 0, nullptr);
-        VANTA_UNIMPLEMENTED();
+
+        if (path.empty()) {
+            glfwSetWindowIcon(m_Window, 0, nullptr);
+            return;
+        }
+
+        auto image = IO::Image(path);
+
+        GLFWimage icons[1];
+        icons[0].width = image.Width;
+        icons[0].height = image.Height;
+        icons[0].pixels = image.Data;
+
+        glfwSetWindowIcon(m_Window, sizeof(icons) / sizeof(GLFWimage), icons);
+        
     }
 }
