@@ -65,8 +65,7 @@ namespace Vanta {
                 (params.Width != m_ViewportSize.x || params.Height != m_ViewportSize.y))
             {
                 m_Framebuffer->Resize((uint32)m_ViewportSize.x, (uint32)m_ViewportSize.y);
-                //m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
-                m_EditorCamera.Resize((uint)m_ViewportSize.x, (uint)m_ViewportSize.y);
+                m_EditorCamera.OnViewportResize((uint)m_ViewportSize.x, (uint)m_ViewportSize.y);
                 m_ActiveScene->OnViewportResize((uint)m_ViewportSize.x, (uint)m_ViewportSize.y);
             }
 
@@ -94,12 +93,12 @@ namespace Vanta {
                 }
 
                 //m_EditorCamera.OnUpdate(delta);
-                m_ActiveScene->OnUpdateEditor(delta, &m_EditorCamera);
+                m_ActiveScene->OnUpdateEditor(delta, &m_EditorCamera.Camera);
                 break;
 
             case State::Simulate:
                 //m_EditorCamera.OnUpdate(delta);
-                m_ActiveScene->OnUpdateSimulation(delta, &m_EditorCamera);
+                m_ActiveScene->OnUpdateSimulation(delta, &m_EditorCamera.Camera);
                 break;
 
             case State::Play:

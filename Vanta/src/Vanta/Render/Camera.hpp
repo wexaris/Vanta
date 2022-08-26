@@ -8,7 +8,7 @@ namespace Vanta {
 
         virtual void Resize(uint width, uint height) = 0;
 
-        virtual void SetTransform(const glm::vec3& position, const glm::quat& rotation);
+        virtual void SetTransform(const glm::vec3& position, const glm::vec3& rotation);
         virtual void SetTransform(const glm::mat4& transform);
 
         virtual void SetView(const glm::mat4& transform);

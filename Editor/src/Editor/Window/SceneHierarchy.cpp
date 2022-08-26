@@ -246,9 +246,9 @@ namespace Vanta {
                 }
 
                 if (camera->GetProjectionType() == SceneCamera::Projection::Perspective) {
-                    float perspectiveVerticalFov = glm::degrees(camera->GetPerspectiveVerticalFOV());
-                    if (ImGui::DragFloat("Vertical FOV", &perspectiveVerticalFov))
-                        camera->SetPerspectiveVerticalFOV(glm::radians(perspectiveVerticalFov));
+                    float perspectiveFov = glm::degrees(camera->GetPerspectiveFOV());
+                    if (ImGui::DragFloat("Vertical FOV", &perspectiveFov))
+                        camera->SetPerspectiveFOV(glm::radians(perspectiveFov));
 
                     float perspectiveNear = camera->GetPerspectiveNearClip();
                     if (ImGui::DragFloat("Near", &perspectiveNear))

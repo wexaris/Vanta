@@ -2,6 +2,7 @@
 #include <Vanta/Vanta.hpp>
 #include <Vanta/Render/Framebuffer.hpp>
 
+#include "Editor/ViewportCameraController.hpp"
 #include "Editor/Window/Console.hpp"
 #include "Editor/Window/SceneHierarchy.hpp"
 
@@ -33,9 +34,9 @@ namespace Vanta {
             Ref<Scene> m_ActiveScene;
             Ref<Scene> m_EditorScene;
 
-            SceneHierarchy m_ScenePanel;
+            ViewportCameraController m_EditorCamera;
 
-            PerspectiveCamera m_EditorCamera;
+            SceneHierarchy m_ScenePanel;
 
             Ref<Framebuffer> m_Framebuffer;
             glm::vec2 m_ViewportSize = { 0.f, 0.f };

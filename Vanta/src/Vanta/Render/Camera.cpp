@@ -6,12 +6,11 @@ namespace Vanta {
     /// ///////////////////////////////////////////////////////////////////////
     /// Camera
 
-    void Camera::SetTransform(const glm::vec3& position, const glm::quat& rotation) {
+    void Camera::SetTransform(const glm::vec3& position, const glm::vec3& rotation) {
         VANTA_PROFILE_FUNCTION();
         glm::mat4 translate = glm::translate(glm::mat4(1.f), position);
-        glm::mat4 rotate = glm::mat4_cast(rotation);
-        //glm::mat4 scale = glm::scale(rotate, scale);
-        SetTransform(translate * rotate);
+        glm::mat4 rotatate = glm::mat4_cast(glm::quat(rotation));
+        SetTransform(translate * rotatate);
     }
 
     void Camera::SetTransform(const glm::mat4& transform) {

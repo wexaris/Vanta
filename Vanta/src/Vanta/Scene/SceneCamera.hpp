@@ -18,19 +18,42 @@ namespace Vanta {
 
         virtual void Resize(uint width, uint height) override;
 
-        void SetPerspectiveVerticalFOV(float verticalFov) { m_PerspectiveFOV = verticalFov; Recalculate(); }
-        float GetPerspectiveVerticalFOV() const           { return m_PerspectiveFOV; }
-        void SetPerspectiveNearClip(float nearClip)       { m_PerspectiveNear = nearClip; Recalculate(); }
-        float GetPerspectiveNearClip() const              { return m_PerspectiveNear; }
-        void SetPerspectiveFarClip(float farClip)         { m_PerspectiveFar = farClip; Recalculate(); }
-        float GetPerspectiveFarClip() const               { return m_PerspectiveFar; }
+        void SetPerspectiveFOV(float fov) {
+            m_PerspectiveFOV = fov;
+            if (m_Projection == Projection::Perspective)
+                Recalculate();
+        }
+        void SetPerspectiveNearClip(float nearClip) {
+            m_PerspectiveNear = nearClip;
+            if (m_Projection == Projection::Perspective)
+                Recalculate();
+        }
+        void SetPerspectiveFarClip(float farClip) {
+            m_PerspectiveFar = farClip;
+            if (m_Projection == Projection::Perspective)
+                Recalculate();
+        }
+        float GetPerspectiveFOV() const      { return m_PerspectiveFOV; }
+        float GetPerspectiveNearClip() const { return m_PerspectiveNear; }
+        float GetPerspectiveFarClip() const  { return m_PerspectiveFar; }
 
-        void SetOrthographicSize(float size)         { m_OrthographicSize = size; Recalculate(); }
-        float GetOrthographicSize() const            { return m_OrthographicSize; }
-        void SetOrthographicNearClip(float nearClip) { m_OrthographicNear = nearClip; Recalculate(); }
-        float GetOrthographicNearClip() const        { return m_OrthographicNear; }
-        void SetOrthographicFarClip(float farClip)   { m_OrthographicFar = farClip; Recalculate(); }
-        float GetOrthographicFarClip() const         { return m_OrthographicFar; }
+        void SetOrthographicSize(float size) { m_OrthographicSize = size;
+            if (m_Projection == Projection::Orthographic)
+            Recalculate();
+        }
+        void SetOrthographicNearClip(float nearClip) {
+            m_OrthographicNear = nearClip;
+            if (m_Projection == Projection::Orthographic)
+                Recalculate();
+        }
+        void SetOrthographicFarClip(float farClip) {
+            m_OrthographicFar = farClip;
+            if (m_Projection == Projection::Orthographic)
+                Recalculate();
+        }
+        float GetOrthographicSize() const     { return m_OrthographicSize; }
+        float GetOrthographicNearClip() const { return m_OrthographicNear; }
+        float GetOrthographicFarClip() const  { return m_OrthographicFar; }
 
         void SetProjectionType(Projection type) { m_Projection = type; Recalculate(); }
         Projection GetProjectionType() const    { return m_Projection; }
