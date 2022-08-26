@@ -26,7 +26,7 @@ namespace Vanta {
             m_OldestItemIndex = 0;
         }
 
-        void Console::OnGUIRender() {
+        void Console::OnGUIRender(bool allowInteraction) {
             if (!m_Open)
                 return;
 
@@ -49,10 +49,12 @@ namespace Vanta {
             // Reserve enough left-over height for 1 separator + 1 input text
             const float footer_height_to_reserve = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
             ImGui::BeginChild("ConsoleTextBox", ImVec2(0, -footer_height_to_reserve), false, ImGuiWindowFlags_HorizontalScrollbar);
-            if (ImGui::BeginPopupContextWindow()) {
-                if (ImGui::Selectable("Clear"))
-                    Clear();
-                ImGui::EndPopup();
+            if (allowInteraction) {
+                if (ImGui::BeginPopupContextWindow()) {
+                    if (ImGui::Selectable("Clear"))
+                        Clear();
+                    ImGui::EndPopup();
+                }
             }
 
             // Disable auto scroll if user has scrolled away from bottom

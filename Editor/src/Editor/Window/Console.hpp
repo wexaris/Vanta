@@ -14,7 +14,7 @@ namespace Vanta {
 
             void Clear();
 
-            void OnGUIRender();
+            void OnGUIRender(bool allowInteraction = true);
 
             static Console& Get() { return s_Instance; }
 

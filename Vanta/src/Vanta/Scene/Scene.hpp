@@ -58,7 +58,7 @@ namespace Vanta {
 
         void SetActiveCameraEntity(Entity& camera);
         Entity GetActiveCameraEntity();
-        Camera* GetActiveCamera() { return m_ActiveCamera.get(); }
+        Camera* GetActiveCamera();
 
         entt::registry& GetRegistry() { return m_Registry; }
 
@@ -66,8 +66,8 @@ namespace Vanta {
         using Buffers = Buffer<TransformComponentBuffers>;
 
         entt::registry m_Registry;
-        Ref<Camera> m_ActiveCamera = nullptr;
-        std::optional<entt::entity> m_ActiveCameraEntity = std::nullopt;
+        //Ref<Camera> m_ActiveCamera = nullptr;
+        entt::entity m_ActiveCameraEntity;
         glm::uvec2 m_ViewportSize;
 
         Buffers m_DataBuffer;
@@ -82,12 +82,11 @@ namespace Vanta {
         template<>
         void OnComponentAdded<CameraComponent>(entt::entity entity, CameraComponent& component) {
             // Set active camera, if one's not set
-            if (!m_ActiveCamera) {
-                m_ActiveCamera = component.Camera;
+            if (!GetActiveCamera()) {
                 m_ActiveCameraEntity = entity;
             }
 
-            component.Camera->Resize(m_ViewportSize.x, m_ViewportSize.y);
+            component.Camera.Resize(m_ViewportSize.x, m_ViewportSize.y);
         }
     };
 }

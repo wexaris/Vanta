@@ -98,7 +98,7 @@ namespace Vanta {
         VANTA_PROFILE_FUNCTION();
         if (m_BlockEvents) {
             ImGuiIO& io = ImGui::GetIO();
-            e.Handled |= e.IsCategory(Event::Category::Mouse) & io.WantCaptureMouse;
+            e.Handled |= e.IsCategory(Event::Category::Mouse);// & io.WantCaptureMouse;
             e.Handled |= e.IsCategory(Event::Category::Keyboard) & io.WantCaptureKeyboard;
         }
     }

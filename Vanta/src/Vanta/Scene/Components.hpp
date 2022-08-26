@@ -61,12 +61,12 @@ namespace Vanta {
     };
 
     struct CameraComponent {
-        Ref<SceneCamera> Camera = NewRef<SceneCamera>();
+        SceneCamera Camera = SceneCamera::Perspective();
         bool FixedAspectRatio = false;
 
         CameraComponent() = default;
         CameraComponent(const CameraComponent& other) = default;
-        CameraComponent(const Ref<SceneCamera>& camera, bool fixedAspectRatio = false)
+        CameraComponent(const SceneCamera& camera, bool fixedAspectRatio = false)
             : Camera(camera), FixedAspectRatio(fixedAspectRatio) {}
     };
 

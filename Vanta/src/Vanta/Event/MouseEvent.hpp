@@ -38,9 +38,10 @@ namespace Vanta {
     class MouseMoveEvent : public Event {
     public:
         const float PosX, PosY;
+        const float OffsetX, OffsetY;
 
-        MouseMoveEvent(float posX, float posY) :
-            PosX(posX), PosY(posY) {}
+        MouseMoveEvent(float posX, float posY, float offsetX, float offsetY) :
+            PosX(posX), PosY(posY), OffsetX(offsetX), OffsetY(offsetY) {}
 
         std::string ToString() const override {
             return FMT("MouseMove: {}, {}", PosX, PosY);

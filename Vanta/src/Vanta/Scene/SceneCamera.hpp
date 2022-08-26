@@ -10,8 +10,10 @@ namespace Vanta {
             Orthographic = 1
         };
 
-        SceneCamera();
         virtual ~SceneCamera() = default;
+
+        static SceneCamera Perspective(float fov = 45.f, float nearClip = 0.1f, float farClip = 1000.f);
+        static SceneCamera Orthographic(float size = 10.f, float nearClip = -1.f, float farClip = 1.f);
 
         void SetPerspective(float fov, float nearClip, float farClip);
         void SetOrthographic(float size, float nearClip, float farClip);
@@ -19,7 +21,7 @@ namespace Vanta {
         virtual void Resize(uint width, uint height) override;
 
         void SetPerspectiveFOV(float fov) {
-            m_PerspectiveFOV = fov;
+            m_PerspectiveFOV = glm::radians(fov);
             if (m_Projection == Projection::Perspective)
                 Recalculate();
         }
@@ -33,7 +35,7 @@ namespace Vanta {
             if (m_Projection == Projection::Perspective)
                 Recalculate();
         }
-        float GetPerspectiveFOV() const      { return m_PerspectiveFOV; }
+        float GetPerspectiveFOV() const      { return glm::degrees(m_PerspectiveFOV); }
         float GetPerspectiveNearClip() const { return m_PerspectiveNear; }
         float GetPerspectiveFarClip() const  { return m_PerspectiveFar; }
 
@@ -61,15 +63,17 @@ namespace Vanta {
     private:
         Projection m_Projection = Projection::Perspective;
 
-        float m_PerspectiveFOV = glm::radians(45.f);
-        float m_PerspectiveNear = 0.1f;
-        float m_PerspectiveFar = 1000.f;
+        float m_PerspectiveFOV;
+        float m_PerspectiveNear;
+        float m_PerspectiveFar;
 
-        float m_OrthographicSize = 10.f;
-        float m_OrthographicNear = -1.f;
-        float m_OrthographicFar = 1.0f;
+        float m_OrthographicSize;
+        float m_OrthographicNear;
+        float m_OrthographicFar;
 
         float m_AspectRatio = 16.f / 9.f;
+
+        SceneCamera();
 
         void Recalculate();
     };

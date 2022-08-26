@@ -15,7 +15,7 @@ namespace Vanta {
             m_SelectedEntity = Entity();
         }
 
-        void SceneHierarchy::OnGUIRender() {
+        void SceneHierarchy::OnGUIRender(bool allowInteraction) {
             ImGui::Begin("Scene");
             if (m_Context) {
                 m_Context->GetRegistry().each([&](auto entityHandle) {
@@ -26,11 +26,13 @@ namespace Vanta {
                 if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && ImGui::IsWindowHovered())
                     m_SelectedEntity = Entity();
 
-                if (ImGui::BeginPopupContextWindow(0, 1, false)) {
-                    if (ImGui::MenuItem("Create New Entity"))
-                        m_Context->CreateEntity("Entity");
+                if (allowInteraction) {
+                    if (ImGui::BeginPopupContextWindow(0, 1, false)) {
+                        if (ImGui::MenuItem("Create New Entity"))
+                            m_Context->CreateEntity("Entity");
 
-                    ImGui::EndPopup();
+                        ImGui::EndPopup();
+                    }
                 }
             }
             ImGui::End();
@@ -222,20 +224,20 @@ namespace Vanta {
             });
 
             DrawComponent<CameraComponent>("Camera", entity, [&](auto& component) {
-                SceneCamera* camera = component.Camera.get();
+                SceneCamera& camera = component.Camera;
 
                 if (ImGui::Button("Make Primary")) {
                     m_Context->SetActiveCameraEntity(entity);
                 }
 
                 const char* projectionTypeStrings[] = {"Perspective", "Orthographic"};
-                const char* currentProjectionTypeString = projectionTypeStrings[(int)camera->GetProjectionType()];
+                const char* currentProjectionTypeString = projectionTypeStrings[(int)camera.GetProjectionType()];
                 if (ImGui::BeginCombo("Projection", currentProjectionTypeString)) {
                     for (int i = 0; i < 2; i++) {
                         bool isSelected = currentProjectionTypeString == projectionTypeStrings[i];
                         if (ImGui::Selectable(projectionTypeStrings[i], isSelected)) {
                             currentProjectionTypeString = projectionTypeStrings[i];
-                            camera->SetProjectionType((SceneCamera::Projection)i);
+                            camera.SetProjectionType((SceneCamera::Projection)i);
                         }
 
                         if (isSelected)
@@ -245,32 +247,32 @@ namespace Vanta {
                     ImGui::EndCombo();
                 }
 
-                if (camera->GetProjectionType() == SceneCamera::Projection::Perspective) {
-                    float perspectiveFov = glm::degrees(camera->GetPerspectiveFOV());
+                if (camera.GetProjectionType() == SceneCamera::Projection::Perspective) {
+                    float perspectiveFov = glm::degrees(camera.GetPerspectiveFOV());
                     if (ImGui::DragFloat("Vertical FOV", &perspectiveFov))
-                        camera->SetPerspectiveFOV(glm::radians(perspectiveFov));
+                        camera.SetPerspectiveFOV(glm::radians(perspectiveFov));
 
-                    float perspectiveNear = camera->GetPerspectiveNearClip();
+                    float perspectiveNear = camera.GetPerspectiveNearClip();
                     if (ImGui::DragFloat("Near", &perspectiveNear))
-                        camera->SetPerspectiveNearClip(perspectiveNear);
+                        camera.SetPerspectiveNearClip(perspectiveNear);
 
-                    float perspectiveFar = camera->GetPerspectiveFarClip();
+                    float perspectiveFar = camera.GetPerspectiveFarClip();
                     if (ImGui::DragFloat("Far", &perspectiveFar))
-                        camera->SetPerspectiveFarClip(perspectiveFar);
+                        camera.SetPerspectiveFarClip(perspectiveFar);
                 }
 
-                if (camera->GetProjectionType() == SceneCamera::Projection::Orthographic) {
-                    float orthoSize = camera->GetOrthographicSize();
+                if (camera.GetProjectionType() == SceneCamera::Projection::Orthographic) {
+                    float orthoSize = camera.GetOrthographicSize();
                     if (ImGui::DragFloat("Size", &orthoSize))
-                        camera->SetOrthographicSize(orthoSize);
+                        camera.SetOrthographicSize(orthoSize);
 
-                    float orthoNear = camera->GetOrthographicNearClip();
+                    float orthoNear = camera.GetOrthographicNearClip();
                     if (ImGui::DragFloat("Near", &orthoNear))
-                        camera->SetOrthographicNearClip(orthoNear);
+                        camera.SetOrthographicNearClip(orthoNear);
 
-                    float orthoFar = camera->GetOrthographicFarClip();
+                    float orthoFar = camera.GetOrthographicFarClip();
                     if (ImGui::DragFloat("Far", &orthoFar))
-                        camera->SetOrthographicFarClip(orthoFar);
+                        camera.SetOrthographicFarClip(orthoFar);
 
                     ImGui::Checkbox("Fixed Aspect Ratio", &component.FixedAspectRatio);
                 }

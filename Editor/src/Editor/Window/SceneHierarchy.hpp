@@ -11,7 +11,7 @@ namespace Vanta {
 
             void SetContext(const Ref<Scene>& context);
 
-            void OnGUIRender();
+            void OnGUIRender(bool allowInteraction = true);
             
             void SetSelected(Entity entity) { m_SelectedEntity = entity;  }
             Entity GetSelected() const      { return m_SelectedEntity; }

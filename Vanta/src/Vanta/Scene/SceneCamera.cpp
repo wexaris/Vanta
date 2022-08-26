@@ -7,11 +7,24 @@ namespace Vanta {
         Recalculate();
     }
 
+    SceneCamera SceneCamera::Perspective(float fov, float nearClip, float farClip) {
+        SceneCamera camera;
+        camera.SetPerspective(fov, nearClip, farClip);
+        return camera;
+    }
+
+    SceneCamera SceneCamera::Orthographic(float size, float nearClip, float farClip) {
+        SceneCamera camera;
+        camera.SetOrthographic(size, nearClip, farClip);
+        return camera;
+    }
+
     void SceneCamera::SetPerspective(float fov, float nearClip, float farClip) {
         m_Projection = Projection::Perspective;
         m_PerspectiveFOV = fov;
         m_PerspectiveNear = nearClip;
         m_PerspectiveFar = farClip;
+        Recalculate();
     }
 
     void SceneCamera::SetOrthographic(float size, float nearClip, float farClip) {
@@ -19,6 +32,7 @@ namespace Vanta {
         m_OrthographicSize = size;
         m_OrthographicNear = nearClip;
         m_OrthographicFar = farClip;
+        Recalculate();
     }
 
     void SceneCamera::Resize(uint width, uint height) {
@@ -29,19 +43,19 @@ namespace Vanta {
 
     void SceneCamera::Recalculate() {
         switch (m_Projection) {
+        case Projection::Perspective: {
+            glm::mat4 projection = glm::perspective(m_PerspectiveFOV, m_AspectRatio, m_PerspectiveNear, m_PerspectiveFar);
+            SetProjection(projection);
+            break;
+        }
         case Projection::Orthographic: {
             float orthoTop    =  m_OrthographicSize * 0.5f;
             float orthoBottom = -m_OrthographicSize * 0.5f;
             float orthoLeft   = -m_OrthographicSize * m_AspectRatio * 0.5f;
             float orthoRight  =  m_OrthographicSize * m_AspectRatio * 0.5f;
 
-            m_ProjectionMatrix = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, m_OrthographicNear, m_OrthographicFar);
-            m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
-            break;
-        }
-        case Projection::Perspective: {
-            m_ProjectionMatrix = glm::perspective(m_PerspectiveFOV, m_AspectRatio, m_PerspectiveNear, m_PerspectiveFar);
-            m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+            glm::mat4 projection = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, m_OrthographicNear, m_OrthographicFar);
+            SetProjection(projection);
             break;
         }
         default:

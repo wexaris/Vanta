@@ -51,7 +51,7 @@ namespace Vanta {
         OnScriptUpdate(delta);
         OnPhysicsUpdate(delta);
         m_DataBuffer.Next();
-        OnRender(delta, m_ActiveCamera.get());
+        OnRender(delta, GetActiveCamera());
     }
 
     void Scene::OnUpdateSimulation(double delta, Camera* camera) {
@@ -87,7 +87,7 @@ namespace Vanta {
         CameraUpdate(double delta) : Delta(delta) {}
 
         void operator()(entt::entity, TransformComponent& tr, CameraComponent& camera) const {
-            camera.Camera->SetTransform(tr.Transform);
+            camera.Camera.SetTransform(tr.Transform);
         }
     };
 
@@ -135,8 +135,8 @@ namespace Vanta {
     void Scene::OnViewportResize(uint width, uint height) {
         m_ViewportSize.x = width;
         m_ViewportSize.y = height;
-        if (m_ActiveCamera) {
-            GetActiveCamera()->Resize(width, height);
+        if (auto camera = GetActiveCamera()) {
+            camera->Resize(width, height);
         }
     }
 
@@ -145,6 +145,11 @@ namespace Vanta {
     }
 
     Entity Scene::GetActiveCameraEntity() {
-        return m_ActiveCameraEntity ? Entity(m_ActiveCameraEntity.value(), this) : Entity();
+        return m_Registry.valid(m_ActiveCameraEntity) ? Entity(m_ActiveCameraEntity, this) : Entity();
+    }
+
+    Camera* Scene::GetActiveCamera() {
+        return m_Registry.valid(m_ActiveCameraEntity) ?
+            &m_Registry.get<CameraComponent>(m_ActiveCameraEntity).Camera : nullptr;
     }
 }

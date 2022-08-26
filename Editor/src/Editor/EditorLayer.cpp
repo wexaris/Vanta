@@ -35,6 +35,9 @@ namespace Vanta {
 
             //Renderer2D::SetLineWidth(4.f);
 
+            auto view = glm::lookAt(glm::vec3(0, 0, 5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+            m_EditorCamera.SetTransform(glm::inverse(view));
+
             auto camera_e = m_ActiveScene->CreateEntity("Camera");
             camera_e.AddComponent<CameraComponent>();
             camera_e.GetComponent<TransformComponent>().SetTransform({-5, 0, 0}, { 0, 0, 0 }, {1, 1, 1});
@@ -73,7 +76,7 @@ namespace Vanta {
             float camX = sin((float)Vanta::Duration::SinceLaunch().AsSecondsf()) * radius;
             float camY = cos((float)Vanta::Duration::SinceLaunch().AsSecondsf()) * radius;
             auto view = glm::lookAt(glm::vec3(camX, camY, 5), glm::vec3(0, 0, 0), glm::vec3(0.f, 1.f, 0.f));
-            m_EditorCamera.SetTransform(glm::inverse(view));
+            //m_EditorCamera.SetTransform(glm::inverse(view));
             if (auto camera = m_ActiveScene->GetActiveCameraEntity()) {
                 camera.GetComponent<TransformComponent>().SetTransform(glm::inverse(view));
             }
@@ -88,16 +91,14 @@ namespace Vanta {
 
             switch (m_State) {
             case State::Edit:
-                if (m_ViewportFocused) {
-                    //m_CameraController.OnUpdate(delta);
-                }
+                if (m_ViewportFocused)
+                    m_EditorCamera.OnUpdate(delta);
 
-                //m_EditorCamera.OnUpdate(delta);
                 m_ActiveScene->OnUpdateEditor(delta, &m_EditorCamera.Camera);
                 break;
 
             case State::Simulate:
-                //m_EditorCamera.OnUpdate(delta);
+                m_EditorCamera.OnUpdate(delta);
                 m_ActiveScene->OnUpdateSimulation(delta, &m_EditorCamera.Camera);
                 break;
 
@@ -266,9 +267,9 @@ namespace Vanta {
                 ImGui::EndMenuBar();
             }
 
-            Console::Get().OnGUIRender();
-            m_ScenePanel.OnGUIRender();
-            //m_ContentBrowserPanel.OnGUIRender();
+            Console::Get().OnGUIRender(!m_ViewportActive);
+            m_ScenePanel.OnGUIRender(!m_ViewportActive);
+            //m_ContentBrowserPanel.OnGUIRender(!m_ViewportActive);
 
             {
                 ImGui::Begin("Stats");
@@ -306,9 +307,10 @@ namespace Vanta {
                 m_ViewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
                 m_ViewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
 
-                m_ViewportFocused = ImGui::IsWindowFocused();
                 m_ViewportHovered = ImGui::IsWindowHovered();
-                Engine::Get().GetGUILayer()->BlockEvents(m_ViewportFocused || m_ViewportHovered);
+                m_ViewportFocused = ImGui::IsWindowFocused();
+                m_ViewportActive = m_EditorCamera.IsActive() || (m_ViewportFocused && m_ViewportHovered);
+                Engine::Get().GetGUILayer()->BlockEvents(!m_ViewportActive);
 
                 ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
                 m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
@@ -433,7 +435,7 @@ namespace Vanta {
 
         void EditorLayer::OnEvent(Event& e) {
             if (m_State == State::Edit) {
-                //m_CameraController.OnEvent(e);
+                m_EditorCamera.OnEvent(e);
             }
 
             EventDispatcher dispatcher(e);

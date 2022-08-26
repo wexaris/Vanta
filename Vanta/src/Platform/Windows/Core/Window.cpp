@@ -143,7 +143,22 @@ namespace Vanta {
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
             if (!data.EventCallback) return;
 
-            MouseMoveEvent event((float)xPos, (float)yPos);
+            static bool s_FirstPos = true;
+            static double s_PrevX = 0, s_PrevY = 0;
+
+            if (s_FirstPos) {
+                s_PrevX = xPos;
+                s_PrevY = yPos;
+                s_FirstPos = false;
+            }
+
+            float offsetX = (float)(xPos - s_PrevX);
+            float offsetY = (float)(s_PrevY - yPos);
+
+            s_PrevX = xPos;
+            s_PrevY = yPos;
+
+            MouseMoveEvent event((float)xPos, (float)yPos, offsetX, offsetY);
             data.EventCallback(event);
         });
 

@@ -4,69 +4,42 @@ namespace Vanta {
 
     class Camera {
     public:
+        Camera() = default;
         virtual ~Camera() = default;
 
-        virtual void Resize(uint width, uint height) = 0;
+        virtual void Resize(uint width, uint height);
 
-        virtual void SetTransform(const glm::vec3& position, const glm::vec3& rotation);
         virtual void SetTransform(const glm::mat4& transform);
+        virtual void SetTransform(const glm::vec3& position, const glm::vec3& rotation);
 
-        virtual void SetView(const glm::mat4& transform);
+        virtual void SetPosition(const glm::vec3& position);
+        virtual void SetRotation(const glm::vec3& rotation);
+
+        virtual void Move(const glm::vec3& offset);
+        virtual void Rotate(const glm::vec3& offset);
+
+        virtual const glm::mat4& GetTransform() const { return m_Transform; }
+        virtual const glm::vec3& GetPosition() const  { return m_Position; }
+        virtual glm::vec3 GetRotationDeg() const { return glm::degrees(m_Rotation); }
+        virtual glm::vec3 GetRotationRad() const { return m_Rotation; }
+
+        virtual void SetView(const glm::mat4& view);
+        virtual void SetProjection(const glm::mat4& proj);
 
         virtual const glm::mat4& GetView() const           { return m_ViewMatrix; }
         virtual const glm::mat4& GetProjection() const     { return m_ProjectionMatrix; }
         virtual const glm::mat4& GetViewProjection() const { return m_ViewProjectionMatrix; }
 
     protected:
-        glm::mat4 m_ViewMatrix = glm::mat4(1.f);
+        glm::vec3 m_Position = { 0.f, 0.f, 0.f };
+        glm::vec3 m_Rotation = { 0.f, 0.f, 0.f };
+        glm::mat4 m_Transform = glm::mat4(1.f);
+        bool m_NeedRecalculate = false;
+
+        glm::mat4 m_ViewMatrix = glm::inverse(m_Transform);
         glm::mat4 m_ProjectionMatrix = glm::mat4(1.f);
         glm::mat4 m_ViewProjectionMatrix = glm::mat4(1.f);
 
-        Camera() = default;
-    };
-
-    struct OrthographicCameraBounds {
-        float Left, Right, Top, Bottom;
-
-        OrthographicCameraBounds(float left, float right, float bottom, float top)
-            : Left(left), Right(right), Top(top), Bottom(bottom) {}
-
-        float GetWidth() const { return Right - Left; }
-        float GetHeight() const { return Top - Bottom; }
-    };
-
-    class OrthographicCamera : public Camera {
-    public:
-        OrthographicCamera();
-
-        void Resize(uint width, uint height) override;
-
-        void SetZoom(float zoom);
-        float GetZoom() const { return m_Zoom; }
-
-        const OrthographicCameraBounds& GetBounds() const { return m_Bounds; }
-
-    private:
-        float m_Zoom = 1.f;
-        float m_AspectRatio;
-        OrthographicCameraBounds m_Bounds;
-
-        void Recalculate();
-    };
-
-    class PerspectiveCamera : public Camera {
-    public:
-        PerspectiveCamera();
-
-        void Resize(uint width, uint height) override;
-
-        void SetFOV(float fow);
-        float GetFOV() const { return m_FOV; }
-
-    private:
-        float m_FOV = 45.f;
-        float m_AspectRatio;
-
-        void Recalculate();
+        virtual void RecalculateTransform();
     };
 }
