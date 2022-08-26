@@ -1,6 +1,6 @@
 #pragma once
-#include "Vanta/Render/Camera.hpp"
 #include "Vanta/Render/Texture.hpp"
+#include "Vanta/Scene/SceneCamera.hpp"
 #include "Vanta/Scene/Buffer.hpp"
 
 namespace Vanta {
@@ -42,7 +42,7 @@ namespace Vanta {
         void SetRotationDegrees(const glm::vec3& degrees) { Rotation = glm::radians(degrees); }
         void SetRotationRadians(const glm::vec3& radians) { Rotation = radians; }
 
-        const glm::vec3& GetRotationDegrees() const  { return glm::degrees(Rotation); }
+        glm::vec3 GetRotationDegrees() const         { return glm::degrees(Rotation); }
         const glm::vec3& GetRotationRadians() const  { return Rotation; }
 
     private:
@@ -61,19 +61,17 @@ namespace Vanta {
     };
 
     struct CameraComponent {
-    private:
-        using Camera_t = Camera; // Allow member variable to be called `Camera`
+        Ref<SceneCamera> Camera = NewRef<SceneCamera>();
+        bool FixedAspectRatio = false;
 
-    public:
-        Ref<Camera_t> Camera;
         CameraComponent() = default;
         CameraComponent(const CameraComponent& other) = default;
-        CameraComponent(const Ref<Camera_t>& camera)
-            : Camera(camera) {}
+        CameraComponent(const Ref<SceneCamera>& camera, bool fixedAspectRatio = false)
+            : Camera(camera), FixedAspectRatio(fixedAspectRatio) {}
     };
 
     struct SpriteComponent {
-        Ref<Texture2D> Texture;
+        Ref<Texture2D> Texture = nullptr;
         glm::vec4 Color = { 1.f, 1.f, 1.f, 1.f };
 
         SpriteComponent() = default;
@@ -86,7 +84,7 @@ namespace Vanta {
         void Render(double delta, const glm::mat4& transform);
     };
 
-    using AllComponents = ComponentList<TransformComponent, PhysicsComponent, CameraComponent, SpriteComponent>;
+    using AllComponents = ComponentList<IDComponent, TransformComponent, PhysicsComponent, CameraComponent, SpriteComponent>;
 
 
     /// ///////////////// BUFFERED COMPONENTS /////////////////////////////////

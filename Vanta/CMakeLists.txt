@@ -41,6 +41,7 @@ set(${PROJECT_NAME}_SOURCE
     "src/Vanta/Render/Texture.cpp"
     "src/Vanta/Render/VertexArray.cpp"
     "src/Vanta/Scene/Components.cpp"
+    "src/Vanta/Scene/SceneCamera.cpp"
     "src/Vanta/Scene/Entity.cpp"
     "src/Vanta/Scene/Scene.cpp"
     "src/Vanta/Util/Math.cpp"

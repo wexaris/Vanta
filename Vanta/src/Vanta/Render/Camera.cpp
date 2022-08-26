@@ -2,9 +2,6 @@
 #include "Vanta/Core/Engine.hpp"
 #include "Vanta/Render/Camera.hpp"
 
-#include <glm/gtc/quaternion.hpp>
-#include <glm/gtx/quaternion.hpp>
-
 namespace Vanta {
     /// ///////////////////////////////////////////////////////////////////////
     /// Camera
@@ -13,7 +10,7 @@ namespace Vanta {
         VANTA_PROFILE_FUNCTION();
         glm::mat4 translate = glm::translate(glm::mat4(1.f), position);
         glm::mat4 rotate = glm::mat4_cast(rotation);
-        //auto scale = glm::scale(rotate, scale);
+        //glm::mat4 scale = glm::scale(rotate, scale);
         SetTransform(translate * rotate);
     }
 

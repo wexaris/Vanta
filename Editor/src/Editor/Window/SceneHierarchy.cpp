@@ -222,20 +222,20 @@ namespace Vanta {
             });
 
             DrawComponent<CameraComponent>("Camera", entity, [&](auto& component) {
-                //Camera& camera = component.Camera;
+                SceneCamera* camera = component.Camera.get();
 
                 if (ImGui::Button("Make Primary")) {
                     m_Context->SetActiveCameraEntity(entity);
                 }
 
-                /*const char* projectionTypeStrings[] = {"Perspective", "Orthographic"};
-                const char* currentProjectionTypeString = projectionTypeStrings[(int)camera.GetProjectionType()];
+                const char* projectionTypeStrings[] = {"Perspective", "Orthographic"};
+                const char* currentProjectionTypeString = projectionTypeStrings[(int)camera->GetProjectionType()];
                 if (ImGui::BeginCombo("Projection", currentProjectionTypeString)) {
                     for (int i = 0; i < 2; i++) {
                         bool isSelected = currentProjectionTypeString == projectionTypeStrings[i];
                         if (ImGui::Selectable(projectionTypeStrings[i], isSelected)) {
                             currentProjectionTypeString = projectionTypeStrings[i];
-                            camera.SetProjectionType((SceneCamera::ProjectionType)i);
+                            camera->SetProjectionType((SceneCamera::Projection)i);
                         }
 
                         if (isSelected)
@@ -245,40 +245,38 @@ namespace Vanta {
                     ImGui::EndCombo();
                 }
 
-                if (camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
-                {
-                    float perspectiveVerticalFov = glm::degrees(camera.GetPerspectiveVerticalFOV());
+                if (camera->GetProjectionType() == SceneCamera::Projection::Perspective) {
+                    float perspectiveVerticalFov = glm::degrees(camera->GetPerspectiveVerticalFOV());
                     if (ImGui::DragFloat("Vertical FOV", &perspectiveVerticalFov))
-                        camera.SetPerspectiveVerticalFOV(glm::radians(perspectiveVerticalFov));
+                        camera->SetPerspectiveVerticalFOV(glm::radians(perspectiveVerticalFov));
 
-                    float perspectiveNear = camera.GetPerspectiveNearClip();
+                    float perspectiveNear = camera->GetPerspectiveNearClip();
                     if (ImGui::DragFloat("Near", &perspectiveNear))
-                        camera.SetPerspectiveNearClip(perspectiveNear);
+                        camera->SetPerspectiveNearClip(perspectiveNear);
 
-                    float perspectiveFar = camera.GetPerspectiveFarClip();
+                    float perspectiveFar = camera->GetPerspectiveFarClip();
                     if (ImGui::DragFloat("Far", &perspectiveFar))
-                        camera.SetPerspectiveFarClip(perspectiveFar);
+                        camera->SetPerspectiveFarClip(perspectiveFar);
                 }
 
-                if (camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic)
-                {
-                    float orthoSize = camera.GetOrthographicSize();
+                if (camera->GetProjectionType() == SceneCamera::Projection::Orthographic) {
+                    float orthoSize = camera->GetOrthographicSize();
                     if (ImGui::DragFloat("Size", &orthoSize))
-                        camera.SetOrthographicSize(orthoSize);
+                        camera->SetOrthographicSize(orthoSize);
 
-                    float orthoNear = camera.GetOrthographicNearClip();
+                    float orthoNear = camera->GetOrthographicNearClip();
                     if (ImGui::DragFloat("Near", &orthoNear))
-                        camera.SetOrthographicNearClip(orthoNear);
+                        camera->SetOrthographicNearClip(orthoNear);
 
-                    float orthoFar = camera.GetOrthographicFarClip();
+                    float orthoFar = camera->GetOrthographicFarClip();
                     if (ImGui::DragFloat("Far", &orthoFar))
-                        camera.SetOrthographicFarClip(orthoFar);
+                        camera->SetOrthographicFarClip(orthoFar);
 
                     ImGui::Checkbox("Fixed Aspect Ratio", &component.FixedAspectRatio);
-                }*/
+                }
             });
 
-            DrawComponent<PhysicsComponent>("Physics", entity, [](auto& component) {
+            DrawComponent<PhysicsComponent>("Physics", entity, [](auto& /*component*/) {
                 
             });
 

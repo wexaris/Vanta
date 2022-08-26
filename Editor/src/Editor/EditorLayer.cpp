@@ -36,7 +36,7 @@ namespace Vanta {
             //Renderer2D::SetLineWidth(4.f);
 
             auto camera_e = m_ActiveScene->CreateEntity("Camera");
-            camera_e.AddComponent<CameraComponent>(NewRef<PerspectiveCamera>());
+            camera_e.AddComponent<CameraComponent>();
             camera_e.GetComponent<TransformComponent>().SetTransform({-5, 0, 0}, { 0, 0, 0 }, {1, 1, 1});
 
             auto sprite_e = m_ActiveScene->CreateEntity("Sprite_1");

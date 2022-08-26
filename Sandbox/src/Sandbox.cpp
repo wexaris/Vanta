@@ -6,7 +6,7 @@ public:
     TestLayer() : Layer("TestLayer") {
         VANTA_PROFILE_FUNCTION();
         auto camera_e = m_ActiveScene.CreateEntity("Camera");
-        camera_e.AddComponent<Vanta::CameraComponent>(Vanta::NewRef<Vanta::PerspectiveCamera>());
+        camera_e.AddComponent<Vanta::CameraComponent>();
 
         auto sprite_e = m_ActiveScene.CreateEntity("Sprite");
         sprite_e.AddComponent<Vanta::PhysicsComponent>();

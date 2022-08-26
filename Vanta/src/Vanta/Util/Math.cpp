@@ -31,7 +31,7 @@ namespace Vanta {
             position = glm::vec3(LocalMatrix[3]);
             LocalMatrix[3] = glm::vec4(0, 0, 0, LocalMatrix[3].w);
 
-            glm::vec3 Row[3], Pdum3;
+            glm::vec3 Row[3];
 
             // Now get scale and shear.
             for (glm::length_t i = 0; i < 3; ++i)
@@ -50,7 +50,7 @@ namespace Vanta {
             // Check for a coordinate system flip.  If the determinant
             // is -1, then negate the matrix and the scaling factors.
 #if 0
-            Pdum3 = cross(Row[1], Row[2]); // v3Cross(row[1], row[2], Pdum3);
+            glm::vec3 Pdum3 = cross(Row[1], Row[2]); // v3Cross(row[1], row[2], Pdum3);
             if (dot(Row[0], Pdum3) < 0)
             {
                 for (length_t i = 0; i < 3; i++)
