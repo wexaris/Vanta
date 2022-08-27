@@ -49,12 +49,12 @@ namespace Vanta {
 
             auto sprite_2 = m_ActiveScene->CreateEntity("Sprite_2");
             sprite_2.AddComponent<PhysicsComponent>();
-            sprite_2.AddComponent<SpriteComponent>(glm::vec4{ 0.3, 0.3, 0.9, 1.0 });
+            sprite_2.AddComponent<SpriteComponent>(glm::vec4{ 0.3, 0.3, 0.8, 1.0 });
             sprite_2.GetComponent<TransformComponent>().SetTransform({ 0, 2, 0 }, { 0, 0, 0 }, { 1, 1, 1 });
 
             auto sprite_3 = m_ActiveScene->CreateEntity("Sprite_3");
             sprite_3.AddComponent<PhysicsComponent>();
-            sprite_3.AddComponent<SpriteComponent>(glm::vec4{ 0.3, 0.3, 0.9, 1.0 });
+            sprite_3.AddComponent<SpriteComponent>(glm::vec4{ 0.2, 0.8, 0.3, 1.0 });
             sprite_3.GetComponent<TransformComponent>().SetTransform({ 1, 0, 1 }, { 90, 0, 0 }, { 1, 1, 1 });
 
             m_ScenePanel.SetContext(m_ActiveScene);
