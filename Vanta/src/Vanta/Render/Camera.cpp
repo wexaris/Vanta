@@ -4,8 +4,6 @@
 
 namespace Vanta {
 
-    void Camera::Resize(uint, uint) {}
-
     void Camera::SetTransform(const glm::mat4& transform) {
         VANTA_PROFILE_FUNCTION();
         m_Transform = transform;
