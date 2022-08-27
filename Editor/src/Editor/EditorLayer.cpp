@@ -478,8 +478,10 @@ namespace Vanta {
 
         bool EditorLayer::OnMouseButtonPress(MouseButtonPressEvent& e) {
             if (e.Button == Mouse::ButtonLeft) {
-                if (m_ViewportHovered && !ImGuizmo::IsOver()) {
-                    m_ScenePanel.SetSelected(m_HoveredEntity);
+                if (m_State == State::Edit || m_State == State::Simulate) {
+                    if (m_ViewportHovered && !ImGuizmo::IsOver()) {
+                        m_ScenePanel.SetSelected(m_HoveredEntity);
+                    }
                 }
             }
 
