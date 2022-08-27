@@ -67,11 +67,13 @@ namespace Vanta {
         }
 
         bool ViewportCameraController::OnMouseScroll(MouseScrollEvent& e) {
-            m_Zoom -= e.OffsetY * 0.1f;
-            m_Zoom = std::clamp(m_Zoom, MIN_ZOOM, MAX_ZOOM);
-            Camera.SetPerspectiveFOV(MAX_FOV * m_Zoom);
-            m_MovementSpeed = m_Zoom * 7.5f;
-            m_RotationSpeed = m_Zoom * 0.2f;
+            if (m_IsActive) {
+                m_Zoom -= e.OffsetY * 0.1f;
+                m_Zoom = std::clamp(m_Zoom, MIN_ZOOM, MAX_ZOOM);
+                Camera.SetPerspectiveFOV(MAX_FOV * m_Zoom);
+                m_MovementSpeed = m_Zoom * 10.f;
+                m_RotationSpeed = m_Zoom * 0.2f;
+            }
             return false;
         }
     }

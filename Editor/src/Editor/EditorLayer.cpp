@@ -329,12 +329,12 @@ namespace Vanta {
                 m_ViewportActive = m_EditorCamera.IsActive() || (m_ViewportFocused && m_ViewportHovered);
                 Engine::Get().GetGUILayer()->BlockEvents(!m_ViewportActive);
 
-                auto& window = Engine::Get().GetWindow();
-                if (m_EditorCamera.IsActive() && window.GetCursorMode() != CursorMode::Disabled) {
-                    window.SetCursorMode(CursorMode::Disabled);
-                }
-                else if (!m_EditorCamera.IsActive() && window.GetCursorMode() != CursorMode::Normal) {
-                    window.SetCursorMode(CursorMode::Normal);
+                if (m_State == State::Edit || m_State == State::Simulate) {
+                    auto& window = Engine::Get().GetWindow();
+                    if (m_EditorCamera.IsActive() && window.GetCursorMode() != CursorMode::Disabled)
+                        window.SetCursorMode(CursorMode::Disabled);
+                    else if (!m_EditorCamera.IsActive() && window.GetCursorMode() != CursorMode::Normal)
+                        window.SetCursorMode(CursorMode::Normal);
                 }
 
                 ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
@@ -463,7 +463,7 @@ namespace Vanta {
         void EditorLayer::OnEvent(Event& e) {
             VANTA_PROFILE_FUNCTION();
 
-            if (m_State == State::Edit) {
+            if (m_State == State::Edit || m_State == State::Simulate) {
                 m_EditorCamera.OnEvent(e);
             }
 
@@ -491,6 +491,11 @@ namespace Vanta {
             bool shift = Input::IsKeyPressed(Key::LeftShift) || Input::IsKeyPressed(Key::RightShift);
 
             switch (e.Key) {
+            case Key::Escape:
+                if (m_State != State::Edit)
+                    OnStop();
+                break;
+
             case Key::N:
                 if (control)
                     NewScene();
