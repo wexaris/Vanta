@@ -79,7 +79,7 @@ namespace Vanta {
     };
 
     void Scene::OnPhysicsUpdate(double delta) {
-        m_DataBuffer.View<PhysicsComponent>(m_Registry, LinearDispatch<PhysicsUpdate>(delta));
+        m_DataBuffer.View<PhysicsComponent>(m_Registry, ParalelDispatch<PhysicsUpdate>(delta));
     }
 
     struct CameraUpdate {

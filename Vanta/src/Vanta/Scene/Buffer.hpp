@@ -136,6 +136,8 @@ namespace Vanta {
     template<typename Functor>
     class ParalelDispatch {
     public:
+        static constexpr usize CHUNK_SIZE = 8;
+
         template<typename... Args>
         ParalelDispatch(Args&&... args)
             : m_Functor(std::forward<Args>(args)...) {}
@@ -152,26 +154,37 @@ namespace Vanta {
                 m_Functor(args...);
             };
 
-            auto threads = Util::DistanceMin(beg, end, Fibers::THREAD_COUNT);
+            usize taskCount = (usize)std::ceil((float)view.size_hint() / CHUNK_SIZE);
 
-            if (threads > 1) {
-                fibers::barrier bar(threads + 1);
-                for (; beg != end; ++beg) {
-                    Fibers::SpawnDetached([=, &bar]() {
-                        entt::entity entity = *beg;
-                        auto components = view.template get<Components...>(entity);
-                        auto args = std::tuple_cat(std::make_tuple(entity), components);
-                        std::apply(func, args);
+            if (taskCount > 1) {
+                Fibers::Begin(taskCount);
+                fibers::barrier bar(taskCount + 1); // + 1 for this spawner thread
+
+                for (usize i = 0; i < taskCount; i++) {
+                    Fibers::Spawn([&](auto beg) {
+                        for (usize i = 0; i < CHUNK_SIZE && beg != end; ++i, ++beg) {
+                            auto entity = *beg;
+                            auto components = view.template get<Components...>(entity);
+                            auto args = std::tuple_cat(std::make_tuple(entity), components);
+                            std::apply(func, args);
+                        }
                         bar.wait();
-                    });
+                    }, beg);
+
+                    for (usize i = 0; i < CHUNK_SIZE && beg != end; ++i)
+                        ++beg;
                 }
+
                 bar.wait();
+                Fibers::End();
             }
             else {
-                entt::entity entity = *beg;
-                auto components = view.template get<Components...>(entity);
-                auto args = std::tuple_cat(std::make_tuple(entity), components);
-                std::apply(func, args);
+                for (; beg != end; ++beg) {
+                    auto entity = *beg;
+                    auto components = view.template get<Components...>(entity);
+                    auto args = std::tuple_cat(std::make_tuple(entity), components);
+                    std::apply(func, args);
+                }
             }
         }
 

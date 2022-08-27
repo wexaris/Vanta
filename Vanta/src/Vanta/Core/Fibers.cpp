@@ -6,6 +6,7 @@ namespace Vanta {
     uint Fibers::THREAD_COUNT = std::thread::hardware_concurrency();
 
     boost::thread_group Fibers::s_Workers;
+    std::stack<Fibers::FiberList> Fibers::s_JobStack;
 
     static fibers::mutex s_StopMutex;
     static fibers::condition_variable s_StopCondition;
@@ -37,5 +38,19 @@ namespace Vanta {
         }
 
         s_Workers.join_all();
+    }
+
+    void Fibers::Begin(usize jobCount) {
+        VANTA_PROFILE_FUNCTION();
+        auto fibers = FiberList();
+        fibers.reserve(jobCount);
+        s_JobStack.push(std::move(fibers));
+    }
+
+    void Fibers::End() {
+        VANTA_PROFILE_FUNCTION();
+        for (auto& fiber : s_JobStack.top())
+            fiber.join();
+        s_JobStack.pop();
     }
 }
