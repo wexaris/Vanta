@@ -72,6 +72,7 @@ namespace Vanta {
 
     struct SpriteComponent {
         Ref<Texture2D> Texture = nullptr;
+        float TilingFactor = 1.f;
         glm::vec4 Color = { 1.f, 1.f, 1.f, 1.f };
 
         SpriteComponent() = default;
@@ -80,8 +81,6 @@ namespace Vanta {
             : SpriteComponent(nullptr, color) {}
         SpriteComponent(const Ref<Texture2D>& texture, const glm::vec4& tint)
             : Texture(texture), Color(tint) {}
-
-        void Render(double delta, const glm::mat4& transform);
     };
 
     using AllComponents = ComponentList<IDComponent, TransformComponent, PhysicsComponent, CameraComponent, SpriteComponent>;

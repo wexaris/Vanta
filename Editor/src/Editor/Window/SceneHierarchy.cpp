@@ -294,8 +294,7 @@ namespace Vanta {
                     ImGui::EndDragDropTarget();
                 }
 
-                // TODO: Add tiling factor to sprite
-                //ImGui::DragFloat("Tiling Factor", &component.TilingFactor, 0.1f, 0.0f, 100.0f);
+                ImGui::DragFloat("Tiling Factor", &component.TilingFactor, 0.1f, 0.0f, 100.0f);
             });
         }
 

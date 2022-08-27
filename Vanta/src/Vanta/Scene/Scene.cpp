@@ -106,8 +106,8 @@ namespace Vanta {
         double Delta;
         Render(double delta) : Delta(delta) {}
 
-        void operator()(entt::entity, TransformComponent& tr, SpriteComponent& sp) const {
-            sp.Render(Delta, tr.Transform);
+        void operator()(entt::entity entity, TransformComponent& tr, SpriteComponent& sp) const {
+            Renderer2D::DrawSprite(tr.Transform, sp, (int)entity);
         }
     };
 

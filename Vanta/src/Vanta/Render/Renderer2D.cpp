@@ -2,6 +2,7 @@
 #include "Vanta/Render/RenderCommand.hpp"
 #include "Vanta/Render/Renderer2D.hpp"
 #include "Vanta/Render/VertexArray.hpp"
+#include "Vanta/Scene/Components.hpp"
 
 namespace Vanta {
 
@@ -26,7 +27,10 @@ namespace Vanta {
         glm::vec4 Color;
         uint TexID;
         glm::vec2 TexCoord;
-        //float TilingFactor;
+        float TilingFactor;
+
+        // Editor data
+        int EntityID = -1;
     };
 
     struct RenderData {
@@ -61,10 +65,13 @@ namespace Vanta {
 
         { // Create vertex buffer
             s_Data.VBO = VertexBuffer::Create(s_Data.MaxVerts * sizeof(VertexData));
-            s_Data.VBO->SetLayout({ { Shader::DataType::Float3, "aPosition" },
-                                   { Shader::DataType::Float4, "aColor" },
-                                   { Shader::DataType::UInt, "aTexID" },
-                                   { Shader::DataType::Float2, "aTexCoords" }, });
+            s_Data.VBO->SetLayout({
+                { Shader::DataType::Float3, "aPosition" },
+                { Shader::DataType::Float4, "aColor" },
+                { Shader::DataType::UInt,   "aTexID" },
+                { Shader::DataType::Float2, "aTexCoords" },
+                { Shader::DataType::Float,  "aTilingFactor" },
+                { Shader::DataType::Int,    "aEntityID" }, });
             s_Data.VAO->AddVertexBuffer(s_Data.VBO);
         }
 
@@ -173,14 +180,14 @@ namespace Vanta {
         DrawQuad(transform, color);
     }
 
-    void Renderer2D::DrawQuad(const glm::vec2& pos, const glm::vec2& size, const Ref<Texture2D>& tex, const glm::vec4& tint) {
-        DrawQuad(glm::vec3(pos.x, pos.y, 0.f), size, tex, tint);
+    void Renderer2D::DrawQuad(const glm::vec2& pos, const glm::vec2& size, const Ref<Texture2D>& tex, float tilingFactor, const glm::vec4& tint) {
+        DrawQuad(glm::vec3(pos.x, pos.y, 0.f), size, tex, tilingFactor, tint);
     }
 
-    void Renderer2D::DrawQuad(const glm::vec3& pos, const glm::vec2& size, const Ref<Texture2D>& tex, const glm::vec4& tint) {
+    void Renderer2D::DrawQuad(const glm::vec3& pos, const glm::vec2& size, const Ref<Texture2D>& tex, float tilingFactor, const glm::vec4& tint) {
         VANTA_PROFILE_RENDER_FUNCTION();
         glm::mat4 transform = CalcTransformMatrix(pos, size);
-        DrawQuad(transform, tex, tint);
+        DrawQuad(transform, tex, tilingFactor, tint);
     }
 
     void Renderer2D::DrawQuad(const glm::vec2& pos, const glm::vec2& size, float rot_deg, const glm::vec4& color) {
@@ -193,17 +200,17 @@ namespace Vanta {
         DrawQuad(transform, color);
     }
 
-    void Renderer2D::DrawQuad(const glm::vec2& pos, const glm::vec2& size, float rot_deg, const Ref<Texture2D>& tex, const glm::vec4& tint) {
-        DrawQuad(glm::vec3(pos.x, pos.y, 0.f), size, rot_deg, tex, tint);
+    void Renderer2D::DrawQuad(const glm::vec2& pos, const glm::vec2& size, float rot_deg, const Ref<Texture2D>& tex, float tilingFactor, const glm::vec4& tint) {
+        DrawQuad(glm::vec3(pos.x, pos.y, 0.f), size, rot_deg, tex, tilingFactor, tint);
     }
 
-    void Renderer2D::DrawQuad(const glm::vec3& pos, const glm::vec2& size, float rot_deg, const Ref<Texture2D>& tex, const glm::vec4& tint) {
+    void Renderer2D::DrawQuad(const glm::vec3& pos, const glm::vec2& size, float rot_deg, const Ref<Texture2D>& tex, float tilingFactor, const glm::vec4& tint) {
         VANTA_PROFILE_RENDER_FUNCTION();
         glm::mat4 transform = CalcTransformMatrix(pos, size, rot_deg);
-        DrawQuad(transform, tex, tint);
+        DrawQuad(transform, tex, tilingFactor, tint);
     }
 
-    void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color) {
+    void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, int entityID) {
         VANTA_PROFILE_RENDER_FUNCTION();
 
         if (s_Data.QuadIndexCount >= s_Data.MaxIndices)
@@ -214,6 +221,8 @@ namespace Vanta {
             s_Data.VertexDataBufferPtr->Color = color;
             s_Data.VertexDataBufferPtr->TexID = 0;
             s_Data.VertexDataBufferPtr->TexCoord = Quad::TEX_COORDS[i];
+            s_Data.VertexDataBufferPtr->TilingFactor = 1;
+            s_Data.VertexDataBufferPtr->EntityID = entityID;
             s_Data.VertexDataBufferPtr++;
         }
         s_Data.QuadIndexCount += 6;
@@ -221,7 +230,7 @@ namespace Vanta {
         s_Data.Stats.QuadCount++;
     }
 
-    void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& tex, const glm::vec4& tint) {
+    void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& tex, float tilingFactor, const glm::vec4& tint, int entityID) {
         VANTA_PROFILE_RENDER_FUNCTION();
 
         if (s_Data.QuadIndexCount >= s_Data.MaxIndices)
@@ -234,11 +243,21 @@ namespace Vanta {
             s_Data.VertexDataBufferPtr->Color = tint;
             s_Data.VertexDataBufferPtr->TexID = texID;
             s_Data.VertexDataBufferPtr->TexCoord = Quad::TEX_COORDS[i];
+            s_Data.VertexDataBufferPtr->TilingFactor = tilingFactor;
+            s_Data.VertexDataBufferPtr->EntityID = entityID;
             s_Data.VertexDataBufferPtr++;
         }
         s_Data.QuadIndexCount += 6;
 
         s_Data.Stats.QuadCount++;
+    }
+
+    void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteComponent& sprite, int entityID) {
+        if (sprite.Texture)
+            DrawQuad(transform, sprite.Texture, sprite.TilingFactor, sprite.Color, entityID);
+        else
+            DrawQuad(transform, sprite.Color, entityID);
+        
     }
 
     uint Renderer2D::BatchTexture(const Ref<Texture2D>& tex) {
@@ -251,9 +270,11 @@ namespace Vanta {
                 return i;
             }
         }
-        // Make sure there is a free slot
+
+        // Make sure there is a free slot, or start a new batch
         if (s_Data.TextureSlotIdx >= s_Data.MaxTextureSlots)
             NextBatch();
+
         // Insert texture into next slot
         s_Data.TextureSlots[s_Data.TextureSlotIdx] = tex;
         return s_Data.TextureSlotIdx++;
