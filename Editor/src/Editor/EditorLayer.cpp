@@ -35,29 +35,33 @@ namespace Vanta {
 
             //Renderer2D::SetLineWidth(4.f);
 
-            auto view = glm::lookAt(glm::vec3(0, 0, 5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-            m_EditorCamera.SetTransform(glm::inverse(view));
+            {
+                VANTA_PROFILE_SCOPE("PLACEHOLDER SETUP");
 
-            auto camera = m_ActiveScene->CreateEntity("Camera");
-            camera.AddComponent<CameraComponent>();
-            camera.GetComponent<TransformComponent>().SetTransform({-5, 0, 0}, { 0, 0, 0 }, {1, 1, 1});
+                auto view = glm::lookAt(glm::vec3(0, 0, 5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+                m_EditorCamera.SetTransform(glm::inverse(view));
 
-            auto sprite_1 = m_ActiveScene->CreateEntity("Sprite_1");
-            sprite_1.AddComponent<PhysicsComponent>();
-            sprite_1.AddComponent<SpriteComponent>(glm::vec4{ 0.8, 0.2, 0.3, 1.0 });
-            sprite_1.GetComponent<TransformComponent>().SetTransform({ 0, 0, 0 }, {0, 0, 0}, {1, 1, 1});
+                auto camera = m_ActiveScene->CreateEntity("Camera");
+                camera.AddComponent<CameraComponent>();
+                camera.GetComponent<TransformComponent>().SetTransform({ -5, 0, 0 }, { 0, 0, 0 }, { 1, 1, 1 });
 
-            auto sprite_2 = m_ActiveScene->CreateEntity("Sprite_2");
-            sprite_2.AddComponent<PhysicsComponent>();
-            sprite_2.AddComponent<SpriteComponent>(glm::vec4{ 0.3, 0.3, 0.8, 1.0 });
-            sprite_2.GetComponent<TransformComponent>().SetTransform({ 0, 2, 0 }, { 0, 0, 0 }, { 1, 1, 1 });
+                auto sprite_1 = m_ActiveScene->CreateEntity("Sprite_1");
+                sprite_1.AddComponent<PhysicsComponent>();
+                sprite_1.AddComponent<SpriteComponent>(glm::vec4{ 0.8, 0.2, 0.3, 1.0 });
+                sprite_1.GetComponent<TransformComponent>().SetTransform({ 0, 0, 0 }, { 0, 0, 0 }, { 1, 1, 1 });
 
-            auto sprite_3 = m_ActiveScene->CreateEntity("Sprite_3");
-            sprite_3.AddComponent<PhysicsComponent>();
-            sprite_3.AddComponent<SpriteComponent>(glm::vec4{ 0.2, 0.8, 0.3, 1.0 });
-            sprite_3.GetComponent<TransformComponent>().SetTransform({ 1, 0, 1 }, { 90, 0, 0 }, { 1, 1, 1 });
+                auto sprite_2 = m_ActiveScene->CreateEntity("Sprite_2");
+                sprite_2.AddComponent<PhysicsComponent>();
+                sprite_2.AddComponent<SpriteComponent>(glm::vec4{ 0.3, 0.3, 0.8, 1.0 });
+                sprite_2.GetComponent<TransformComponent>().SetTransform({ 0, 2, 0 }, { 0, 0, 0 }, { 1, 1, 1 });
 
-            m_ScenePanel.SetContext(m_ActiveScene);
+                auto sprite_3 = m_ActiveScene->CreateEntity("Sprite_3");
+                sprite_3.AddComponent<PhysicsComponent>();
+                sprite_3.AddComponent<SpriteComponent>(glm::vec4{ 0.2, 0.8, 0.3, 1.0 });
+                sprite_3.GetComponent<TransformComponent>().SetTransform({ 1, 0, 1 }, { 90, 0, 0 }, { 1, 1, 1 });
+            
+                m_ScenePanel.SetContext(m_ActiveScene);
+            }
         }
 
         void EditorLayer::OnDetach() {
@@ -135,6 +139,8 @@ namespace Vanta {
         }
 
         void EditorLayer::RenderOverlay() {
+            VANTA_PROFILE_RENDER_FUNCTION();
+
             if (m_State == State::Play) {
                 Camera* camera = m_ActiveScene->GetActiveCamera();
                 if (!camera)
@@ -401,6 +407,8 @@ namespace Vanta {
         }
 
         void EditorLayer::RenderToolbar() {
+            VANTA_PROFILE_RENDER_FUNCTION();
+
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
             ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(128, 128));
             ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
@@ -453,6 +461,8 @@ namespace Vanta {
         }
 
         void EditorLayer::OnEvent(Event& e) {
+            VANTA_PROFILE_FUNCTION();
+
             if (m_State == State::Edit) {
                 m_EditorCamera.OnEvent(e);
             }
@@ -558,6 +568,8 @@ namespace Vanta {
         }
 
         void EditorLayer::OnStop() {
+            VANTA_PROFILE_FUNCTION();
+
             VANTA_CORE_ASSERT(m_State == State::Play || m_State == State::Simulate, "");
 
             switch (m_State) {
@@ -579,6 +591,8 @@ namespace Vanta {
         }
 
         void EditorLayer::OnDuplicateEntity() {
+            VANTA_PROFILE_FUNCTION();
+
             if (m_State != State::Edit)
                 return;
 
@@ -589,6 +603,8 @@ namespace Vanta {
         }
 
         void EditorLayer::NewScene() {
+            VANTA_PROFILE_FUNCTION();
+
             m_ActiveScene = NewRef<Scene>();
             m_ActiveScene->OnViewportResize((uint)m_ViewportSize.x, (uint)m_ViewportSize.y);
 
@@ -598,6 +614,8 @@ namespace Vanta {
         }
 
         void EditorLayer::OpenScene() {
+            VANTA_PROFILE_FUNCTION();
+
             VANTA_UNIMPLEMENTED();
             //std::string filepath = FileDialogs::OpenFile("Vanta Scene (*.hazel)\0*.hazel\0");
             //if (!filepath.empty())
@@ -605,6 +623,8 @@ namespace Vanta {
         }
 
         void EditorLayer::OpenScene(const Path& path) {
+            VANTA_PROFILE_FUNCTION();
+
             if (m_State != State::Edit)
                 OnStop();
 
@@ -627,6 +647,8 @@ namespace Vanta {
         }
 
         void EditorLayer::SaveScene() {
+            VANTA_PROFILE_FUNCTION();
+
             VANTA_UNIMPLEMENTED();
             //if (!m_EditorScenePath.empty()) {
             //    SceneSerializer serializer;
@@ -638,6 +660,8 @@ namespace Vanta {
         }
 
         void EditorLayer::SaveSceneAs() {
+            VANTA_PROFILE_FUNCTION();
+
             VANTA_UNIMPLEMENTED();
             //std::string filepath = FileDialogs::SaveFile("Vanta Scene (*.hazel)\0*.hazel\0");
             //if (!filepath.empty()) {

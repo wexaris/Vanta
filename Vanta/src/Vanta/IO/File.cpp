@@ -1,10 +1,13 @@
 #include "vantapch.hpp"
+#include "Vanta/Core/Engine.hpp"
 #include "Vanta/IO/File.hpp"
 
 namespace Vanta {
     namespace IO {
         File::File(const Path& path) {
-            std::ifstream file(path.c_str(), std::ios::in | std::ios::binary);
+            Path fixedPath = Engine::Get().CorrectFilepath(path);
+
+            std::ifstream file(fixedPath.c_str(), std::ios::in | std::ios::binary);
             if (file) {
                 file.seekg(0, std::ios::end);
                 auto size = file.tellg();

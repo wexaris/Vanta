@@ -18,6 +18,8 @@ namespace Vanta {
     }
 
     void Fibers::Init() {
+        VANTA_PROFILE_FUNCTION();
+
         // Spawn worker threads (start at 1 because the caller will be one of the workers)
         for (uint i = 1; i < THREAD_COUNT; i++) {
             s_Workers.create_thread([&]() {
@@ -31,6 +33,8 @@ namespace Vanta {
     }
 
     void Fibers::Shutdown() {
+        VANTA_PROFILE_FUNCTION();
+
         {
             // Notify worker threads about shutdown, and wait for them to exit
             std::unique_lock<fibers::mutex> lock(s_StopMutex);

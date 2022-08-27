@@ -74,6 +74,8 @@ namespace Vanta {
     OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferParams& params) 
         : m_Params(params)
     {
+        VANTA_PROFILE_RENDER_FUNCTION();
+
         for (auto spec : m_Params.Attachments.Attachments) {
             if (!detail::IsDepthFormat(spec.TextureFormat))
                 m_ColorAttachmentParams.emplace_back(spec);
@@ -85,6 +87,7 @@ namespace Vanta {
     }
 
     OpenGLFramebuffer::~OpenGLFramebuffer() {
+        VANTA_PROFILE_RENDER_FUNCTION();
         glDeleteFramebuffers(1, &m_RendererID);
         glDeleteTextures((GLsizei)m_ColorAttachments.size(), m_ColorAttachments.data());
         glDeleteTextures(1, &m_DepthAttachment);
@@ -100,6 +103,8 @@ namespace Vanta {
     }
 
     void OpenGLFramebuffer::Invalidate() {
+        VANTA_PROFILE_RENDER_FUNCTION();
+
         if (m_RendererID) {
             glDeleteFramebuffers(1, &m_RendererID);
             glDeleteTextures((GLsizei)m_ColorAttachments.size(), m_ColorAttachments.data());
@@ -164,17 +169,20 @@ namespace Vanta {
     }
 
     void OpenGLFramebuffer::Resize(uint32 width, uint32 height) {
+        VANTA_PROFILE_RENDER_FUNCTION();
+
         if (width == 0 || height == 0 || width > MAX_FRAMEFUFFER_SIZE || height > MAX_FRAMEFUFFER_SIZE) {
             VANTA_CORE_WARN("Attempted to resize framebuffer to {}, {}", width, height);
             return;
         }
+
         m_Params.Width = width;
         m_Params.Height = height;
-
         Invalidate();
     }
 
     int OpenGLFramebuffer::ReadPixel(uint32 attachmentIndex, int x, int y) {
+        VANTA_PROFILE_RENDER_FUNCTION();
         VANTA_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size(), "Framebuffer color attachment index invalid");
 
         glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
@@ -184,6 +192,7 @@ namespace Vanta {
     }
 
     void OpenGLFramebuffer::ClearAttachment(uint32 attachmentIndex, int value) {
+        VANTA_PROFILE_RENDER_FUNCTION();
         VANTA_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size(), "Framebuffer color attachment index invalid");
 
         auto& spec = m_ColorAttachmentParams[attachmentIndex];

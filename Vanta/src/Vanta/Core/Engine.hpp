@@ -12,7 +12,7 @@ namespace Vanta {
     struct EngineParams {
         uint MinTickRate = 60;
         uint MaxSubsteps = 4;
-        Path WorkingDirectory = std::filesystem::current_path() / "Assets";
+        Path WorkingDirectory = std::filesystem::current_path();
         WindowParams Window;
     };
 
@@ -30,7 +30,11 @@ namespace Vanta {
         uint GetFPS() const         { return (uint)(1.0 / m_DeltaTime + 0.5); }
         double GetDeltaTime() const { return m_DeltaTime; }
 
-        Path GetWorkingDirectory() const { return m_WorkingDirectory; }
+        static Path RuntimeDirectory() { return s_RuntimeDirectory; }
+        Path WorkingDirectory() const  { return m_WorkingDirectory; }
+        Path AssetDirectory() const    { return m_WorkingDirectory / "Assets"; }
+        Path SourceDirectory() const   { return m_WorkingDirectory / "Source"; }
+        Path CorrectFilepath(const Path& path);
 
         bool IsMinimized() const { return m_Minimized; }
 
@@ -39,6 +43,8 @@ namespace Vanta {
         GUILayer* GetGUILayer()   { return m_GUILayer; }
 
     protected:
+        static const Path s_RuntimeDirectory;
+
         Box<Window> m_Window;
         LayerStack m_LayerStack;
         GUILayer* m_GUILayer;

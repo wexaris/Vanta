@@ -26,28 +26,34 @@ namespace Vanta {
     Scene::Scene()
         : m_ViewportSize(Engine::Get().GetWindow().GetWidth(), Engine::Get().GetWindow().GetHeight())
     {
+        VANTA_PROFILE_FUNCTION();
         TransformComponentBuffers::Setup(m_Registry);
     }
 
     Scene::~Scene() {}
 
     void Scene::OnRuntimeBegin() {
+        VANTA_PROFILE_FUNCTION();
         // Start Physics
     }
 
     void Scene::OnRuntimeEnd() {
+        VANTA_PROFILE_FUNCTION();
         // Stop Physics
     }
 
     void Scene::OnSimulationBegin() {
+        VANTA_PROFILE_FUNCTION();
         // Start Physics
     }
 
     void Scene::OnSimulationEnd() {
+        VANTA_PROFILE_FUNCTION();
         // Stop Physics
     }
 
     void Scene::OnUpdateRuntime(double delta) {
+        VANTA_PROFILE_FUNCTION();
         OnScriptUpdate(delta);
         OnPhysicsUpdate(delta);
         m_DataBuffer.Next();
@@ -55,17 +61,20 @@ namespace Vanta {
     }
 
     void Scene::OnUpdateSimulation(double delta, Camera* camera) {
+        VANTA_PROFILE_FUNCTION();
         OnPhysicsUpdate(delta);
         m_DataBuffer.Next();
         OnRender(delta, camera);
     }
 
     void Scene::OnUpdateEditor(double delta, Camera* camera) {
+        VANTA_PROFILE_FUNCTION();
         m_DataBuffer.Next();
         OnRender(delta, camera);
     }
 
     void Scene::OnScriptUpdate(double) {
+        VANTA_PROFILE_FUNCTION();
         // TODO: Update scripts
     }
 
@@ -74,11 +83,13 @@ namespace Vanta {
         PhysicsUpdate(double delta) : Delta(delta) {}
 
         void operator()(entt::entity, TransformComponent& old_tr, TransformComponent& tr, PhysicsComponent&) const {
+            VANTA_PROFILE_SCOPE("Physics Update");
             tr = old_tr;
         }
     };
 
     void Scene::OnPhysicsUpdate(double delta) {
+        VANTA_PROFILE_FUNCTION();
         m_DataBuffer.View<PhysicsComponent>(m_Registry, ParalelDispatch<PhysicsUpdate>(delta));
     }
 
@@ -101,6 +112,7 @@ namespace Vanta {
     };
 
     void Scene::OnRender(double delta, Camera* camera) {
+        VANTA_PROFILE_RENDER_FUNCTION();
         if (camera) {
             m_DataBuffer.ViewPrev<CameraComponent>(m_Registry, LinearDispatch<CameraUpdate>(delta));
 
@@ -116,6 +128,7 @@ namespace Vanta {
     }
 
     Entity Scene::CreateEntity(const std::string& name/*, UUID id*/) {
+        VANTA_PROFILE_FUNCTION();
         Entity entity = Entity(m_Registry.create(), this);
         entity.AddComponent<IDComponent>(name/*, id*/);
         entity.AddComponent<TransformComponent>();
@@ -123,16 +136,19 @@ namespace Vanta {
     }
 
     Entity Scene::DuplicateEntity(Entity entity) {
+        VANTA_PROFILE_FUNCTION();
         Entity newEntity = CreateEntity(entity.GetName());
         detail::CopyComponents(entity, newEntity);
         return newEntity;
     }
 
     void Scene::DestroyEntity(Entity entity) {
+        VANTA_PROFILE_FUNCTION();
         m_Registry.destroy(entity);
     }
 
     void Scene::OnViewportResize(uint width, uint height) {
+        VANTA_PROFILE_FUNCTION();
         m_ViewportSize.x = width;
         m_ViewportSize.y = height;
         if (auto camera = GetActiveCamera()) {

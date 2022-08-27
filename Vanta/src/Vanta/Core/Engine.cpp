@@ -5,6 +5,9 @@
 #include "Vanta/Scene/Scene.hpp"
 
 namespace Vanta {
+
+    const Path Engine::s_RuntimeDirectory = std::filesystem::current_path();
+
     Engine* Engine::s_Instance = nullptr;
 
     Engine::Engine(const EngineParams& params) :
@@ -138,5 +141,11 @@ namespace Vanta {
 
     bool Engine::OnWindowLoseFocus(WindowLoseFocusEvent&) {
         return false;
+    }
+
+    Path Engine::CorrectFilepath(const Path& path) {
+        if (path.is_absolute())
+            return path;
+        return Engine::Get().AssetDirectory() / path;
     }
 }

@@ -34,12 +34,18 @@ namespace Vanta {
         //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
         
         // Setup fonts
-        std::string opensans_bold_path = "Fonts/OpenSans/OpenSans-Bold.ttf";
-        std::string opensans_regular_path = "Fonts/OpenSans/OpenSans-Regular.ttf";
+        {
+            VANTA_PROFILE_SCOPE("AddFontFromFileTTF()");
 
-        float fontSize = 18.0f;// *2.0f;
-        io.Fonts->AddFontFromFileTTF(opensans_bold_path.c_str(), fontSize);
-        io.FontDefault = io.Fonts->AddFontFromFileTTF(opensans_regular_path.c_str(), fontSize);
+            auto opensans_bold_path =
+                (Engine::Get().AssetDirectory() / "Fonts/OpenSans/OpenSans-Bold.ttf").string();
+            auto opensans_regular_path =
+                (Engine::Get().AssetDirectory() / "Fonts/OpenSans/OpenSans-Regular.ttf").string();
+
+            float fontSize = 18.0f;// *2.0f;
+            io.Fonts->AddFontFromFileTTF(opensans_bold_path.c_str(), fontSize);
+            io.FontDefault = io.Fonts->AddFontFromFileTTF(opensans_regular_path.c_str(), fontSize);
+        }
 
         // Setup style
         ImGui::StyleColorsDark();
