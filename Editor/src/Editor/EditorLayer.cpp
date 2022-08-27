@@ -38,19 +38,24 @@ namespace Vanta {
             auto view = glm::lookAt(glm::vec3(0, 0, 5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
             m_EditorCamera.SetTransform(glm::inverse(view));
 
-            auto camera_e = m_ActiveScene->CreateEntity("Camera");
-            camera_e.AddComponent<CameraComponent>();
-            camera_e.GetComponent<TransformComponent>().SetTransform({-5, 0, 0}, { 0, 0, 0 }, {1, 1, 1});
+            auto camera = m_ActiveScene->CreateEntity("Camera");
+            camera.AddComponent<CameraComponent>();
+            camera.GetComponent<TransformComponent>().SetTransform({-5, 0, 0}, { 0, 0, 0 }, {1, 1, 1});
 
-            auto sprite_e = m_ActiveScene->CreateEntity("Sprite_1");
-            sprite_e.AddComponent<PhysicsComponent>();
-            sprite_e.AddComponent<SpriteComponent>(glm::vec4{ 0.8, 0.2, 0.3, 1.0 });
-            sprite_e.GetComponent<TransformComponent>().SetTransform({ 0, 0, 0 }, {0, 0, 0}, {1, 1, 1});
+            auto sprite_1 = m_ActiveScene->CreateEntity("Sprite_1");
+            sprite_1.AddComponent<PhysicsComponent>();
+            sprite_1.AddComponent<SpriteComponent>(glm::vec4{ 0.8, 0.2, 0.3, 1.0 });
+            sprite_1.GetComponent<TransformComponent>().SetTransform({ 0, 0, 0 }, {0, 0, 0}, {1, 1, 1});
 
-            auto sprite_b = m_ActiveScene->CreateEntity("Sprite_2");
-            sprite_b.AddComponent<PhysicsComponent>();
-            sprite_b.AddComponent<SpriteComponent>(glm::vec4{ 0.3, 0.3, 0.9, 1.0 });
-            sprite_b.GetComponent<TransformComponent>().SetTransform({ 0, 2, 0 }, { 0, 0, 0 }, { 1, 1, 1 });
+            auto sprite_2 = m_ActiveScene->CreateEntity("Sprite_2");
+            sprite_2.AddComponent<PhysicsComponent>();
+            sprite_2.AddComponent<SpriteComponent>(glm::vec4{ 0.3, 0.3, 0.9, 1.0 });
+            sprite_2.GetComponent<TransformComponent>().SetTransform({ 0, 2, 0 }, { 0, 0, 0 }, { 1, 1, 1 });
+
+            auto sprite_3 = m_ActiveScene->CreateEntity("Sprite_3");
+            sprite_3.AddComponent<PhysicsComponent>();
+            sprite_3.AddComponent<SpriteComponent>(glm::vec4{ 0.3, 0.3, 0.9, 1.0 });
+            sprite_3.GetComponent<TransformComponent>().SetTransform({ 1, 0, 1 }, { 90, 0, 0 }, { 1, 1, 1 });
 
             m_ScenePanel.SetContext(m_ActiveScene);
         }
@@ -307,10 +312,24 @@ namespace Vanta {
                 m_ViewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
                 m_ViewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
 
+                if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+                    ImGui::SetWindowFocus();
+                    auto event = MouseButtonPressEvent(Mouse::ButtonRight);
+                    m_EditorCamera.OnEvent(event);
+                }
+
                 m_ViewportHovered = ImGui::IsWindowHovered();
                 m_ViewportFocused = ImGui::IsWindowFocused();
                 m_ViewportActive = m_EditorCamera.IsActive() || (m_ViewportFocused && m_ViewportHovered);
                 Engine::Get().GetGUILayer()->BlockEvents(!m_ViewportActive);
+
+                auto& window = Engine::Get().GetWindow();
+                if (m_EditorCamera.IsActive() && window.GetCursorMode() != CursorMode::Disabled) {
+                    window.SetCursorMode(CursorMode::Disabled);
+                }
+                else if (!m_EditorCamera.IsActive() && window.GetCursorMode() != CursorMode::Normal) {
+                    window.SetCursorMode(CursorMode::Normal);
+                }
 
                 ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
                 m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };

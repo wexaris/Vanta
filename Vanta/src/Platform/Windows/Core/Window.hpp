@@ -16,6 +16,7 @@ namespace Vanta {
         uint Width, Height;
         uint PosX, PosY;
         bool VerticalSync;
+        CursorMode Cursor;
         Window::EventCallbackFn EventCallback;
     };
 
@@ -31,6 +32,7 @@ namespace Vanta {
         void SetVSync(bool enabled) override;
         void SetMode(WindowMode mode, uint width, uint height) override;
         void SetIcon(const Path& path) override;
+        void SetCursorMode(CursorMode mode) override;
         void SetEventCallback(EventCallbackFn fn) override { m_Data.EventCallback = fn; }
 
         std::string GetTitle() const override { return m_Data.Title; }
@@ -38,6 +40,7 @@ namespace Vanta {
         uint GetHeight() const override       { return m_Data.Height; }
         bool GetVSync() const override        { return m_Data.VerticalSync; }
         WindowMode GetMode() const override   { return m_Data.Mode; }
+        CursorMode GetCursorMode() const override { return m_Data.Cursor; }
 
         void* GetNativeWindow() const override { return m_Window; }
 

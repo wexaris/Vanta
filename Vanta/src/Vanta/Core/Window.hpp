@@ -17,6 +17,12 @@ namespace Vanta {
         Path IconPath;
     };
 
+    enum class CursorMode {
+        Normal,
+        Disabled,
+        Hidden,
+    };
+
     class Window {
     public:
         using EventCallbackFn = std::function<void(Event&)>;
@@ -30,6 +36,7 @@ namespace Vanta {
         virtual void SetVSync(bool enabled) = 0;
         virtual void SetMode(WindowMode mode, uint width = 0, uint height = 0) = 0;
         virtual void SetIcon(const Path& path) = 0;
+        virtual void SetCursorMode(CursorMode mode) = 0;
         virtual void SetEventCallback(EventCallbackFn fn) = 0;
 
         virtual std::string GetTitle() const = 0;
@@ -37,6 +44,7 @@ namespace Vanta {
         virtual uint GetHeight() const = 0;
         virtual bool GetVSync() const = 0;
         virtual WindowMode GetMode() const = 0;
+        virtual CursorMode GetCursorMode() const = 0;
 
         virtual void* GetNativeWindow() const = 0;
 

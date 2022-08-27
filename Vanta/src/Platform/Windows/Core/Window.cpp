@@ -338,6 +338,25 @@ namespace Vanta {
         icons[0].pixels = image.Data;
 
         glfwSetWindowIcon(m_Window, sizeof(icons) / sizeof(GLFWimage), icons);
-        
+    }
+
+    void WindowsWindow::SetCursorMode(CursorMode mode) {
+        switch (mode) {
+        case CursorMode::Normal:
+            glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            m_Data.Cursor = mode;
+            break;
+        case CursorMode::Hidden:
+            glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+            m_Data.Cursor = mode;
+            break;
+        case CursorMode::Disabled:
+            glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            m_Data.Cursor = mode;
+            break;
+        default:
+            VANTA_UNREACHABLE("Invalid window cursor mode!");
+            break;
+        }
     }
 }

@@ -23,8 +23,10 @@ namespace Vanta {
     Engine* CreateEngine() {
         EngineParams params;
         params.Window.Title = "Vanta Editor";
-        params.Window.IconPath = "Icons/Editor.png";
+        params.Window.Width = 1600;
+        params.Window.Height = 1000;
         params.Window.VerticalSync = false;
+        params.Window.IconPath = "Icons/Editor.png";
         return new Editor::Editor(params);
     }
 }
