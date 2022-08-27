@@ -171,7 +171,7 @@ namespace Vanta {
                         bar.wait();
                     }, beg);
 
-                    for (usize i = 0; i < CHUNK_SIZE && beg != end; ++i)
+                    for (usize j = 0; j < CHUNK_SIZE && beg != end; ++j)
                         ++beg;
                 }
 
