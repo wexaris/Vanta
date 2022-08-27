@@ -85,7 +85,6 @@ namespace Vanta {
             float camX = sin((float)Vanta::Duration::SinceLaunch().AsSecondsf()) * radius;
             float camY = cos((float)Vanta::Duration::SinceLaunch().AsSecondsf()) * radius;
             auto view = glm::lookAt(glm::vec3(camX, camY, 5), glm::vec3(0, 0, 0), glm::vec3(0.f, 1.f, 0.f));
-            //m_EditorCamera.SetTransform(glm::inverse(view));
             if (auto camera = m_ActiveScene->GetActiveCameraEntity()) {
                 camera.GetComponent<TransformComponent>().SetTransform(glm::inverse(view));
             }
@@ -318,16 +317,21 @@ namespace Vanta {
                 m_ViewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
                 m_ViewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
 
-                if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
-                    ImGui::SetWindowFocus();
-                    auto event = MouseButtonPressEvent(Mouse::ButtonRight);
-                    m_EditorCamera.OnEvent(event);
-                }
-
                 m_ViewportHovered = ImGui::IsWindowHovered();
                 m_ViewportFocused = ImGui::IsWindowFocused();
                 m_ViewportActive = m_EditorCamera.IsActive() || (m_ViewportFocused && m_ViewportHovered);
                 Engine::Get().GetGUILayer()->BlockEvents(!m_ViewportActive);
+
+                if (m_ViewportHovered && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+                    ImGui::SetWindowFocus();
+                    auto event = MouseButtonPressEvent(Mouse::ButtonLeft);
+                    OnEvent(event);
+                }
+                if (m_ViewportHovered && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+                    ImGui::SetWindowFocus();
+                    auto event = MouseButtonPressEvent(Mouse::ButtonRight);
+                    m_EditorCamera.OnEvent(event);
+                }
 
                 if (m_State == State::Edit || m_State == State::Simulate) {
                     auto& window = Engine::Get().GetWindow();
@@ -474,7 +478,7 @@ namespace Vanta {
 
         bool EditorLayer::OnMouseButtonPress(MouseButtonPressEvent& e) {
             if (e.Button == Mouse::ButtonLeft) {
-                if (m_ViewportHovered && !ImGuizmo::IsOver() && Input::IsKeyPressed(Key::LeftAlt)) {
+                if (m_ViewportHovered && !ImGuizmo::IsOver()) {
                     m_ScenePanel.SetSelected(m_HoveredEntity);
                 }
             }
