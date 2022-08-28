@@ -1,6 +1,5 @@
 #include "vantapch.hpp"
 #include "Vanta/Util/Time.hpp"
-#include "Vanta/Util/Util.hpp"
 
 namespace Vanta {
 

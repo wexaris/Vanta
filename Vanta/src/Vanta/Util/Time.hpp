@@ -69,7 +69,6 @@ namespace Vanta {
         Duration operator+(const Duration& other) { return Duration(Span + other.Span); }
     };
 
-
     inline Duration operator-(const Time& first, const Time& second) {
         return Duration(first.Point - second.Point);
     }

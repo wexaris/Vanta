@@ -47,7 +47,7 @@ set(${PROJECT_NAME}_SOURCE
     "src/Vanta/Scene/Entity.cpp"
     "src/Vanta/Scene/Scene.cpp"
     "src/Vanta/Util/Math.cpp"
-    "src/Vanta/Util/Util.cpp"
+    "src/Vanta/Util/Time.cpp"
     "src/Platform/OpenGL/Buffer.cpp"
     "src/Platform/OpenGL/Context.cpp"
     "src/Platform/OpenGL/Framebuffer.cpp"
