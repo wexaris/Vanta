@@ -81,27 +81,39 @@ namespace Vanta {
         return std::static_pointer_cast<To>(from);
     }
 
+
+    /// ///////////////// OPTIONALS //////////////////
+
+    template<typename T>
+    using Opt = std::optional<T>;
+
+    constexpr std::nullopt_t None = std::nullopt;
+
+
+    /// ///////////////// TEMPLATES //////////////////
+
+    /// Remove references from a type.
     template<typename T>
     using RemoveRef   = std::remove_reference<T>;
 
     template<typename T>
     using RemoveRef_t = typename RemoveRef<T>::type;
 
-
+    /// Check if one type is the base of another.
     template<typename Base, typename Derived>
     using IsBase = std::is_base_of<Base, Derived>;
 
     template<typename Base, typename Derived>
     constexpr bool IsBase_v = IsBase<Base, Derived>::value;
 
-
+    /// Get N-th type in a typelist.
     template<usize N, typename... Types>
     struct Get : std::tuple_element<N, std::tuple<Types...>> {};
 
     template<usize N, typename... Types>
     using Get_t = typename Get<N, Types...>::type;
 
-
+    /// Check if a typelist contains a certain type.
     template <typename T, typename... Types>
     struct Contains;
 

@@ -43,6 +43,7 @@ set(${PROJECT_NAME}_SOURCE
     "src/Vanta/Render/VertexArray.cpp"
     "src/Vanta/Scene/Components.cpp"
     "src/Vanta/Scene/SceneCamera.cpp"
+    "src/Vanta/Scene/Serializer.cpp"
     "src/Vanta/Scene/Entity.cpp"
     "src/Vanta/Scene/Scene.cpp"
     "src/Vanta/Util/Math.cpp"
@@ -54,9 +55,10 @@ set(${PROJECT_NAME}_SOURCE
     "src/Platform/OpenGL/Render/Shader.cpp"
     "src/Platform/OpenGL/Render/Texture.cpp"
     "src/Platform/OpenGL/Render/VertexArray.cpp"
+    "src/Platform/Windows/PlatformUtils.cpp"
     "src/Platform/Windows/Core/Window.cpp"
     "src/Platform/Windows/Input/Input.cpp"
- "src/Vanta/Scene/Serializer.cpp")
+)
 
 set(${${PROJECT_NAME}_PCH} src/vantapch.hpp)
 

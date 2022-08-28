@@ -231,7 +231,7 @@ namespace Vanta {
                         NewScene();
 
                     if (ImGui::MenuItem("Open...", "Ctrl+O"))
-                        OpenScene(Engine::Get().AssetDirectory() / "Scenes" / "Unnamed.vnta");
+                        OpenScene();
 
                     if (ImGui::MenuItem("Save", "Ctrl+S"))
                         SaveScene();
@@ -578,7 +578,6 @@ namespace Vanta {
             if (m_State != State::Edit)
                 return;
 
-            VANTA_UNIMPLEMENTED();
             Entity selectedEntity = m_ScenePanel.GetSelected();
             if (selectedEntity)
                 m_EditorScene->DuplicateEntity(selectedEntity);
@@ -598,10 +597,9 @@ namespace Vanta {
         void EditorLayer::OpenScene() {
             VANTA_PROFILE_FUNCTION();
 
-            VANTA_UNIMPLEMENTED();
-            //std::string filepath = FileDialogs::OpenFile("Vanta Scene (*.vnta)\0*.vnta\0");
-            //if (!filepath.empty())
-            //    OpenScene(filepath);
+            auto file = IO::FileDialog::OpenFile("Vanta Scene (*.vnta)\0*.vnta\0");
+            if (file)
+                OpenScene(file->Filepath);
         }
 
         void EditorLayer::OpenScene(const Path& filepath) {
@@ -633,7 +631,6 @@ namespace Vanta {
         void EditorLayer::SaveScene() {
             VANTA_PROFILE_FUNCTION();
 
-            VANTA_UNIMPLEMENTED();
             if (!m_SceneFilepath.empty()) {
                 SceneSerializer serializer(m_ActiveScene);
                 serializer.Serialize(m_SceneFilepath);
@@ -646,13 +643,12 @@ namespace Vanta {
         void EditorLayer::SaveSceneAs() {
             VANTA_PROFILE_FUNCTION();
 
-            VANTA_UNIMPLEMENTED();
-            //std::string filepath = FileDialogs::SaveFile("Vanta Scene (*.vnta)\0*.vnta\0");
-            //if (!filepath.empty()) {
-            //    SceneSerializer serializer;
-            //    serializer.Serialize(m_ActiveScene, filepath);
-            //    m_EditorScenePath = filepath;
-            //}
+            auto file = IO::FileDialog::SaveFile("Vanta Scene (*.vnta)\0*.vnta\0");
+            if (file) {
+                SceneSerializer serializer(m_ActiveScene);
+                serializer.Serialize(file.value());
+                m_SceneFilepath = file->Filepath;
+            }
         }
     }
 }

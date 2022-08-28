@@ -129,7 +129,7 @@ namespace Vanta {
         out << YAML::EndMap;
     }
 
-    void SceneSerializer::Serialize(const Path& filepath) {
+    void SceneSerializer::Serialize(const IO::File& file) {
         YAML::Emitter out;
         out << YAML::BeginMap;
         out << YAML::Key << "Scene" << YAML::Value << "Unnamed"; // TODO: Add names to scenes
@@ -147,12 +147,10 @@ namespace Vanta {
         out << YAML::Key << "ActiveCamera" << YAML::Value << "1234567890"; //m_Scene->GetActiveCameraEntity().UUID;
         out << YAML::EndMap;
 
-        IO::File file(filepath);
         file.Write(out.c_str());
     }
 
-    bool SceneSerializer::Deserialize(const Path& filepath) {
-        IO::File file(filepath);
+    bool SceneSerializer::Deserialize(const IO::File& file) {
         std::string text = file.Read();
 
         YAML::Node data = YAML::Load(text);

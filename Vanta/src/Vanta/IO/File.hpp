@@ -4,6 +4,8 @@ namespace Vanta {
     namespace IO {
         class File {
         public:
+            const Path Filepath;
+        
             File(const Path& path);
             ~File() = default;
 
@@ -11,9 +13,12 @@ namespace Vanta {
             void Write(const std::string& out) const;
 
             bool Exists() const;
+        };
 
-        private:
-            Path m_Filepath;
+        class FileDialog {
+        public:
+            static Opt<File> OpenFile(const char* filter);
+            static Opt<File> SaveFile(const char* filter);
         };
     }
 }

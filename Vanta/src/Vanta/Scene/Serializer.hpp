@@ -8,8 +8,8 @@ namespace Vanta {
         SceneSerializer() = default;
         SceneSerializer(const Ref<Scene>& scene);
 
-        void Serialize(const Path& filepath);
-        bool Deserialize(const Path& filepath);
+        void Serialize(const IO::File& file);
+        bool Deserialize(const IO::File& file);
 
     private:
         Ref<Scene> m_Scene;
