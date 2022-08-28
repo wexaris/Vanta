@@ -4,37 +4,80 @@ namespace Vanta {
     namespace Editor {
 
         ViewportCameraController::ViewportCameraController() :
-            Camera(SceneCamera::Perspective(DEFAULT_FOV, 0.1f, 1000.f)) {}
+            m_Camera(SceneCamera::Perspective(DEFAULT_FOV, 0.1f, 1000.f)) {}
 
         void ViewportCameraController::OnUpdate(double delta) {
             VANTA_PROFILE_FUNCTION();
 
             if (m_IsActive) {
                 if (Input::IsKeyPressed(Key::W)) {
-                    Camera.Move(GetForwardVector() * m_MovementSpeed * (float)delta);
+                    Move(GetForwardVector() * m_MovementSpeed * (float)delta);
                 }
                 if (Input::IsKeyPressed(Key::S)) {
-                    Camera.Move(-GetForwardVector() * m_MovementSpeed * (float)delta);
+                    Move(-GetForwardVector() * m_MovementSpeed * (float)delta);
                 }
                 if (Input::IsKeyPressed(Key::A)) {
-                    Camera.Move(-GetRightVector() * m_MovementSpeed * (float)delta);
+                    Move(-GetRightVector() * m_MovementSpeed * (float)delta);
                 }
                 if (Input::IsKeyPressed(Key::D)) {
-                    Camera.Move(GetRightVector() * m_MovementSpeed * (float)delta);
+                    Move(GetRightVector() * m_MovementSpeed * (float)delta);
                 }
             }
         }
 
         void ViewportCameraController::SetTransform(const glm::mat4& transform) {
-            Camera.SetTransform(transform);
+            VANTA_PROFILE_FUNCTION();
+            m_Transform = transform;
+            Math::Decompose(m_Transform, m_Position, m_Rotation);
+            m_DirtyTransform = false;
+            m_Camera.SetView(glm::inverse(m_Transform));
         }
 
         void ViewportCameraController::SetTransform(const glm::vec3& position, const glm::vec3& rotation) {
-            Camera.SetTransform(position, rotation);
+            VANTA_PROFILE_FUNCTION();
+            m_Position = position;
+            m_Rotation = glm::radians(rotation);
+            m_DirtyTransform = true;
+        }
+
+        void ViewportCameraController::SetPosition(const glm::vec3& position) {
+            m_Position = position;
+            m_DirtyTransform = true;
+        }
+
+        void ViewportCameraController::SetRotationDeg(const glm::vec3& rotation) {
+            SetRotationRad(glm::radians(rotation));
+        }
+
+        void ViewportCameraController::SetRotationRad(const glm::vec3& rotation) {
+            m_Rotation = rotation;
+            m_DirtyTransform = true;
+        }
+
+        void ViewportCameraController::Move(const glm::vec3& offset) {
+            m_Position += offset;
+            m_DirtyTransform = true;
+        }
+
+        void ViewportCameraController::RotateDeg(const glm::vec3& offset) {
+            RotateRad(glm::radians(offset));
+        }
+
+        void ViewportCameraController::RotateRad(const glm::vec3& offset) {
+            m_Rotation += offset;
+            m_DirtyTransform = true;
+        }
+
+        void ViewportCameraController::RecalculateTransform() {
+            glm::mat4 translate = glm::translate(glm::mat4(1.f), m_Position);
+            glm::mat4 rotate = glm::mat4_cast(glm::quat(m_Rotation));
+            m_Transform = translate * rotate;
+            m_DirtyTransform = false;
+            m_Camera.SetView(glm::inverse(m_Transform));
         }
 
         void ViewportCameraController::OnViewportResize(uint width, uint height) {
-            Camera.Resize(width, height);
+            m_Camera.Resize(width, height);
         }
 
         void ViewportCameraController::OnEvent(Event& e) {
@@ -48,7 +91,7 @@ namespace Vanta {
 
         bool ViewportCameraController::OnMouseMove(MouseMoveEvent& e) {
             if (m_IsActive)
-                Camera.Rotate({ e.OffsetY * m_RotationSpeed, -e.OffsetX * m_RotationSpeed, 0 });
+                RotateDeg({ e.OffsetY * m_RotationSpeed, -e.OffsetX * m_RotationSpeed, 0 });
             return false;
         }
 
@@ -70,7 +113,7 @@ namespace Vanta {
             if (m_IsActive) {
                 m_Zoom -= e.OffsetY * 0.1f;
                 m_Zoom = std::clamp(m_Zoom, MIN_ZOOM, MAX_ZOOM);
-                Camera.SetPerspectiveFOV(MAX_FOV * m_Zoom);
+                m_Camera.SetPerspectiveFOV(MAX_FOV * m_Zoom);
                 m_MovementSpeed = m_Zoom * 10.f;
                 m_RotationSpeed = m_Zoom * 0.2f;
             }

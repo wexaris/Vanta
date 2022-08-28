@@ -98,7 +98,7 @@ namespace Vanta {
         CameraUpdate(double delta) : Delta(delta) {}
 
         void operator()(entt::entity, TransformComponent& tr, CameraComponent& camera) const {
-            camera.Camera.SetTransform(tr.Transform);
+            camera.Camera.SetView(glm::inverse(tr.Transform));
         }
     };
 

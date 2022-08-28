@@ -73,12 +73,12 @@ namespace Vanta {
                 if (m_ViewportFocused)
                     m_EditorCamera.OnUpdate(delta);
 
-                m_ActiveScene->OnUpdateEditor(delta, &m_EditorCamera.Camera);
+                m_ActiveScene->OnUpdateEditor(delta, &m_EditorCamera.GetCamera());
                 break;
 
             case State::Simulate:
                 m_EditorCamera.OnUpdate(delta);
-                m_ActiveScene->OnUpdateSimulation(delta, &m_EditorCamera.Camera);
+                m_ActiveScene->OnUpdateSimulation(delta, &m_EditorCamera.GetCamera());
                 break;
 
             case State::Play:

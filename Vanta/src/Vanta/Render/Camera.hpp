@@ -9,46 +9,22 @@ namespace Vanta {
 
         virtual void Resize(uint width, uint height) = 0;
 
-        void SetTransform(const glm::mat4& transform);
-        void SetTransform(const glm::vec3& position, const glm::vec3& rotation);
-
-        void SetPosition(const glm::vec3& position);
-        void SetRotation(const glm::vec3& rotation);
-
-        void Move(const glm::vec3& offset);
-        void Rotate(const glm::vec3& offset);
-
-        const glm::mat4& GetTransform() {
-            if (m_DirtyTransform) RecalculateTransform();
-            return m_Transform;
-        }
-        const glm::vec3& GetPosition() const    { return m_Position; }
-        const glm::vec3& GetRotationRad() const { return m_Rotation; }
-        glm::vec3 GetRotationDeg() const        { return glm::degrees(m_Rotation); }
-
         void SetView(const glm::mat4& view);
         void SetProjection(const glm::mat4& proj);
 
         const glm::mat4& GetView() const           { return m_ViewMatrix; }
         const glm::mat4& GetProjection() const     { return m_ProjectionMatrix; }
-        const glm::mat4& GetViewProjection() {
-            if (m_DirtyTransform) RecalculateTransform();
+        virtual const glm::mat4& GetViewProjection() {
             if (m_DirtyViewProjection) RecalculateViewProjection();
             return m_ViewProjectionMatrix;
         }
 
-    protected:
-        glm::vec3 m_Position = { 0.f, 0.f, 0.f };
-        glm::vec3 m_Rotation = { 0.f, 0.f, 0.f };
-        glm::mat4 m_Transform = glm::mat4(1.f);
-        bool m_DirtyTransform = false;
-
-        glm::mat4 m_ViewMatrix = glm::inverse(m_Transform);
+    private:
+        glm::mat4 m_ViewMatrix = glm::inverse(glm::mat4(1.f));
         glm::mat4 m_ProjectionMatrix = glm::mat4(1.f);
         glm::mat4 m_ViewProjectionMatrix = glm::mat4(1.f);
         bool m_DirtyViewProjection = false;
 
-        void RecalculateTransform();
         void RecalculateViewProjection();
     };
 }

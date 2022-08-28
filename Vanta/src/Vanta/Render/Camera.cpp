@@ -4,6 +4,22 @@
 
 namespace Vanta {
 
+    void Camera::SetView(const glm::mat4& view) {
+        m_ViewMatrix = view;
+        m_DirtyViewProjection = true;
+    }
+
+    void Camera::SetProjection(const glm::mat4& proj) {
+        m_ProjectionMatrix = proj;
+        m_DirtyViewProjection = true;
+    }
+
+    void Camera::RecalculateViewProjection() {
+        m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+        m_DirtyViewProjection = false;
+    }
+
+#if 0
     void Camera::SetTransform(const glm::mat4& transform) {
         VANTA_PROFILE_FUNCTION();
         m_Transform = transform;
@@ -38,16 +54,6 @@ namespace Vanta {
         m_DirtyTransform = true;
     }
 
-    void Camera::SetView(const glm::mat4& view) {
-        m_ViewMatrix = view;
-        m_DirtyViewProjection = true;
-    }
-
-    void Camera::SetProjection(const glm::mat4& proj) {
-        m_ProjectionMatrix = proj;
-        m_DirtyViewProjection = true;
-    }
-
     void Camera::RecalculateTransform() {
         glm::mat4 translate = glm::translate(glm::mat4(1.f), m_Position);
         glm::mat4 rotate = glm::mat4_cast(glm::quat(m_Rotation));
@@ -55,9 +61,5 @@ namespace Vanta {
         SetView(glm::inverse(m_Transform));
         m_DirtyTransform = false;
     }
-
-    void Camera::RecalculateViewProjection() {
-        m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
-        m_DirtyViewProjection = false;
-    }
+#endif
 }
