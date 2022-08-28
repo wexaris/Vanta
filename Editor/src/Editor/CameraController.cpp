@@ -1,10 +1,10 @@
-#include "Editor/ViewportCameraController.hpp"
+#include "Editor/CameraController.hpp"
 
 namespace Vanta {
     namespace Editor {
 
         ViewportCameraController::ViewportCameraController() :
-            Camera(SceneCamera::Perspective(glm::radians(DEFAULT_FOV), 0.1f, 1000.f)) {}
+            Camera(SceneCamera::Perspective(DEFAULT_FOV, 0.1f, 1000.f)) {}
 
         void ViewportCameraController::OnUpdate(double delta) {
             VANTA_PROFILE_FUNCTION();

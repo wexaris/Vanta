@@ -21,7 +21,7 @@ namespace Vanta {
 
     void SceneCamera::SetPerspective(float fov, float nearClip, float farClip) {
         m_Projection = Projection::Perspective;
-        m_PerspectiveFOV = fov;
+        m_PerspectiveFOV = glm::radians(fov);
         m_PerspectiveNear = nearClip;
         m_PerspectiveFar = farClip;
         Recalculate();

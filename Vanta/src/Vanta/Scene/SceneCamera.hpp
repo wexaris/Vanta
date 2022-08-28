@@ -63,13 +63,13 @@ namespace Vanta {
     private:
         Projection m_Projection = Projection::Perspective;
 
-        float m_PerspectiveFOV;
-        float m_PerspectiveNear;
-        float m_PerspectiveFar;
+        float m_PerspectiveFOV = glm::radians(45.f);
+        float m_PerspectiveNear = 0.1f;
+        float m_PerspectiveFar = 100.f;
 
-        float m_OrthographicSize;
-        float m_OrthographicNear;
-        float m_OrthographicFar;
+        float m_OrthographicSize = 10.f;
+        float m_OrthographicNear = -1.f;
+        float m_OrthographicFar = 100.f;
 
         float m_AspectRatio = 16.f / 9.f;
 
