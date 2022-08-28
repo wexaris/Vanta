@@ -1,5 +1,5 @@
 #include "vantapch.hpp"
-#include "Platform/OpenGL/Render/GraphicsAPI.hpp"
+#include "Platform/OpenGL/GraphicsAPI.hpp"
 
 #include <glad/glad.h>
 

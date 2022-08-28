@@ -2,7 +2,7 @@
 #include "Vanta/Render/GraphicsAPI.hpp"
 #include "Vanta/Render/Buffer.hpp"
 
-#include "Platform/OpenGL/Render/Buffer.hpp"
+#include "Platform/OpenGL/Buffer.hpp"
 
 namespace Vanta {
 

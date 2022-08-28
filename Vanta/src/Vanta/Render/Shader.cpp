@@ -2,7 +2,7 @@
 #include "Vanta/Render/Shader.hpp"
 #include "Vanta/Render/GraphicsAPI.hpp"
 
-#include "Platform/OpenGL/Render/Shader.hpp"
+#include "Platform/OpenGL/Shader.hpp"
 
 namespace Vanta {
 

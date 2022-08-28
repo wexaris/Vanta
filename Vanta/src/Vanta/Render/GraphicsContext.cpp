@@ -2,7 +2,7 @@
 #include "Vanta/Render/GraphicsAPI.hpp"
 #include "Vanta/Render/GraphicsContext.hpp"
 
-#include "Platform/OpenGL/Render/Context.hpp"
+#include "Platform/OpenGL/Context.hpp"
 
 namespace Vanta {
     Box<GraphicsContext> GraphicsContext::Create(void* window) {

@@ -1,6 +1,6 @@
 #include "vantapch.hpp"
-#include "Platform/OpenGL/Render/Buffer.hpp"
-#include "Platform/OpenGL/Render/VertexArray.hpp"
+#include "Platform/OpenGL/Buffer.hpp"
+#include "Platform/OpenGL/VertexArray.hpp"
 
 #include <glad/glad.h>
 

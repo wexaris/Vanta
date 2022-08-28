@@ -2,7 +2,7 @@
 #include "Vanta/Render/Texture.hpp"
 #include "Vanta/Render/GraphicsAPI.hpp"
 
-#include "Platform/OpenGL/Render/Texture.hpp"
+#include "Platform/OpenGL/Texture.hpp"
 
 namespace Vanta {
 

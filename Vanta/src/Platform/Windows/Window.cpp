@@ -1,5 +1,5 @@
 #include "vantapch.hpp"
-#include "Platform/Windows/Core/Window.hpp"
+#include "Platform/Windows/Window.hpp"
 #include "Vanta/Event/KeyEvent.hpp"
 #include "Vanta/Event/MouseEvent.hpp"
 #include "Vanta/Event/WindowEvent.hpp"

@@ -1,7 +1,7 @@
 #include "vantapch.hpp"
 #include "Vanta/Render/GraphicsAPI.hpp"
 
-#include "Platform/OpenGL/Render/GraphicsAPI.hpp"
+#include "Platform/OpenGL/GraphicsAPI.hpp"
 
 namespace Vanta {
     

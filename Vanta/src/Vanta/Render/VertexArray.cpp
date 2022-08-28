@@ -2,7 +2,7 @@
 #include "Vanta/Render/VertexArray.hpp"
 #include "Vanta/Render/GraphicsAPI.hpp"
 
-#include "Platform/OpenGL/Render/VertexArray.hpp"
+#include "Platform/OpenGL/VertexArray.hpp"
 
 namespace Vanta {
 
