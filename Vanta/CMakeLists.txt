@@ -15,6 +15,7 @@ find_package(glm CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(imguizmo CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
+find_package(yaml-cpp CONFIG REQUIRED)
 find_path(STB_INCLUDE_DIRS "stb_image.h")
 
 set(${PROJECT_NAME}_SOURCE
@@ -55,7 +56,7 @@ set(${PROJECT_NAME}_SOURCE
     "src/Platform/OpenGL/Render/VertexArray.cpp"
     "src/Platform/Windows/Core/Window.cpp"
     "src/Platform/Windows/Input/Input.cpp"
-)
+ "src/Vanta/Scene/Serializer.cpp")
 
 set(${${PROJECT_NAME}_PCH} src/vantapch.hpp)
 
@@ -66,7 +67,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC src)
 
 target_link_libraries(${PROJECT_NAME}
     PUBLIC EnTT::EnTT fmt::fmt glm::glm spdlog::spdlog
-    PRIVATE Boost::boost Boost::fiber Boost::thread glad::glad glfw imgui::imgui imguizmo::imguizmo)
+    PRIVATE Boost::boost Boost::fiber Boost::thread glad::glad glfw imgui::imgui imguizmo::imguizmo yaml-cpp)
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE
     $<$<BOOL:${VANTA_DISTRIB}>:

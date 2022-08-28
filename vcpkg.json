@@ -15,6 +15,7 @@
         },
         "imguizmo",
         "spdlog",
-        "stb"
+        "stb",
+        "yaml-cpp"
     ]
 }

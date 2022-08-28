@@ -2,7 +2,7 @@
 #include <Vanta/Vanta.hpp>
 #include <Vanta/Render/Framebuffer.hpp>
 
-#include "Editor/ViewportCameraController.hpp"
+#include "Editor/CameraController.hpp"
 #include "Editor/Window/Console.hpp"
 #include "Editor/Window/SceneHierarchy.hpp"
 
@@ -33,6 +33,7 @@ namespace Vanta {
 
             Ref<Scene> m_ActiveScene;
             Ref<Scene> m_EditorScene;
+            Path m_SceneFilepath;
 
             ViewportCameraController m_EditorCamera;
 

@@ -45,8 +45,7 @@ namespace Vanta {
         VANTA_PROFILE_RENDER_FUNCTION();
 
         auto file = IO::File(filepath);
-
-        SourceMap sources = SplitSource(file.Content);
+        SourceMap sources = SplitSource(file.Read());
         Compile(sources);
     }
 

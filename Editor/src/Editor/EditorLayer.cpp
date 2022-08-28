@@ -1,5 +1,7 @@
 #include "Editor/EditorLayer.hpp"
 
+#include <Vanta/Scene/Serializer.hpp>
+
 #include <imgui.h>
 #include <ImGuizmo.h>
 
@@ -22,9 +24,6 @@ namespace Vanta {
             fbParams.Height = 720;
             m_Framebuffer = Framebuffer::Create(fbParams);
 
-            m_EditorScene = NewRef<Scene>();
-            m_ActiveScene = m_EditorScene;
-
             // TODO: Load scene from CLI
             /*auto commandLineArgs = Engine::Get().GetParams().CommandLineArgs;
             if (commandLineArgs.size() > 1) {
@@ -33,35 +32,7 @@ namespace Vanta {
                 m_ActiveScene = serializer.Deserialize(scenePath);
             }*/
 
-            //Renderer2D::SetLineWidth(4.f);
-
-            {
-                VANTA_PROFILE_SCOPE("PLACEHOLDER SETUP");
-
-                auto view = glm::lookAt(glm::vec3(0, 0, 5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-                m_EditorCamera.SetTransform(glm::inverse(view));
-
-                auto camera = m_ActiveScene->CreateEntity("Camera");
-                camera.AddComponent<CameraComponent>();
-                camera.GetComponent<TransformComponent>().SetTransform({ -5, 0, 0 }, { 0, 0, 0 }, { 1, 1, 1 });
-
-                auto sprite_1 = m_ActiveScene->CreateEntity("Sprite_1");
-                sprite_1.AddComponent<PhysicsComponent>();
-                sprite_1.AddComponent<SpriteComponent>(glm::vec4{ 0.8, 0.2, 0.3, 1.0 });
-                sprite_1.GetComponent<TransformComponent>().SetTransform({ 0, 0, 0 }, { 0, 0, 0 }, { 1, 1, 1 });
-
-                auto sprite_2 = m_ActiveScene->CreateEntity("Sprite_2");
-                sprite_2.AddComponent<PhysicsComponent>();
-                sprite_2.AddComponent<SpriteComponent>(glm::vec4{ 0.3, 0.3, 0.8, 1.0 });
-                sprite_2.GetComponent<TransformComponent>().SetTransform({ 0, 2, 0 }, { 0, 0, 0 }, { 1, 1, 1 });
-
-                auto sprite_3 = m_ActiveScene->CreateEntity("Sprite_3");
-                sprite_3.AddComponent<PhysicsComponent>();
-                sprite_3.AddComponent<SpriteComponent>(glm::vec4{ 0.2, 0.8, 0.3, 1.0 });
-                sprite_3.GetComponent<TransformComponent>().SetTransform({ 1, 0, 1 }, { 90, 0, 0 }, { 1, 1, 1 });
-            
-                m_ScenePanel.SetContext(m_ActiveScene);
-            }
+            NewScene();
         }
 
         void EditorLayer::OnDetach() {
@@ -260,7 +231,7 @@ namespace Vanta {
                         NewScene();
 
                     if (ImGui::MenuItem("Open...", "Ctrl+O"))
-                        OpenScene();
+                        OpenScene(Engine::Get().AssetDirectory() / "Scenes" / "Unnamed.vnta");
 
                     if (ImGui::MenuItem("Save", "Ctrl+S"))
                         SaveScene();
@@ -621,60 +592,62 @@ namespace Vanta {
 
             m_ScenePanel.SetContext(m_ActiveScene);
 
-            //m_EditorScenePath = std::filesystem::path();
+            m_SceneFilepath = Path();
         }
 
         void EditorLayer::OpenScene() {
             VANTA_PROFILE_FUNCTION();
 
             VANTA_UNIMPLEMENTED();
-            //std::string filepath = FileDialogs::OpenFile("Vanta Scene (*.hazel)\0*.hazel\0");
+            //std::string filepath = FileDialogs::OpenFile("Vanta Scene (*.vnta)\0*.vnta\0");
             //if (!filepath.empty())
             //    OpenScene(filepath);
         }
 
-        void EditorLayer::OpenScene(const Path& path) {
+        void EditorLayer::OpenScene(const Path& filepath) {
             VANTA_PROFILE_FUNCTION();
 
             if (m_State != State::Edit)
                 OnStop();
 
-            if (path.extension().string() != ".vanta") {
-                VANTA_WARN("Could not load {}; incorrect file type", path.filename().string());
+            if (filepath.extension().string() != ".vnta") {
+                VANTA_ERROR("Could not load {}; incorrect file type", filepath.filename());
                 return;
             }
 
-            VANTA_UNIMPLEMENTED();
-            /*SceneSerializer serializer;
-            Ref<Scene> newScene = serializer.Deserialize(path);
-            if (newScene) {
-                m_EditorScene = newScene;
-                m_EditorScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-                m_ScenePanel.SetContext(m_EditorScene);
+            Ref<Scene> newScene = NewRef<Scene>();
+            SceneSerializer serializer(newScene);
+            if (!serializer.Deserialize(filepath)) {
+                VANTA_ERROR("Failed to parse scene: {}", filepath.filename());
+                return;
+            }
+                
+            m_EditorScene = newScene;
+            m_EditorScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+            m_ScenePanel.SetContext(m_EditorScene);
 
-                m_ActiveScene = m_EditorScene;
-                m_EditorScenePath = path;
-            }*/
+            m_ActiveScene = m_EditorScene;
+            m_SceneFilepath = filepath;
         }
 
         void EditorLayer::SaveScene() {
             VANTA_PROFILE_FUNCTION();
 
             VANTA_UNIMPLEMENTED();
-            //if (!m_EditorScenePath.empty()) {
-            //    SceneSerializer serializer;
-            //    serializer.Serialize(m_ActiveScene, m_EditorScenePath);
-            //}
-            //else {
-            //    SaveSceneAs();
-            //}
+            if (!m_SceneFilepath.empty()) {
+                SceneSerializer serializer(m_ActiveScene);
+                serializer.Serialize(m_SceneFilepath);
+            }
+            else {
+                SaveSceneAs();
+            }
         }
 
         void EditorLayer::SaveSceneAs() {
             VANTA_PROFILE_FUNCTION();
 
             VANTA_UNIMPLEMENTED();
-            //std::string filepath = FileDialogs::SaveFile("Vanta Scene (*.hazel)\0*.hazel\0");
+            //std::string filepath = FileDialogs::SaveFile("Vanta Scene (*.vnta)\0*.vnta\0");
             //if (!filepath.empty()) {
             //    SceneSerializer serializer;
             //    serializer.Serialize(m_ActiveScene, filepath);
