@@ -86,7 +86,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE
     #RELEASE
     $<$<CONFIG:RELEASE>:
         $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
-            -O2 -s>
+            -Wall -Wextra -pedantic -O2 -Wno-format-security -Wno-language-extension-token>
         $<$<CXX_COMPILER_ID:MSVC>:
             /MD /Zi /GL /O2>>
 )

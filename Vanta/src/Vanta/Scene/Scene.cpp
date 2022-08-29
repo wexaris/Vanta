@@ -56,20 +56,23 @@ namespace Vanta {
         VANTA_PROFILE_FUNCTION();
         OnScriptUpdate(delta);
         OnPhysicsUpdate(delta);
-        m_DataBuffer.Next();
         OnRender(delta, GetActiveCamera());
+
+        m_UpdateBarrier.Wait();
+        m_DataBuffer.Next();
     }
 
     void Scene::OnUpdateSimulation(double delta, Camera* camera) {
         VANTA_PROFILE_FUNCTION();
         OnPhysicsUpdate(delta);
-        m_DataBuffer.Next();
         OnRender(delta, camera);
+
+        m_UpdateBarrier.Wait();
+        m_DataBuffer.Next();
     }
 
     void Scene::OnUpdateEditor(double delta, Camera* camera) {
         VANTA_PROFILE_FUNCTION();
-        m_DataBuffer.Next();
         OnRender(delta, camera);
     }
 
@@ -88,11 +91,6 @@ namespace Vanta {
         }
     };
 
-    void Scene::OnPhysicsUpdate(double delta) {
-        VANTA_PROFILE_FUNCTION();
-        m_DataBuffer.View<PhysicsComponent>(m_Registry, ParalelDispatch<PhysicsUpdate>(delta));
-    }
-
     struct CameraUpdate {
         double Delta;
         CameraUpdate(double delta) : Delta(delta) {}
@@ -101,6 +99,14 @@ namespace Vanta {
             camera.Camera.SetView(glm::inverse(tr.Transform));
         }
     };
+
+    void Scene::OnPhysicsUpdate(double delta) {
+        VANTA_PROFILE_FUNCTION();
+        m_DataBuffer.View<PhysicsComponent>(m_Registry, ParallelDispatch<PhysicsUpdate>(m_UpdateBarrier, delta));
+        //m_DataBuffer.View<PhysicsComponent>(m_Registry, LinearDispatch<PhysicsUpdate>(delta));
+
+        m_DataBuffer.ViewCurr<CameraComponent>(m_Registry, LinearDispatch<CameraUpdate>(delta));
+    }
 
     struct Render {
         double Delta;
@@ -114,13 +120,10 @@ namespace Vanta {
     void Scene::OnRender(double delta, Camera* camera) {
         VANTA_PROFILE_RENDER_FUNCTION();
         if (camera) {
-            m_DataBuffer.ViewPrev<CameraComponent>(m_Registry, LinearDispatch<CameraUpdate>(delta));
-
             Renderer2D::SceneBegin(camera);
-            m_DataBuffer.ViewPrev<SpriteComponent>(m_Registry, LinearDispatch<Render>(delta));
+            m_DataBuffer.ViewCurr<SpriteComponent>(m_Registry, LinearDispatch<Render>(delta));
             Renderer2D::SceneEnd();
         }
-        m_DataBuffer.Next();
     }
 
     bool Scene::IsValid(Entity entity) const {
@@ -151,9 +154,8 @@ namespace Vanta {
         VANTA_PROFILE_FUNCTION();
         m_ViewportSize.x = width;
         m_ViewportSize.y = height;
-        if (auto camera = GetActiveCamera()) {
+        if (auto camera = GetActiveCamera())
             camera->Resize(width, height);
-        }
     }
 
     void Scene::SetActiveCameraEntity(Entity& camera) {
@@ -161,11 +163,14 @@ namespace Vanta {
     }
 
     Entity Scene::GetActiveCameraEntity() {
-        return m_Registry.valid(m_ActiveCameraEntity) ? Entity(m_ActiveCameraEntity, this) : Entity();
+        return m_Registry.valid(m_ActiveCameraEntity) ?
+            Entity(m_ActiveCameraEntity, this) : Entity();
     }
 
     Camera* Scene::GetActiveCamera() {
-        return m_Registry.valid(m_ActiveCameraEntity) ?
-            &m_Registry.get<CameraComponent>(m_ActiveCameraEntity).Camera : nullptr;
+        if (m_Registry.valid(m_ActiveCameraEntity))
+            if (auto comp = m_Registry.try_get<CameraComponent>(m_ActiveCameraEntity))
+                return &comp->Camera;
+        return nullptr;
     }
 }

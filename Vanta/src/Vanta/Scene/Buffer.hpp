@@ -128,22 +128,54 @@ namespace Vanta {
         LinearDispatch operator=(const LinearDispatch&) = delete;
     };
 
+    class DispatchBarrier {
+    public:
+        void Wait() {
+            if (m_Barrier != nullptr) {
+                m_Barrier->wait();
+                Fibers::End();
+                delete m_Barrier;
+                m_Barrier = nullptr;
+            }
+        }
+
+    private:
+        template<typename>
+        friend class ParallelDispatch;
+
+        fibers::barrier* m_Barrier = nullptr;
+
+        void StartFibers(usize jobCount) {
+            Fibers::Begin(jobCount);
+            m_Barrier = new fibers::barrier(jobCount + 1); // + 1 for this spawner thread
+        }
+
+        void StartLinear() {
+            m_Barrier = nullptr;
+        }
+
+        void WaitFiber() {
+            if (m_Barrier != nullptr)
+                m_Barrier->wait();
+        }
+    };
+
     /// <summary>
     /// Dispatcher that iterates over a collection of entities in parallel,
     /// on the engine's thread pool.
     /// </summary>
     /// <typeparam name="Functor">Functor to execute for every entity and its components.</typeparam>
     template<typename Functor>
-    class ParalelDispatch {
+    class ParallelDispatch {
     public:
-        static constexpr usize CHUNK_SIZE = 8;
+        static constexpr usize CHUNK_SIZE = 32;
 
         template<typename... Args>
-        ParalelDispatch(Args&&... args)
-            : m_Functor(std::forward<Args>(args)...) {}
+        ParallelDispatch(DispatchBarrier& barrier, Args&&... args)
+            : m_Barrier(&barrier), m_Functor(std::forward<Args>(args)...) {}
 
         template<typename... Components>
-        void operator()(const entt::view<entt::get_t<Components...>>& view) const {
+        void operator()(const entt::view<entt::get_t<Components...>>& view) {
             auto beg = view.begin();
             auto end = view.end();
 
@@ -154,31 +186,29 @@ namespace Vanta {
                 m_Functor(args...);
             };
 
-            usize taskCount = (usize)std::ceil((float)view.size_hint() / CHUNK_SIZE);
+            usize jobCount = (usize)std::ceil((float)view.size_hint() / CHUNK_SIZE);
 
-            if (taskCount > 1) {
-                Fibers::Begin(taskCount);
-                fibers::barrier bar(taskCount + 1); // + 1 for this spawner thread
+            if (jobCount > 1) {
+                m_Barrier->StartFibers(jobCount);
 
-                for (usize i = 0; i < taskCount; i++) {
-                    Fibers::Spawn([&](auto beg) {
+                for (usize i = 0; i < jobCount; i++) {
+                    Fibers::Spawn([&](auto* barrier, auto view, auto beg, auto end) {
                         for (usize i = 0; i < CHUNK_SIZE && beg != end; ++i, ++beg) {
                             auto entity = *beg;
                             auto components = view.template get<Components...>(entity);
                             auto args = std::tuple_cat(std::make_tuple(entity), components);
                             std::apply(func, args);
                         }
-                        bar.wait();
-                    }, beg);
+                        barrier->WaitFiber();
+                    }, m_Barrier, view, beg, end);
 
                     for (usize j = 0; j < CHUNK_SIZE && beg != end; ++j)
                         ++beg;
                 }
-
-                bar.wait();
-                Fibers::End();
             }
             else {
+                m_Barrier->StartLinear();
+
                 for (; beg != end; ++beg) {
                     auto entity = *beg;
                     auto components = view.template get<Components...>(entity);
@@ -189,11 +219,12 @@ namespace Vanta {
         }
 
     private:
+        DispatchBarrier* m_Barrier;
         Functor m_Functor;
 
-        ParalelDispatch(ParalelDispatch&&) = delete;
-        ParalelDispatch(const ParalelDispatch&) = delete;
-        ParalelDispatch operator=(const ParalelDispatch&) = delete;
+        ParallelDispatch(ParallelDispatch&&) = delete;
+        ParallelDispatch(const ParallelDispatch&) = delete;
+        ParallelDispatch& operator=(const ParallelDispatch&) = delete;
     };
 
     template<typename... ComponentLists>
@@ -221,7 +252,7 @@ namespace Vanta {
         }
 
         template<typename... Unbuffered, class Dispatcher>
-        void View(entt::registry& registry, Dispatcher& dispatcher) {
+        void View(entt::registry& registry, Dispatcher&& dispatcher) {
             ViewTwo_<0, Unbuffered...>(m_BufferIdx, registry, dispatcher);
         }
 
@@ -237,24 +268,24 @@ namespace Vanta {
         }
 
         template<typename... Unbuffered, class Dispatcher>
-        void ViewCurr(entt::registry& registry, Dispatcher& dispatcher) {
+        void ViewCurr(entt::registry& registry, Dispatcher&& dispatcher) {
             ViewOne_<0, Unbuffered...>(m_BufferIdx, registry, dispatcher);
         }
 
         /// <summary>
-        /// Run given function on the previous data buffer.
+        /// Run given function on the next data buffer.
         /// </summary>
         /// <typeparam name="Unbuffered">Other non-buffered components to retrieve.</typeparam>
         /// <param name="registry">Entity registry.</param>
         /// <param name="dispatcher">Dispatcher that will handle the view.</param>
         template<typename... Unbuffered, class Dispatcher>
-        void ViewPrev(entt::registry& registry, const Dispatcher& dispatcher) {
-            ViewOne_<0, Unbuffered...>((m_BufferIdx - 1) % sizeof...(Components), registry, dispatcher);
+        void ViewNext(entt::registry& registry, const Dispatcher& dispatcher) {
+            ViewOne_<0, Unbuffered...>((m_BufferIdx + 1) % sizeof...(Components), registry, dispatcher);
         }
 
         template<typename... Unbuffered, class Dispatcher>
-        void ViewPrev(entt::registry& registry, Dispatcher& dispatcher) {
-            ViewOne_<0, Unbuffered...>((m_BufferIdx - 1) % sizeof...(Components), registry, dispatcher);
+        void ViewNext(entt::registry& registry, Dispatcher&& dispatcher) {
+            ViewOne_<0, Unbuffered...>((m_BufferIdx + 1) % sizeof...(Components), registry, dispatcher);
         }
 
         /// <summary>
@@ -286,7 +317,7 @@ namespace Vanta {
         usize m_BufferIdx = 0; // Current buffer index
 
         /// <summary>
-        /// Iterate through variadic params looking for the previous buffer.
+        /// Iterate through variadic params looking for the specified buffer.
         /// </summary>
         /// <typeparam name="N">Current iteration.</typeparam>
         /// <typeparam name="Unbuffered">Other non-buffered components to retrieve.</typeparam>
@@ -296,8 +327,8 @@ namespace Vanta {
         static void ViewOne_(usize idx, entt::registry& registry, const Dispatcher& dispatcher) {
             if (idx == N) {
                 auto view = registry.view<
-                    Get_t<(N - 1) % sizeof...(Components), Components...>,
-                    Get_t<(N - 1) % sizeof...(Components), ComponentLists>...,
+                    Get_t<N, Components...>,
+                    Get_t<N, ComponentLists>...,
                     Unbuffered...>();
                 dispatcher(view);
             }
@@ -307,11 +338,11 @@ namespace Vanta {
         }
         
         template<usize N, typename... Unbuffered, class Dispatcher> requires (N < sizeof...(Components))
-        static void ViewOne_(usize idx, entt::registry& registry, Dispatcher& dispatcher) {
+        static void ViewOne_(usize idx, entt::registry& registry, Dispatcher&& dispatcher) {
             if (idx == N) {
                 auto view = registry.view<
-                    Get_t<(N - 1) % sizeof...(Components), Components...>,
-                    Get_t<(N - 1) % sizeof...(Components), ComponentLists>...,
+                    Get_t<N, Components...>,
+                    Get_t<N, ComponentLists>...,
                     Unbuffered...>();
                 dispatcher(view);
             }
@@ -321,7 +352,7 @@ namespace Vanta {
         }
 
         /// <summary>
-        /// Iterate through variadic params looking for the last and current buffer.
+        /// Iterate through variadic params looking for the current and next buffer.
         /// </summary>
         /// <typeparam name="N">Current iteration.</typeparam>
         /// <typeparam name="Unbuffered">Other non-buffered types to retrieve.</typeparam>
@@ -331,10 +362,10 @@ namespace Vanta {
         static void ViewTwo_(usize idx, entt::registry& registry, const Dispatcher& dispatcher) {
             if (idx == N) {
                 auto view = registry.view<
-                    Get_t<(N - 1) % sizeof...(Components), Components...>,
-                    Get_t<(N - 1) % sizeof...(Components), ComponentLists>...,
-                    Get_t<N, Components...>,
-                    Get_t<N, ComponentLists>...,
+                    Get_t<(N + 0) % sizeof...(Components), Components...>,
+                    Get_t<(N + 0) % sizeof...(Components), ComponentLists>...,
+                    Get_t<(N + 1) % sizeof...(Components), Components...>,
+                    Get_t<(N + 1) % sizeof...(Components), ComponentLists>...,
                     Unbuffered...>();
                 dispatcher(view);
             }
@@ -344,13 +375,13 @@ namespace Vanta {
         }
 
         template<usize N, typename... Unbuffered, class Dispatcher> requires (N < sizeof...(Components))
-        static void ViewTwo_(usize idx, entt::registry& registry, Dispatcher& dispatcher) {
+        static void ViewTwo_(usize idx, entt::registry& registry, Dispatcher&& dispatcher) {
             if (idx == N) {
                 auto view = registry.view<
-                    Get_t<(N - 1) % sizeof...(Components), Components...>,
-                    Get_t<(N - 1) % sizeof...(Components), ComponentLists>...,
-                    Get_t<N, Components...>,
-                    Get_t<N, ComponentLists>...,
+                    Get_t<(N + 0) % sizeof...(Components), Components...>,
+                    Get_t<(N + 0) % sizeof...(Components), ComponentLists>...,
+                    Get_t<(N + 1) % sizeof...(Components), Components...>,
+                    Get_t<(N + 1) % sizeof...(Components), ComponentLists>...,
                     Unbuffered...>();
                 dispatcher(view);
             }

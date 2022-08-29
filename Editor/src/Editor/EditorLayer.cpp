@@ -586,11 +586,11 @@ namespace Vanta {
         void EditorLayer::NewScene() {
             VANTA_PROFILE_FUNCTION();
 
-            m_ActiveScene = NewRef<Scene>();
-            m_ActiveScene->OnViewportResize((uint)m_ViewportSize.x, (uint)m_ViewportSize.y);
+            m_EditorScene = NewRef<Scene>();
+            m_EditorScene->OnViewportResize((uint)m_ViewportSize.x, (uint)m_ViewportSize.y);
+            m_ScenePanel.SetContext(m_EditorScene);
 
-            m_ScenePanel.SetContext(m_ActiveScene);
-
+            m_ActiveScene = m_EditorScene;
             m_SceneFilepath = Path();
         }
 
@@ -619,9 +619,9 @@ namespace Vanta {
                 VANTA_ERROR("Failed to parse scene: {}", filepath.filename());
                 return;
             }
-                
+ 
             m_EditorScene = newScene;
-            m_EditorScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+            m_EditorScene->OnViewportResize((uint)m_ViewportSize.x, (uint)m_ViewportSize.y);
             m_ScenePanel.SetContext(m_EditorScene);
 
             m_ActiveScene = m_EditorScene;
@@ -632,7 +632,7 @@ namespace Vanta {
             VANTA_PROFILE_FUNCTION();
 
             if (!m_SceneFilepath.empty()) {
-                SceneSerializer serializer(m_ActiveScene);
+                SceneSerializer serializer(m_EditorScene);
                 serializer.Serialize(m_SceneFilepath);
             }
             else {
@@ -645,7 +645,7 @@ namespace Vanta {
 
             auto file = IO::FileDialog::SaveFile("Vanta Scene (*.vnta)\0*.vnta\0");
             if (file) {
-                SceneSerializer serializer(m_ActiveScene);
+                SceneSerializer serializer(m_EditorScene);
                 serializer.Serialize(file.value());
                 m_SceneFilepath = file->Filepath;
             }

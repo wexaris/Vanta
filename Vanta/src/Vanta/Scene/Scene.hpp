@@ -66,11 +66,11 @@ namespace Vanta {
         using Buffers = Buffer<TransformComponentBuffers>;
 
         entt::registry m_Registry;
-        //Ref<Camera> m_ActiveCamera = nullptr;
         entt::entity m_ActiveCameraEntity;
         glm::uvec2 m_ViewportSize;
 
         Buffers m_DataBuffer;
+        DispatchBarrier m_UpdateBarrier;
 
         void OnScriptUpdate(double delta);
         void OnPhysicsUpdate(double delta);
