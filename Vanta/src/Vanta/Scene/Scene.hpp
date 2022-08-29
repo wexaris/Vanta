@@ -14,6 +14,8 @@ namespace Vanta {
         Scene();
         ~Scene();
 
+        static Ref<Scene> Copy(const Ref<Scene>& other);
+
         void OnRuntimeBegin();
         void OnRuntimeEnd();
 
@@ -29,20 +31,42 @@ namespace Vanta {
         Entity DuplicateEntity(Entity entity);
         void DestroyEntity(Entity entity);
 
-        template<typename T, typename... Args>
-        T& AddComponent(Entity entity, Args&&... args) {
-            T& component = m_Registry.emplace_or_replace<T>(entity, std::forward<Args>(args)...);
+        /// <summary>
+        /// Add a given component to an entity.
+        /// </summary>
+        template<typename Component, typename... Args>
+        Component& AddComponent(Entity entity, Args&&... args) {
+            VANTA_ASSERT(!HasComponent<Component>(entity), "Entity already has component: {}", typeid(Component).name());
+            Component& component = m_Registry.emplace<Component>(entity, std::forward<Args>(args)...);
             OnComponentAdded(entity, component);
             return component;
         }
 
-        template<typename T>
-        void RemoveComponent(Entity entity) {
-            m_Registry.remove<T>(entity);
+        /// <summary>
+        /// Add to replace a given component to an entity.
+        /// </summary>
+        template<typename Component, typename... Args>
+        Component& AddOrReplaceComponent(Entity entity, Args&&... args) {
+            Component& component = m_Registry.emplace_or_replace<Component>(entity, std::forward<Args>(args)...);
+            OnComponentAdded(entity, component);
+            return component;
         }
 
+        /// <summary>
+        /// Remove a given component from an entity.
+        /// </summary>
+        template<typename Component>
+        void RemoveComponent(Entity entity) {
+            VANTA_ASSERT(HasComponent<Component>(entity), "Entity does not have component: {}", typeid(Component).name());
+            m_Registry.remove<Component>(entity);
+        }
+
+        /// <summary>
+        /// Get a given component from an entity.
+        /// </summary>
         template<typename Component>
         Component& GetComponent(Entity entity) {
+            VANTA_ASSERT(HasComponent<Component>(entity), "Entity does not have component: {}", typeid(Component).name());
             if constexpr (Buffers::HasComponent<Component>())
                 return m_DataBuffer.Get<Component>(m_Registry, entity);
             else 

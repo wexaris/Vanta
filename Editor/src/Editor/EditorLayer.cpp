@@ -531,7 +531,7 @@ namespace Vanta {
 
             m_State = State::Play;
 
-            //m_ActiveScene = Scene::Copy(m_EditorScene);
+            m_ActiveScene = Scene::Copy(m_EditorScene);
             m_ActiveScene->OnRuntimeBegin();
 
             m_ScenePanel.SetContext(m_ActiveScene);
@@ -543,7 +543,7 @@ namespace Vanta {
 
             m_State = State::Simulate;
 
-            //m_ActiveScene = Scene::Copy(m_EditorScene);
+            m_ActiveScene = Scene::Copy(m_EditorScene);
             m_ActiveScene->OnSimulationBegin();
 
             m_ScenePanel.SetContext(m_ActiveScene);
@@ -588,9 +588,10 @@ namespace Vanta {
 
             m_EditorScene = NewRef<Scene>();
             m_EditorScene->OnViewportResize((uint)m_ViewportSize.x, (uint)m_ViewportSize.y);
-            m_ScenePanel.SetContext(m_EditorScene);
 
             m_ActiveScene = m_EditorScene;
+            m_ScenePanel.SetContext(m_ActiveScene);
+
             m_SceneFilepath = Path();
         }
 
@@ -622,9 +623,10 @@ namespace Vanta {
  
             m_EditorScene = newScene;
             m_EditorScene->OnViewportResize((uint)m_ViewportSize.x, (uint)m_ViewportSize.y);
-            m_ScenePanel.SetContext(m_EditorScene);
 
             m_ActiveScene = m_EditorScene;
+            m_ScenePanel.SetContext(m_ActiveScene);
+
             m_SceneFilepath = filepath;
         }
 

@@ -10,7 +10,7 @@ namespace Vanta {
         template<typename... Components>
         void CopyComponents(Entity from, Entity to) {
             ((from.HasComponent<Components>() ?
-                (void)to.AddComponent<Components>(from.GetComponent<Components>()) : void()), ...);
+                (void)to.AddOrReplaceComponent<Components>(from.GetComponent<Components>()) : void()), ...);
         }
 
         template<typename... Components>
@@ -31,6 +31,25 @@ namespace Vanta {
     }
 
     Scene::~Scene() {}
+
+    Ref<Scene> Scene::Copy(const Ref<Scene>& other) {
+        Ref<Scene> scene = NewRef<Scene>();
+
+        scene->m_ViewportSize = other->m_ViewportSize;
+
+        auto idView = other->m_Registry.view<IDComponent>();
+        idView.each([&](entt::entity entity, IDComponent& id) {
+            Entity oldEntity(entity, other.get());
+
+            //const auto& uuid = id.ID;
+            const auto& name = id.Name;
+            Entity newEntity = scene->CreateEntity(name);
+
+            detail::CopyComponents(oldEntity, newEntity);
+        });
+
+        return scene;
+    }
 
     void Scene::OnRuntimeBegin() {
         VANTA_PROFILE_FUNCTION();

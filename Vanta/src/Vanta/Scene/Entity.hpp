@@ -17,31 +17,34 @@ namespace Vanta {
             return m_Scene ? m_Scene->IsValid(*this) : false;
         }
 
+        /// Add a component of a certain type.
+        template<typename Component, typename... Args>
+        Component& AddComponent(Args&&... args) {
+            return m_Scene->AddComponent<Component>(*this, std::forward<Args>(args)...);
+        }
+
         /// Add or replace a component of a certain type.
-        template<typename T, typename... Args>
-        T& AddComponent(Args&&... args) {
-            VANTA_ASSERT(!HasComponent<T>(), "Entity already has component: {}", typeid(T).name());
-            return m_Scene->AddComponent<T>(*this, std::forward<Args>(args)...);
+        template<typename Component, typename... Args>
+        Component& AddOrReplaceComponent(Args&&... args) {
+            return m_Scene->AddOrReplaceComponent<Component>(*this, std::forward<Args>(args)...);
         }
 
         /// Remove a component of a certain type.
-        template<typename T>
+        template<typename Component>
         void RemoveComponent() {
-            VANTA_ASSERT(HasComponent<T>(), "Entity does not have component: {}", typeid(T).name());
-            return m_Scene->RemoveComponent<T>(*this);
+            return m_Scene->RemoveComponent<Component>(*this);
         }
 
         /// Get a component of a certain type.
-        template<typename T>
-        T& GetComponent() {
-            VANTA_ASSERT(HasComponent<T>(), "Entity does not have component: {}", typeid(T).name());
-            return m_Scene->GetComponent<T>(*this);
+        template<typename Component>
+        Component& GetComponent() {
+            return m_Scene->GetComponent<Component>(*this);
         }
 
-        template<typename T>
+        template<typename Component>
         bool HasComponent() {
             VANTA_ASSERT(IsValid(), "Attempting to access invalid entity!");
-            return m_Scene->HasComponent<T>(*this);
+            return m_Scene->HasComponent<Component>(*this);
         }
 
         virtual void OnEvent(Event&) {}

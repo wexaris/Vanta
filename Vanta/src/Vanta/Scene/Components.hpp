@@ -83,7 +83,7 @@ namespace Vanta {
             : Texture(texture), Color(tint) {}
     };
 
-    using AllComponents = ComponentList<IDComponent, TransformComponent, PhysicsComponent, CameraComponent, SpriteComponent>;
+    using AllComponents = ComponentList<TransformComponent, PhysicsComponent, CameraComponent, SpriteComponent>;
 
 
     /// ///////////////// BUFFERED COMPONENTS /////////////////////////////////
