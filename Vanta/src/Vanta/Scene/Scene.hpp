@@ -1,9 +1,8 @@
 #pragma once
 #include "Vanta/Event/WindowEvent.hpp"
 #include "Vanta/Scene/Components.hpp"
+#include "Vanta/Scene/Dispatch.hpp"
 #include "Vanta/Render/Camera.hpp"
-
-#include <entt/entt.hpp>
 
 namespace Vanta {
 
@@ -27,7 +26,7 @@ namespace Vanta {
         void OnUpdateEditor(double delta, Camera* camera);
 
         bool IsValid(Entity entity) const;
-        Entity CreateEntity(const std::string& name/*, UUID id*/);
+        Entity CreateEntity(const std::string& name, UUID uuid = UUID());
         Entity DuplicateEntity(Entity entity);
         void DestroyEntity(Entity entity);
 
@@ -73,7 +72,7 @@ namespace Vanta {
         template<typename Component>
         const Component& GetComponent(Entity entity) const {
             VANTA_ASSERT(HasComponent<Component>(entity), "Entity does not have component: {}", typeid(Component).name());
-                return m_Registry.get<Component>(entity);
+            return m_Registry.get<Component>(entity);
         }
 
         template<typename Component>
@@ -90,17 +89,15 @@ namespace Vanta {
         entt::registry& GetRegistry() { return m_Registry; }
 
     private:
-        using Buffers = Buffer<TransformComponentBuffers>;
-
         entt::registry m_Registry;
         entt::entity m_ActiveCameraEntity;
         glm::uvec2 m_ViewportSize;
 
-        Buffers m_DataBuffer;
-        DispatchBarrier m_UpdateBarrier;
+        ParallelBarrier m_Barrier;
 
         void OnScriptUpdate(double delta);
         void OnPhysicsUpdate(double delta);
+        void OnRender(double delta, Entity camera);
         void OnRender(double delta, Camera* camera);
 
         template<typename T>

@@ -1,29 +1,63 @@
 #pragma once
 #include "Vanta/Render/Texture.hpp"
 #include "Vanta/Scene/SceneCamera.hpp"
-#include "Vanta/Scene/Buffer.hpp"
+
+#include <entt/entt.hpp>
 
 namespace Vanta {
 
-    struct IDComponent {
-        std::string Name;
-        IDComponent(const IDComponent& other) = default;
-        IDComponent(const std::string& name) : Name(name) {}
+    /// <summary>
+    /// Helper type for grouping and shuttling components around.
+    /// </summary>
+    template<typename... Components>
+    using ComponentList = entt::type_list<Components...>;
+
+    template<usize N, typename... Types>
+    struct Get<N, ComponentList<Types...>> : Get<N, Types...> {};
+
+    template <typename T, typename... Types>
+    struct Contains<T, ComponentList<Types...>> : Contains<Types...> {};
+
+    /// <summary>
+    /// Wrapper for components that need to be buffered.
+    /// Provides a realtime and snapshot copy of the given component.
+    /// </summary>
+    template<typename Component>
+    class Snapshotable {
+    public:
+        Component& GetRealtime()             { return m_Data; }
+        const Component& GetSnapshot() const { return m_Snapshot; }
+
+        void Snapshot() { std::swap(m_Snapshot, m_Data); }
+
+    private:
+        Component m_Data;
+        Component m_Snapshot;
     };
 
-    struct TransformComponent {
+
+    /// ///////////////// COMPONENTS //////////////////////////////////////////
+
+    struct IDComponent {
+        UUID ID;
+        std::string Name;
+        IDComponent(const IDComponent& other) = default;
+        IDComponent(const std::string& name, UUID uuid) : ID(uuid), Name(name) {}
+    };
+
+    struct TransformComponent_ {
         glm::vec3 Position = { 0.f, 0.f, 0.f }; // Position
         glm::vec3 Rotation = { 0.f, 0.f, 0.f }; // Rotation in radians
         glm::vec3 Scale    = { 1.f, 1.f, 1.f }; // Scale
 
         glm::mat4 Transform = glm::mat4(1.f);
 
-        TransformComponent() = default;
-        TransformComponent(const TransformComponent& other) = default;
-        TransformComponent(const glm::mat4& transform) {
+        TransformComponent_() = default;
+        TransformComponent_(const TransformComponent_& other) = default;
+        TransformComponent_(const glm::mat4& transform) {
             SetTransform(transform);
         }
-        TransformComponent(const glm::vec3& position, const glm::vec3& degrees, const glm::vec3& scale) {
+        TransformComponent_(const glm::vec3& position, const glm::vec3& degrees, const glm::vec3& scale) {
             SetTransform(position, degrees, scale);
         }
 
@@ -54,6 +88,8 @@ namespace Vanta {
         }
     };
 
+    using TransformComponent = Snapshotable<TransformComponent_>;
+
     struct PhysicsComponent {
         uint Placeholder = 0;
         PhysicsComponent() = default;
@@ -83,14 +119,6 @@ namespace Vanta {
             : Texture(texture), Color(tint) {}
     };
 
+
     using AllComponents = ComponentList<TransformComponent, PhysicsComponent, CameraComponent, SpriteComponent>;
-
-
-    /// ///////////////// BUFFERED COMPONENTS /////////////////////////////////
-    
-#define BUFFER_COUNT 2
-
-    VANTA_COMPONENT_BUFFER(TransformComponent, BUFFER_COUNT);
-
-#undef BUFFER_COUNT
 }

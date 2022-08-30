@@ -42,7 +42,6 @@ set(${PROJECT_NAME}_SOURCE
     "src/Vanta/Render/Shader.cpp"
     "src/Vanta/Render/Texture.cpp"
     "src/Vanta/Render/VertexArray.cpp"
-    "src/Vanta/Scene/Components.cpp"
     "src/Vanta/Scene/SceneCamera.cpp"
     "src/Vanta/Scene/Serializer.cpp"
     "src/Vanta/Scene/Entity.cpp"

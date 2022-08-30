@@ -50,7 +50,7 @@ namespace Vanta {
             ImGuiTreeNodeFlags flags = ((m_SelectedEntity == entity) ? ImGuiTreeNodeFlags_Selected : 0) |
                 ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
 
-            usize entityHandle = (usize)(entt::id_type)entity.GetHandle();
+            usize entityHandle = (usize)(uint32)entity;
             bool opened = ImGui::TreeNodeEx((void*)entityHandle, flags, name.c_str());
 
             if (ImGui::IsItemClicked()) {
@@ -212,15 +212,18 @@ namespace Vanta {
 
             ImGui::PopItemWidth();
 
-            DrawComponent<TransformComponent>("Transform", entity, [](auto& component) {
+            DrawComponent<TransformComponent>("Transform", entity, [](auto& snap) {
+                auto& component = snap.GetSnapshot();
                 glm::vec3 position = component.Position;
                 glm::vec3 rotation = component.GetRotationDegrees();
                 glm::vec3 scale = component.Scale;
                 DrawVec3Control("Position", position);
                 DrawVec3Control("Rotation", rotation);
                 DrawVec3Control("Scale", scale, 1.0f);
-                if (component.Position != position || component.GetRotationDegrees() != rotation || component.Scale != scale)
-                    component.SetTransform(position, rotation, scale);
+                if (component.Position != position || component.GetRotationDegrees() != rotation || component.Scale != scale) {
+                    snap.GetRealtime().SetTransform(position, rotation, scale);
+                    snap.Snapshot();
+                }
             });
 
             DrawComponent<CameraComponent>("Camera", entity, [&](auto& component) {

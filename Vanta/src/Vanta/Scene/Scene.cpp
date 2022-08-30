@@ -24,13 +24,11 @@ namespace Vanta {
     }
 
     Scene::Scene()
-        : m_ViewportSize(Engine::Get().GetWindow().GetWidth(), Engine::Get().GetWindow().GetHeight())
-    {
-        VANTA_PROFILE_FUNCTION();
-        TransformComponentBuffers::Setup(m_Registry);
-    }
+        : m_ViewportSize(Engine::Get().GetWindow().GetWidth(), Engine::Get().GetWindow().GetHeight()) {}
 
-    Scene::~Scene() {}
+    Scene::~Scene() {
+        m_Barrier.Wait();
+    }
 
     Ref<Scene> Scene::Copy(const Ref<Scene>& other) {
         Ref<Scene> scene = NewRef<Scene>();
@@ -40,11 +38,7 @@ namespace Vanta {
         auto idView = other->m_Registry.view<IDComponent>();
         idView.each([&](entt::entity entity, IDComponent& id) {
             Entity oldEntity(entity, other.get());
-
-            //const auto& uuid = id.ID;
-            const auto& name = id.Name;
-            Entity newEntity = scene->CreateEntity(name);
-
+            Entity newEntity = scene->CreateEntity(id.Name, id.ID);
             detail::CopyComponents(oldEntity, newEntity);
         });
 
@@ -73,21 +67,17 @@ namespace Vanta {
 
     void Scene::OnUpdateRuntime(double delta) {
         VANTA_PROFILE_FUNCTION();
+        m_Barrier.Wait();
         OnScriptUpdate(delta);
         OnPhysicsUpdate(delta);
-        OnRender(delta, GetActiveCamera());
-
-        m_UpdateBarrier.Wait();
-        m_DataBuffer.Next();
+        OnRender(delta, GetActiveCameraEntity());
     }
 
     void Scene::OnUpdateSimulation(double delta, Camera* camera) {
         VANTA_PROFILE_FUNCTION();
+        m_Barrier.Wait();
         OnPhysicsUpdate(delta);
         OnRender(delta, camera);
-
-        m_UpdateBarrier.Wait();
-        m_DataBuffer.Next();
     }
 
     void Scene::OnUpdateEditor(double delta, Camera* camera) {
@@ -100,47 +90,31 @@ namespace Vanta {
         // TODO: Update scripts
     }
 
-    struct PhysicsUpdate {
-        double Delta;
-        PhysicsUpdate(double delta) : Delta(delta) {}
-
-        void operator()(entt::entity, TransformComponent& old_tr, TransformComponent& tr, PhysicsComponent&) const {
-            VANTA_PROFILE_SCOPE("Physics Update");
-            tr = old_tr;
-        }
-    };
-
-    struct CameraUpdate {
-        double Delta;
-        CameraUpdate(double delta) : Delta(delta) {}
-
-        void operator()(entt::entity, TransformComponent& tr, CameraComponent& camera) const {
-            camera.Camera.SetView(glm::inverse(tr.Transform));
-        }
-    };
-
-    void Scene::OnPhysicsUpdate(double delta) {
+    void Scene::OnPhysicsUpdate(double) {
         VANTA_PROFILE_FUNCTION();
-        m_DataBuffer.View<PhysicsComponent>(m_Registry, ParallelDispatch<PhysicsUpdate>(m_UpdateBarrier, delta));
-        //m_DataBuffer.View<PhysicsComponent>(m_Registry, LinearDispatch<PhysicsUpdate>(delta));
-
-        m_DataBuffer.ViewCurr<CameraComponent>(m_Registry, LinearDispatch<CameraUpdate>(delta));
+        ParallelView<TransformComponent, PhysicsComponent>(m_Barrier, m_Registry, [](entt::entity, TransformComponent& tc, PhysicsComponent& pc) {
+            tc.GetRealtime().Rotation += pc.Placeholder;
+            tc.Snapshot();
+        });
     }
 
-    struct Render {
-        double Delta;
-        Render(double delta) : Delta(delta) {}
-
-        void operator()(entt::entity entity, TransformComponent& tr, SpriteComponent& sp) const {
-            Renderer2D::DrawSprite(tr.Transform, sp, (int)entity);
+    void Scene::OnRender(double delta, Entity camera) {
+        VANTA_PROFILE_RENDER_FUNCTION();
+        if (camera) {
+            auto& tc = camera.GetComponent<TransformComponent>();
+            auto& cc = camera.GetComponent<CameraComponent>();
+            cc.Camera.SetView(glm::inverse(tc.GetSnapshot().Transform));
+            OnRender(delta, &cc.Camera);
         }
-    };
+    }
 
-    void Scene::OnRender(double delta, Camera* camera) {
+    void Scene::OnRender(double, Camera* camera) {
         VANTA_PROFILE_RENDER_FUNCTION();
         if (camera) {
             Renderer2D::SceneBegin(camera);
-            m_DataBuffer.ViewCurr<SpriteComponent>(m_Registry, LinearDispatch<Render>(delta));
+            LinearView<TransformComponent, SpriteComponent>(m_Registry, [](entt::entity entity, TransformComponent& tc, SpriteComponent& sc) {
+                Renderer2D::DrawSprite(tc.GetSnapshot().Transform, sc, (uint32)entity);
+            });
             Renderer2D::SceneEnd();
         }
     }
@@ -149,10 +123,10 @@ namespace Vanta {
         return m_Registry.valid(entity);
     }
 
-    Entity Scene::CreateEntity(const std::string& name/*, UUID id*/) {
+    Entity Scene::CreateEntity(const std::string& name, UUID uuid) {
         VANTA_PROFILE_FUNCTION();
         Entity entity = Entity(m_Registry.create(), this);
-        entity.AddComponent<IDComponent>(name/*, id*/);
+        entity.AddComponent<IDComponent>(name, uuid);
         entity.AddComponent<TransformComponent>();
         return entity;
     }

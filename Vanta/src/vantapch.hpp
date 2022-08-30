@@ -28,8 +28,8 @@
 #include "Vanta/Core/UUID.hpp"
 
 // Util
-#include "Vanta/Util/Math.hpp"
 #include "Vanta/Util/Util.hpp"
+#include "Vanta/Util/Math.hpp"
 
 // Telemetry
 #include "Vanta/Debug/Instrumentor.hpp"
