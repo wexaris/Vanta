@@ -42,18 +42,26 @@ namespace Vanta {
         }
 
         template<typename Component>
-        bool HasComponent() {
+        const Component& GetComponent() const {
+            return m_Scene->GetComponent<Component>(*this);
+        }
+
+        template<typename Component>
+        bool HasComponent() const {
             VANTA_ASSERT(IsValid(), "Attempting to access invalid entity!");
             return m_Scene->HasComponent<Component>(*this);
         }
 
-        virtual void OnEvent(Event&) {}
+        UUID GetUUID() const;
+        const std::string& GetName() const;
 
         entt::entity GetHandle() const { return m_Handle; }
-        const std::string& GetName();
+
+        virtual void OnEvent(Event&) {}
 
         operator bool() const         { return IsValid(); }
-        operator entt::entity() const { return m_Handle; }
+        operator entt::entity() const { return GetHandle(); }
+        operator uint32() const       { return (uint32)GetHandle(); }
 
         bool operator==(const Entity& other) const {
             return m_Handle == other.m_Handle && m_Scene == other.m_Scene;

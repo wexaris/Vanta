@@ -67,9 +67,12 @@ namespace Vanta {
         template<typename Component>
         Component& GetComponent(Entity entity) {
             VANTA_ASSERT(HasComponent<Component>(entity), "Entity does not have component: {}", typeid(Component).name());
-            if constexpr (Buffers::HasComponent<Component>())
-                return m_DataBuffer.Get<Component>(m_Registry, entity);
-            else 
+            return m_Registry.get<Component>(entity);
+        }
+
+        template<typename Component>
+        const Component& GetComponent(Entity entity) const {
+            VANTA_ASSERT(HasComponent<Component>(entity), "Entity does not have component: {}", typeid(Component).name());
                 return m_Registry.get<Component>(entity);
         }
 

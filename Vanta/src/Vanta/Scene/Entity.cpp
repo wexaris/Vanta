@@ -8,7 +8,11 @@ namespace Vanta {
         : m_Handle(handle), m_Scene(scene)
     {}
 
-    const std::string& Entity::GetName() {
+    UUID Entity::GetUUID() const {
+        return GetComponent<IDComponent>().ID;
+    }
+
+    const std::string& Entity::GetName() const {
         return GetComponent<IDComponent>().Name;
     }
 }

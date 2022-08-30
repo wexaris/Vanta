@@ -25,6 +25,7 @@ set(${PROJECT_NAME}_SOURCE
     "src/Vanta/Core/GUILayer.cpp"
     "src/Vanta/Core/LayerStack.cpp"
     "src/Vanta/Core/Log.cpp"
+    "src/Vanta/Core/UUID.cpp"
     "src/Vanta/Core/Window.cpp"
     "src/Vanta/Debug/Instrumentor.cpp"
     "src/Vanta/Input/Input.cpp"

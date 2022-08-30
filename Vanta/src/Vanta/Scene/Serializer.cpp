@@ -73,22 +73,22 @@ namespace Vanta {
     }
 
     static void SerializeEntity(YAML::Emitter& out, Entity entity) {
+        VANTA_CORE_ASSERT(entity.HasComponent<IDComponent>(), "Entity missing ID component!");
+
         out << YAML::BeginMap;
-        out << YAML::Key << "Entity" << YAML::Value << "1234567890"; // TODO: Add UUIDs to entities
-        
-        SerializeComponent<IDComponent>(entity, [&out](IDComponent& component) {
-            out << YAML::Key << "IDComponent";
-            out << YAML::BeginMap;
-            out << YAML::Key << "Name" << YAML::Value << component.Name;
-            out << YAML::EndMap;
-        });
+
+        auto& idComponent = entity.GetComponent<IDComponent>();
+
+        out << YAML::Key << "Entity" << YAML::Value;
+        out << YAML::Flow << YAML::BeginSeq << idComponent.Name << idComponent.ID << YAML::EndSeq;
 
         SerializeComponent<TransformComponent>(entity, [&out](TransformComponent& component) {
+            auto& comp = component.GetSnapshot();
             out << YAML::Key << "TransformComponent";
             out << YAML::BeginMap;
-            out << YAML::Key << "Position" << YAML::Value << component.Position;
-            out << YAML::Key << "Rotation" << YAML::Value << component.GetRotationDegrees();
-            out << YAML::Key << "Scale" << YAML::Value << component.Scale;
+            out << YAML::Key << "Position" << YAML::Value << comp.Position;
+            out << YAML::Key << "Rotation" << YAML::Value << comp.GetRotationDegrees();
+            out << YAML::Key << "Scale" << YAML::Value << comp.Scale;
             out << YAML::EndMap;
         });
 
@@ -134,6 +134,7 @@ namespace Vanta {
         out << YAML::BeginMap;
         out << YAML::Key << "Scene" << YAML::Value << "Unnamed"; // TODO: Add names to scenes
 
+        // Serialize entity list
         out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
         m_Scene->GetRegistry().each([&](auto entityID) {
             Entity entity(entityID, m_Scene.get());
@@ -144,7 +145,11 @@ namespace Vanta {
         });
         out << YAML::EndSeq;
 
-        out << YAML::Key << "ActiveCamera" << YAML::Value << "1234567890"; //m_Scene->GetActiveCameraEntity().UUID;
+        // Serialize active camera
+        if (auto activeCamera = m_Scene->GetActiveCameraEntity()) {
+            out << YAML::Key << "ActiveCamera" << YAML::Value << activeCamera.GetUUID();
+        }
+        
         out << YAML::EndMap;
 
         file.Write(out.c_str());
@@ -163,24 +168,23 @@ namespace Vanta {
         auto entities = data["Entities"];
         if (entities) {
             for (auto item : entities) {
-                uint64 uuid = item["Entity"].as<uint64>();
+                auto entityNode = item["Entity"];
+                std::string name = entityNode[0].as<std::string>();
+                UUID uuid = entityNode[1].as<uint64>();
 
-                std::string name;
-                auto idComponent = item["IDComponent"];
-                if (idComponent)
-                    name = idComponent["Name"].as<std::string>();
+                Entity entity = m_Scene->CreateEntity(name, uuid);
 
                 VANTA_CORE_TRACE("Deserializing entity: {} [{}]", name, uuid);
-
-                Entity entity = m_Scene->CreateEntity(name);
                 
                 auto transformComponent = item["TransformComponent"];
                 if (transformComponent) {
-                    auto& tc = entity.GetComponent<TransformComponent>();
+                    auto& snap = entity.GetComponent<TransformComponent>();
+                    auto& tc = snap.GetRealtime();
                     auto pos = transformComponent["Position"].as<glm::vec3>();
                     auto rot = transformComponent["Rotation"].as<glm::vec3>();
                     auto scale = transformComponent["Scale"].as<glm::vec3>();
                     tc.SetTransform(pos, rot, scale);
+                    snap.Snapshot();
                 }
                 else {
                     VANTA_CORE_ERROR("Entity missing TransformComponent!");
@@ -212,13 +216,18 @@ namespace Vanta {
                 }
 
                 auto spriteComponent = item["SpriteComponent"];
-                if (physicsComponent) {
+                if (spriteComponent) {
                     auto& sc = entity.AddComponent<SpriteComponent>();
                     //pc.Texture = spriteComponent["Texture"].as<std::string>();
                     sc.TilingFactor = spriteComponent["TilingFactor"].as<float>();
                     sc.Color = spriteComponent["Color"].as<glm::vec4>();
                 }
             }
+        }
+
+        auto activeCamera = data["ActiveCameraEntity"];
+        if (activeCamera) {
+            VANTA_CORE_ERROR("Active camera serialization not implemented!");
         }
 
         return true;

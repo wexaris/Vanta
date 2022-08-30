@@ -25,6 +25,7 @@
 #include "Vanta/Core/Types.hpp"
 #include "Vanta/Core/Log.hpp"
 #include "Vanta/Core/Fibers.hpp"
+#include "Vanta/Core/UUID.hpp"
 
 // Util
 #include "Vanta/Util/Math.hpp"
