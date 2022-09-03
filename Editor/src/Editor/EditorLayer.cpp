@@ -329,7 +329,7 @@ namespace Vanta {
                 }
 
                 // Gizmos
-                /*Entity selectedEntity = m_ScenePanel.GetSelected();
+                Entity selectedEntity = m_ScenePanel.GetSelected();
                 if (selectedEntity && m_GizmoType != -1) {
                     ImGuizmo::SetOrthographic(false);
                     ImGuizmo::SetDrawlist();
@@ -340,21 +340,13 @@ namespace Vanta {
                         m_ViewportBounds[1].x - m_ViewportBounds[0].x,
                         m_ViewportBounds[1].y - m_ViewportBounds[0].y);
 
-                    // Camera
-
-                    // TODO: Runtime camera from entity
-                    // auto cameraEntity = m_ActiveScene->GetPrimaryCameraEntity();
-                    // const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
-                    // const glm::mat4& cameraProjection = camera.GetProjection();
-                    // glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
-
                     // Editor camera
-                    const glm::mat4& cameraProjection = m_EditorCamera.GetProjection();
-                    glm::mat4 cameraView = m_EditorCamera.GetView();
+                    const glm::mat4& cameraProjection = m_EditorCamera.GetCamera().GetProjection();
+                    glm::mat4 cameraView = m_EditorCamera.GetCamera().GetView();
 
                     // Entity transform
                     auto& tc = selectedEntity.GetComponent<TransformComponent>();
-                    glm::mat4 transform = tc.GetTransform();
+                    glm::mat4 transform = tc.GetSnapshot().Transform;
 
                     // Snapping
                     bool snap = Input::IsKeyPressed(Key::LeftControl);
@@ -370,9 +362,10 @@ namespace Vanta {
                         nullptr, snap ? snapValues : nullptr);
 
                     if (ImGuizmo::IsUsing()) {
-                        tc.SetTransform(transform);
+                        tc.GetRealtime().SetTransform(transform);
+                        tc.Snapshot();
                     }
-                }*/
+                }
 
                 ImGui::End();
                 ImGui::PopStyleVar();
