@@ -33,6 +33,9 @@ namespace Vanta {
 
         // Enable depth testing
         glEnable(GL_DEPTH_TEST);
+
+        // Smooth lines
+        glEnable(GL_LINE_SMOOTH);
     }
 
     void OpenGLGraphicsAPI::SetViewport(uint x, uint y, uint width, uint height) {
@@ -40,15 +43,31 @@ namespace Vanta {
         glViewport(x, y, width, height);
     }
 
-    void OpenGLGraphicsAPI::Clear(const glm::vec4& color) {
+    void OpenGLGraphicsAPI::SetClearColor(const glm::vec4& color) {
         VANTA_PROFILE_RENDER_FUNCTION();
         glClearColor(color.r, color.g, color.b, color.a);
+    }
+
+    void OpenGLGraphicsAPI::Clear() {
+        VANTA_PROFILE_RENDER_FUNCTION();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    void OpenGLGraphicsAPI::DrawElement(const Ref<VertexArray>& vertexArray, uint indexCount) {
+    void OpenGLGraphicsAPI::DrawIndexed(const Ref<VertexArray>& vertexArray, uint indexCount) {
         VANTA_PROFILE_RENDER_FUNCTION();
         vertexArray->Bind();
-        glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
+        GLsizei count = (GLsizei)(indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount());
+        glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+    }
+
+    void OpenGLGraphicsAPI::DrawLines(const Ref<VertexArray>& vertexArray, uint vertexCount) {
+        VANTA_PROFILE_RENDER_FUNCTION();
+        vertexArray->Bind();
+        glDrawArrays(GL_LINES, 0, vertexCount);
+    }
+
+    void OpenGLGraphicsAPI::SetLineWidth(float width) {
+        VANTA_PROFILE_RENDER_FUNCTION();
+        glLineWidth(width);
     }
 }

@@ -22,7 +22,7 @@ namespace Vanta {
         };
     };
 
-    struct VertexData {
+    struct QuadVertex {
         glm::vec3 Position;
         glm::vec4 Color;
         uint TexID;
@@ -31,6 +31,55 @@ namespace Vanta {
 
         // Editor data
         int EntityID = -1;
+
+        static BufferLayout Layout() {
+            return {
+                { Shader::DataType::Float3, "aPosition" },
+                { Shader::DataType::Float4, "aColor" },
+                { Shader::DataType::UInt,   "aTexID" },
+                { Shader::DataType::Float2, "aTexCoords" },
+                { Shader::DataType::Float,  "aTilingFactor" },
+                { Shader::DataType::Int,    "aEntityID" },
+            };
+        }
+    };
+
+    struct CircleVertex {
+        glm::vec3 WorldPosition;
+        glm::vec3 LocalPosition;
+        glm::vec4 Color;
+        float Thickness;
+        float Fade;
+
+        // Editor data
+        int EntityID = -1;
+
+        static BufferLayout Layout() {
+            return {
+                { Shader::DataType::Float3, "aWorldPosition" },
+                { Shader::DataType::Float3, "aLocalPosition" },
+                { Shader::DataType::Float4, "aColor" },
+                { Shader::DataType::Float,  "aThickness" },
+                { Shader::DataType::Float,  "aFade" },
+                { Shader::DataType::Int,    "aEntityID" },
+            };
+        }
+    };
+
+    struct LineVertex {
+        glm::vec3 Position;
+        glm::vec4 Color;
+
+        // Editor data
+        int EntityID = -1;
+
+        static BufferLayout Layout() {
+            return {
+                { Shader::DataType::Float3, "aPosition" },
+                { Shader::DataType::Float4, "aColor" },
+                { Shader::DataType::Int,    "aEntityID" },
+            };
+        }
     };
 
     struct RenderData {
@@ -40,18 +89,37 @@ namespace Vanta {
         static constexpr uint MaxTextureSlots = 16;
 
         // Render objects
-        Ref<VertexArray> VAO;
-        Ref<VertexBuffer> VBO;
-        
-        // Dynamic vertex data
-        VertexData* VertexDataBuffer = nullptr;
-        VertexData* VertexDataBufferPtr = nullptr;
+        Ref<VertexArray> QuadVAO;
+        Ref<VertexBuffer> QuadVBO;
+        Ref<Shader> QuadShader;
+
+        Ref<VertexArray> CircleVAO;
+        Ref<VertexBuffer> CircleVBO;
+        Ref<Shader> CircleShader;
+
+        Ref<VertexArray> LineVAO;
+        Ref<VertexBuffer> LineVBO;
+        Ref<Shader> LineShader;
+
+        // Vertex buffers
+        QuadVertex* QuadVertexBuffer = nullptr;
+        QuadVertex* QuadVertexBufferPtr = nullptr;
         uint QuadIndexCount = 0;
 
-        // Resources
-        Ref<Shader> Shader;
+        CircleVertex* CircleVertexBuffer = nullptr;
+        CircleVertex* CircleVertexBufferPtr = nullptr;
+        uint CircleIndexCount = 0;
+
+        LineVertex* LineVertexBuffer = nullptr;
+        LineVertex* LineVertexBufferPtr = nullptr;
+        uint LineVertexCount = 0;
+
+        // Textures
         std::array<Ref<Texture2D>, MaxTextureSlots> TextureSlots;
         uint TextureSlotIdx = 1; // 0 = white texture
+
+        // Misc
+        float LineWidth = 2.0f;
 
         Renderer2D::Statistics Stats;
     };
@@ -61,61 +129,74 @@ namespace Vanta {
     void Renderer2D::Init() {
         VANTA_PROFILE_RENDER_FUNCTION();
 
-        s_Data.VAO = VertexArray::Create();
+        s_Data.QuadVAO = VertexArray::Create();
+        s_Data.CircleVAO = VertexArray::Create();
+        s_Data.LineVAO = VertexArray::Create();
 
-        { // Create vertex buffer
-            s_Data.VBO = VertexBuffer::Create(s_Data.MaxVerts * sizeof(VertexData));
-            s_Data.VBO->SetLayout({
-                { Shader::DataType::Float3, "aPosition" },
-                { Shader::DataType::Float4, "aColor" },
-                { Shader::DataType::UInt,   "aTexID" },
-                { Shader::DataType::Float2, "aTexCoords" },
-                { Shader::DataType::Float,  "aTilingFactor" },
-                { Shader::DataType::Int,    "aEntityID" }, });
-            s_Data.VAO->AddVertexBuffer(s_Data.VBO);
-        }
+        // Create VBOs
+        s_Data.QuadVBO = VertexBuffer::Create(s_Data.MaxVerts * sizeof(QuadVertex));
+        s_Data.QuadVBO->SetLayout(QuadVertex::Layout());
+        s_Data.QuadVAO->AddVertexBuffer(s_Data.QuadVBO);
+
+        s_Data.CircleVBO = VertexBuffer::Create(s_Data.MaxVerts * sizeof(CircleVertex));
+        s_Data.CircleVBO->SetLayout(CircleVertex::Layout());
+        s_Data.CircleVAO->AddVertexBuffer(s_Data.CircleVBO);
+
+        s_Data.LineVBO = VertexBuffer::Create(s_Data.MaxVerts * sizeof(LineVertex));
+        s_Data.LineVBO->SetLayout(LineVertex::Layout());
+        s_Data.LineVAO->AddVertexBuffer(s_Data.LineVBO);
 
         { // Create index buffer
-            uint* indices = new uint[s_Data.MaxIndices];
+            uint* quadIndices = new uint[s_Data.MaxIndices];
 
             uint offset = 0;
             for (uint i = 0; i < s_Data.MaxIndices; i += 6) {
-                indices[i + 0] = offset + 0;
-                indices[i + 1] = offset + 1;
-                indices[i + 2] = offset + 2;
-                indices[i + 3] = offset + 2;
-                indices[i + 4] = offset + 3;
-                indices[i + 5] = offset + 0;
+                quadIndices[i + 0] = offset + 0;
+                quadIndices[i + 1] = offset + 1;
+                quadIndices[i + 2] = offset + 2;
+                quadIndices[i + 3] = offset + 2;
+                quadIndices[i + 4] = offset + 3;
+                quadIndices[i + 5] = offset + 0;
                 offset += 4;
             }
 
-            Ref<IndexBuffer> EBO = IndexBuffer::Create(indices, s_Data.MaxIndices);
-            s_Data.VAO->SetIndexBuffer(EBO);
-
-            delete[] indices;
+            Ref<IndexBuffer> quadIB = IndexBuffer::Create(quadIndices, s_Data.MaxIndices);
+            s_Data.QuadVAO->SetIndexBuffer(quadIB);
+            s_Data.CircleVAO->SetIndexBuffer(quadIB);
+            delete[] quadIndices;
         }
 
-        // Load resources
-        s_Data.Shader = Shader::Create("DefaultTextureShader", "Shaders/Texture.glsl");
+        // Create dynamic vertex buffers
+        s_Data.QuadVertexBuffer = new QuadVertex[s_Data.MaxVerts];
+        s_Data.CircleVertexBuffer = new CircleVertex[s_Data.MaxVerts];
+        s_Data.LineVertexBuffer = new LineVertex[s_Data.MaxVerts];
 
+        // Load shaders
+        s_Data.QuadShader = Shader::Create("Shaders/Renderer2D_Quad.glsl");
+        s_Data.CircleShader = Shader::Create("Shaders/Renderer2D_Circle.glsl");
+        s_Data.LineShader = Shader::Create("Shaders/Renderer2D_Line.glsl");
+
+        // Setup white texture
         constexpr uint32 white = 0xffffffff;
         s_Data.TextureSlots[0] = Texture2D::Create(1, 1);
         s_Data.TextureSlots[0]->SetData(&white, sizeof(uint32));
-
-        // Create dynamic vertex buffer
-        s_Data.VertexDataBuffer = new VertexData[s_Data.MaxVerts];
     }
 
     void Renderer2D::Shutdown() {
         VANTA_PROFILE_RENDER_FUNCTION();
-        delete[] s_Data.VertexDataBuffer;
+        delete[] s_Data.QuadVertexBuffer;
+        delete[] s_Data.CircleVertexBuffer;
+        delete[] s_Data.LineVertexBuffer;
     }
 
     void Renderer2D::SceneBegin(Camera* camera) {
         VANTA_PROFILE_RENDER_FUNCTION();
 
         // Upload uniform to GPU
-        s_Data.Shader->SetMat4("uViewProjection", camera->GetViewProjection());
+        auto cameraViewProj = camera->GetViewProjection();
+        s_Data.QuadShader->SetMat4("uViewProjection", cameraViewProj);
+        s_Data.CircleShader->SetMat4("uViewProjection", cameraViewProj);
+        s_Data.LineShader->SetMat4("uViewProjection", cameraViewProj);
 
         BatchBegin();
     }
@@ -131,26 +212,54 @@ namespace Vanta {
     }
 
     void Renderer2D::BatchBegin() {
-        s_Data.VertexDataBufferPtr = s_Data.VertexDataBuffer;
+        s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBuffer;
         s_Data.QuadIndexCount = 0;
+
+        s_Data.CircleVertexBufferPtr = s_Data.CircleVertexBuffer;
+        s_Data.CircleIndexCount = 0;
+
+        s_Data.LineVertexBufferPtr = s_Data.LineVertexBuffer;
+        s_Data.LineVertexCount = 0;
+
         s_Data.TextureSlotIdx = 1;
     }
 
     void Renderer2D::BatchFlush() {
-        if (s_Data.QuadIndexCount == 0)
-            return;
+        if (s_Data.QuadIndexCount != 0) {
+            usize dataSize = (usize)((uintptr_t)s_Data.QuadVertexBufferPtr - (uintptr_t)s_Data.QuadVertexBuffer);
+            s_Data.QuadVBO->SetData(s_Data.QuadVertexBuffer, dataSize);
 
-        // Upload vertex data to GPU
-        usize dataSize = (usize)((uintptr_t)s_Data.VertexDataBufferPtr - (uintptr_t)s_Data.VertexDataBuffer);
-        s_Data.VBO->SetData(s_Data.VertexDataBuffer, dataSize);
+            // Bind resources
+            s_Data.QuadShader->Bind();
 
-        // Bind resources
-        s_Data.Shader->Bind();
-        for (uint i = 0; i < s_Data.TextureSlotIdx; i++)
-            s_Data.TextureSlots[i]->Bind(i);
+            for (uint i = 0; i < s_Data.TextureSlotIdx; i++)
+                s_Data.TextureSlots[i]->Bind(i);
 
-        RenderCommand::DrawElement(s_Data.VAO, s_Data.QuadIndexCount);
-        s_Data.Stats.DrawCalls++;
+            RenderCommand::DrawIndexed(s_Data.QuadVAO, s_Data.QuadIndexCount);
+            s_Data.Stats.DrawCalls++;
+        }
+
+        if (s_Data.CircleIndexCount != 0) {
+            usize dataSize = (usize)((uintptr_t)s_Data.CircleVertexBufferPtr - (uintptr_t)s_Data.CircleVertexBuffer);
+            s_Data.CircleVBO->SetData(s_Data.CircleVertexBuffer, dataSize);
+
+            // Bind resources
+            s_Data.CircleShader->Bind();
+
+            RenderCommand::DrawIndexed(s_Data.CircleVAO, s_Data.CircleIndexCount);
+            s_Data.Stats.DrawCalls++;
+        }
+
+        if (s_Data.LineVertexCount != 0) {
+            usize dataSize = (usize)((uintptr_t)s_Data.LineVertexBufferPtr - (uintptr_t)s_Data.LineVertexBuffer);
+            s_Data.LineVBO->SetData(s_Data.LineVertexBuffer, dataSize);
+
+            // Bind resources
+            s_Data.LineShader->Bind();
+            RenderCommand::SetLineWidth(s_Data.LineWidth);
+            RenderCommand::DrawLines(s_Data.LineVAO, s_Data.LineVertexCount);
+            s_Data.Stats.DrawCalls++;
+        }
     }
 
     // translation * size
@@ -213,17 +322,17 @@ namespace Vanta {
     void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, int entityID) {
         VANTA_PROFILE_RENDER_FUNCTION();
 
-        if (s_Data.QuadIndexCount >= s_Data.MaxIndices)
+        if (s_Data.QuadIndexCount + 6 >= s_Data.MaxIndices)
             NextBatch();
 
         for (usize i = 0; i < Quad::VERTEX_COUNT; i++) {
-            s_Data.VertexDataBufferPtr->Position = transform * Quad::VERTEX_POS[i];
-            s_Data.VertexDataBufferPtr->Color = color;
-            s_Data.VertexDataBufferPtr->TexID = 0;
-            s_Data.VertexDataBufferPtr->TexCoord = Quad::TEX_COORDS[i];
-            s_Data.VertexDataBufferPtr->TilingFactor = 1;
-            s_Data.VertexDataBufferPtr->EntityID = entityID;
-            s_Data.VertexDataBufferPtr++;
+            s_Data.QuadVertexBufferPtr->Position = transform * Quad::VERTEX_POS[i];
+            s_Data.QuadVertexBufferPtr->Color = color;
+            s_Data.QuadVertexBufferPtr->TexID = 0;
+            s_Data.QuadVertexBufferPtr->TexCoord = Quad::TEX_COORDS[i];
+            s_Data.QuadVertexBufferPtr->TilingFactor = 1;
+            s_Data.QuadVertexBufferPtr->EntityID = entityID;
+            s_Data.QuadVertexBufferPtr++;
         }
         s_Data.QuadIndexCount += 6;
 
@@ -233,23 +342,90 @@ namespace Vanta {
     void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& tex, float tilingFactor, const glm::vec4& tint, int entityID) {
         VANTA_PROFILE_RENDER_FUNCTION();
 
-        if (s_Data.QuadIndexCount >= s_Data.MaxIndices)
+        if (s_Data.QuadIndexCount + 6 >= s_Data.MaxIndices)
             NextBatch();
 
         uint texID = BatchTexture(tex);
 
         for (usize i = 0; i < Quad::VERTEX_COUNT; i++) {
-            s_Data.VertexDataBufferPtr->Position = transform * Quad::VERTEX_POS[i];
-            s_Data.VertexDataBufferPtr->Color = tint;
-            s_Data.VertexDataBufferPtr->TexID = texID;
-            s_Data.VertexDataBufferPtr->TexCoord = Quad::TEX_COORDS[i];
-            s_Data.VertexDataBufferPtr->TilingFactor = tilingFactor;
-            s_Data.VertexDataBufferPtr->EntityID = entityID;
-            s_Data.VertexDataBufferPtr++;
+            s_Data.QuadVertexBufferPtr->Position = transform * Quad::VERTEX_POS[i];
+            s_Data.QuadVertexBufferPtr->Color = tint;
+            s_Data.QuadVertexBufferPtr->TexID = texID;
+            s_Data.QuadVertexBufferPtr->TexCoord = Quad::TEX_COORDS[i];
+            s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+            s_Data.QuadVertexBufferPtr->EntityID = entityID;
+            s_Data.QuadVertexBufferPtr++;
         }
         s_Data.QuadIndexCount += 6;
 
         s_Data.Stats.QuadCount++;
+    }
+
+    void Renderer2D::DrawCircle(const glm::mat4& transform, const glm::vec4& color, float thickness, float fade, int entityID) {
+        VANTA_PROFILE_RENDER_FUNCTION();
+
+        if (s_Data.CircleIndexCount + 6 >= s_Data.MaxIndices)
+            NextBatch();
+
+        for (size_t i = 0; i < 4; i++) {
+            s_Data.CircleVertexBufferPtr->WorldPosition = transform * Quad::VERTEX_POS[i];
+            s_Data.CircleVertexBufferPtr->LocalPosition = Quad::VERTEX_POS[i] * 2.0f;
+            s_Data.CircleVertexBufferPtr->Color = color;
+            s_Data.CircleVertexBufferPtr->Thickness = thickness;
+            s_Data.CircleVertexBufferPtr->Fade = fade;
+            s_Data.CircleVertexBufferPtr->EntityID = entityID;
+            s_Data.CircleVertexBufferPtr++;
+        }
+
+        s_Data.CircleIndexCount += 6;
+
+        s_Data.Stats.QuadCount++;
+    }
+
+    void Renderer2D::DrawLine(const glm::vec3& beg, const glm::vec3& end, const glm::vec4& color, int entityID) {
+        VANTA_PROFILE_RENDER_FUNCTION();
+
+        if (s_Data.LineVertexCount + 2 >= s_Data.MaxVerts)
+            NextBatch();
+
+        s_Data.LineVertexBufferPtr->Position = beg;
+        s_Data.LineVertexBufferPtr->Color = color;
+        s_Data.LineVertexBufferPtr->EntityID = entityID;
+        s_Data.LineVertexBufferPtr++;
+
+        s_Data.LineVertexBufferPtr->Position = end;
+        s_Data.LineVertexBufferPtr->Color = color;
+        s_Data.LineVertexBufferPtr->EntityID = entityID;
+        s_Data.LineVertexBufferPtr++;
+
+        s_Data.LineVertexCount += 2;
+    }
+
+    void Renderer2D::DrawRect(const glm::mat4& transform, const glm::vec4& color, int entityID) {
+        VANTA_PROFILE_RENDER_FUNCTION();
+
+        glm::vec3 lineVertices[4];
+        for (usize i = 0; i < 4; i++)
+            lineVertices[i] = transform * Quad::VERTEX_POS[i];
+
+        DrawLine(lineVertices[0], lineVertices[1], color, entityID);
+        DrawLine(lineVertices[1], lineVertices[2], color, entityID);
+        DrawLine(lineVertices[2], lineVertices[3], color, entityID);
+        DrawLine(lineVertices[3], lineVertices[0], color, entityID);
+    }
+
+    void Renderer2D::DrawRect(const glm::vec3& pos, const glm::vec2& size, const glm::vec4& color, int entityID) {
+        VANTA_PROFILE_RENDER_FUNCTION();
+
+        glm::vec3 p0 = glm::vec3(pos.x - size.x * 0.5f, pos.y - size.y * 0.5f, pos.z);
+        glm::vec3 p1 = glm::vec3(pos.x + size.x * 0.5f, pos.y - size.y * 0.5f, pos.z);
+        glm::vec3 p2 = glm::vec3(pos.x + size.x * 0.5f, pos.y + size.y * 0.5f, pos.z);
+        glm::vec3 p3 = glm::vec3(pos.x - size.x * 0.5f, pos.y + size.y * 0.5f, pos.z);
+
+        DrawLine(p0, p1, color, entityID);
+        DrawLine(p1, p2, color, entityID);
+        DrawLine(p2, p3, color, entityID);
+        DrawLine(p3, p0, color, entityID);
     }
 
     void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteComponent& sprite, int entityID) {
@@ -257,7 +433,6 @@ namespace Vanta {
             DrawQuad(transform, sprite.Texture, sprite.TilingFactor, sprite.Color, entityID);
         else
             DrawQuad(transform, sprite.Color, entityID);
-        
     }
 
     uint Renderer2D::BatchTexture(const Ref<Texture2D>& tex) {
@@ -266,9 +441,8 @@ namespace Vanta {
 
         // Find texture, if it's already queued
         for (uint i = 1; i < s_Data.TextureSlotIdx; i++) {
-            if (*s_Data.TextureSlots[i] == *tex) {
+            if (*s_Data.TextureSlots[i] == *tex)
                 return i;
-            }
         }
 
         // Make sure there is a free slot, or start a new batch
@@ -278,6 +452,14 @@ namespace Vanta {
         // Insert texture into next slot
         s_Data.TextureSlots[s_Data.TextureSlotIdx] = tex;
         return s_Data.TextureSlotIdx++;
+    }
+
+    float Renderer2D::GetLineWidth() {
+        return s_Data.LineWidth;
+    }
+
+    void Renderer2D::SetLineWidth(float width) {
+        s_Data.LineWidth = width;
     }
 
     Renderer2D::Statistics Renderer2D::GetStats() {

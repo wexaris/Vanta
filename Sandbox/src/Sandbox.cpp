@@ -24,7 +24,8 @@ public:
     void OnUpdate(double delta) override {
         VANTA_PROFILE_FUNCTION();
 
-        Vanta::RenderCommand::Clear({ 0.1f, 0.1f, 0.1f, 0.1f });
+        Vanta::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 0.1f });
+        Vanta::RenderCommand::Clear();
 
         constexpr float radius = 10.f;
         float camX = sin((float)Vanta::Duration::SinceLaunch().AsSecondsf()) * radius;

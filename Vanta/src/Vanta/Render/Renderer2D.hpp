@@ -34,8 +34,18 @@ namespace Vanta {
         static void DrawQuad(const glm::mat4& transform, const glm::vec4& color, int entityID = -1);
         static void DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& tex, float tilingFactor = 1.f, const glm::vec4& tint = glm::vec4(1.f, 1.f, 1.f, 1.f), int entityID = -1);
 
+        static void DrawCircle(const glm::mat4& transform, const glm::vec4& color, float thickness = 1.0f, float fade = 0.005f, int entityID = -1);
+
+        static void DrawLine(const glm::vec3& beg, const glm::vec3& end, const glm::vec4& color, int entityID = -1);
+
+        static void DrawRect(const glm::mat4& transform, const glm::vec4& color, int entityID = -1);
+        static void DrawRect(const glm::vec3& pos, const glm::vec2& size, const glm::vec4& color, int entityID = -1);
+
         static void DrawSprite(const glm::mat4& transform, SpriteComponent& sprite, int entityID);
         
+        static float GetLineWidth();
+        static void SetLineWidth(float width);
+
         static Statistics GetStats();
         static void ResetStats();
 

@@ -65,7 +65,8 @@ namespace Vanta {
             // Render
             Renderer2D::ResetStats();
             m_Framebuffer->Bind();
-            RenderCommand::Clear({ 0.1f, 0.1f, 0.1f, 1.f });
+            RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.f });
+            RenderCommand::Clear();
 
             // Clear our entity ID attachment to -1
             m_Framebuffer->ClearAttachment(1, -1);
@@ -162,10 +163,10 @@ namespace Vanta {
             }*/
 
             // Draw selected entity outline
-            /*if (Entity selectedEntity = m_ScenePanel.GetSelected()) {
+            if (Entity selectedEntity = m_ScenePanel.GetSelected()) {
                 const TransformComponent& transform = selectedEntity.GetComponent<TransformComponent>();
-                Renderer2D::DrawRect(transform.GetTransform(), glm::vec4(1.0f, 0.5f, 0.0f, 1.0f));
-            }*/
+                Renderer2D::DrawRect(transform.GetSnapshot().Transform, glm::vec4(1.0f, 0.9f, 0.2f, 1.0f));
+            }
 
             Renderer2D::SceneEnd();
         }
