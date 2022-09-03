@@ -469,48 +469,54 @@ namespace Vanta {
                 break;
 
             case Key::N:
-                if (control)
-                    NewScene();
+                if (!m_EditorCamera.IsActive()) {
+                    if (control)
+                        NewScene();
+                }
                 break;
 
             case Key::O:
-                if (control)
-                    OpenScene();
+                if (!m_EditorCamera.IsActive()) {
+                    if (control)
+                        OpenScene();
+                }
                 break;
 
             case Key::S:
-                if (control) {
-                    if (shift)
+                if (!m_EditorCamera.IsActive()) {
+                    if (control && shift)
                         SaveSceneAs();
-                    else
+                    else if (control)
                         SaveScene();
                 }
                 break;
 
             // Scene Commands
             case Key::D:
-                if (control)
-                    OnDuplicateEntity();
+                if (!m_EditorCamera.IsActive()) {
+                    if (control)
+                        OnDuplicateEntity();
+                }
                 break;
 
             // Gizmos
             case Key::Q:
-                if (!ImGuizmo::IsUsing())
+                if (!m_EditorCamera.IsActive() && !ImGuizmo::IsUsing())
                     m_GizmoType = -1;
                 break;
 
             case Key::W:
-                if (!ImGuizmo::IsUsing())
+                if (!m_EditorCamera.IsActive() && !ImGuizmo::IsUsing())
                     m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
                 break;
 
             case Key::E:
-                if (!ImGuizmo::IsUsing())
+                if (!m_EditorCamera.IsActive() && !ImGuizmo::IsUsing())
                     m_GizmoType = ImGuizmo::OPERATION::ROTATE;
                 break;
 
             case Key::R:
-                if (!ImGuizmo::IsUsing())
+                if (!m_EditorCamera.IsActive() && !ImGuizmo::IsUsing())
                     m_GizmoType = ImGuizmo::OPERATION::SCALE;
                 break;
 
