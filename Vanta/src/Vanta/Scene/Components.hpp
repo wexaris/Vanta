@@ -119,6 +119,26 @@ namespace Vanta {
             : Texture(texture), Color(tint) {}
     };
 
+    class NativeScript; // Forward declare
 
-    using AllComponents = ComponentList<TransformComponent, PhysicsComponent, CameraComponent, SpriteComponent>;
+    struct NativeScriptComponent {
+        NativeScript* Instance;
+
+        NativeScript* (*CreateInstance)();
+        void (*DestroyInstance)(NativeScript*);
+
+        NativeScriptComponent() = default;
+
+        void Create()  { Instance = CreateInstance(); }
+        void Destroy() { DestroyInstance(Instance); Instance = nullptr; }
+
+        template<typename T> requires IsBase_v<NativeScript, T>
+        void Bind() {
+            CreateInstance = []() { return static_cast<NativeScript*>(new T()); };
+            DestroyInstance = [](NativeScript* instance) { delete instance; };
+        }
+    };
+
+
+    using AllComponents = ComponentList<TransformComponent, PhysicsComponent, CameraComponent, SpriteComponent, NativeScriptComponent>;
 }

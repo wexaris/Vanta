@@ -2,6 +2,7 @@
 #include "Vanta/Core/Engine.hpp"
 #include "Vanta/Render/Renderer2D.hpp"
 #include "Vanta/Scene/Entity.hpp"
+#include "Vanta/Scene/NativeScript.hpp"
 #include "Vanta/Scene/Scene.hpp"
 
 namespace Vanta {
@@ -47,12 +48,20 @@ namespace Vanta {
 
     void Scene::OnRuntimeBegin() {
         VANTA_PROFILE_FUNCTION();
+        ParallelView<NativeScriptComponent>(m_Barrier, m_Registry, [&](entt::entity entity, NativeScriptComponent& script) {
+            script.Create();
+            script.Instance->m_Entity = Entity(entity, this);
+            script.Instance->OnCreate();
+        });
         // Start Physics
     }
 
     void Scene::OnRuntimeEnd() {
         VANTA_PROFILE_FUNCTION();
-        // Stop Physics
+        ParallelView<NativeScriptComponent>(m_Barrier, m_Registry, [](entt::entity, NativeScriptComponent& script) {
+            script.Instance->OnDestroy();
+            script.Destroy();
+        });
     }
 
     void Scene::OnSimulationBegin() {
@@ -85,9 +94,11 @@ namespace Vanta {
         OnRender(delta, camera);
     }
 
-    void Scene::OnScriptUpdate(double) {
+    void Scene::OnScriptUpdate(double delta) {
         VANTA_PROFILE_FUNCTION();
-        // TODO: Update scripts
+        ParallelView<NativeScriptComponent>(m_Barrier, m_Registry, [=](entt::entity, NativeScriptComponent& script) {
+            script.Instance->OnUpdate(delta);
+        });
     }
 
     void Scene::OnPhysicsUpdate(double) {

@@ -62,9 +62,9 @@ namespace Vanta {
     /// on the engine's thread pool.
     /// Makes use of `ParallelBarrier` for synchronizing with the caller thread.
     /// </summary>
-    template<typename... Components, typename Func>
+    template<typename... Components, typename Func> requires (sizeof...(Components) > 1) // View has `size_hint()` for > 1 component
     void ParallelView(ParallelBarrier& barrier, entt::registry& registry, Func&& func) {
-        static constexpr usize CHUNK_SIZE = 2;
+        static constexpr usize CHUNK_SIZE = 16;
 
         auto view = registry.view<Components...>();
         auto each = view.each();
@@ -76,6 +76,43 @@ namespace Vanta {
             return;
 
         usize jobCount = (usize)std::ceil((float)view.size_hint() / CHUNK_SIZE);
+
+        if (jobCount > 1) {
+            barrier.StartFibers(jobCount);
+
+            for (usize i = 0; i < jobCount; i++) {
+                Fibers::Spawn([&func](auto* barrier, auto beg, auto end) {
+                    for (usize i = 0; i < CHUNK_SIZE && beg != end; ++i, ++beg) {
+                        std::apply(func, *beg);
+                    }
+                    barrier->WaitFiber();
+                }, &barrier, beg, end);
+
+                for (usize j = 0; j < CHUNK_SIZE && beg != end; ++j)
+                    ++beg;
+            }
+        }
+        else {
+            for (; beg != end; ++beg) {
+                std::apply(func, *beg);
+            }
+        }
+    };
+
+    template<typename... Components, typename Func> requires (sizeof...(Components) == 1) // View has `size()` for 1 component
+    void ParallelView(ParallelBarrier& barrier, entt::registry& registry, Func&& func) {
+        static constexpr usize CHUNK_SIZE = 16;
+
+        auto view = registry.view<Components...>();
+        auto each = view.each();
+
+        auto beg = each.begin();
+        auto end = each.end();
+
+        if (beg == end)
+            return;
+
+        usize jobCount = (usize)std::ceil((float)view.size() / CHUNK_SIZE);
 
         if (jobCount > 1) {
             barrier.StartFibers(jobCount);
