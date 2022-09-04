@@ -63,8 +63,9 @@ public:
 
 namespace Vanta {
 
-    Engine* CreateEngine() {
+    Engine* CreateEngine(CommandLineArguments args) {
         EngineParams params;
+        params.CommandLineArgs = args;
         params.Window.Height = 800;
         params.Window.Title = "Sandbox";
         return new SandboxEngine(params);

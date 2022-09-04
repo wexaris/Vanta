@@ -10,10 +10,8 @@ namespace Vanta {
 
     Engine* Engine::s_Instance = nullptr;
 
-    Engine::Engine(const EngineParams& params) :
-        m_MinTickRate(params.MinTickRate),
-        m_MaxSubsteps(params.MaxSubsteps),
-        m_WorkingDirectory(params.WorkingDirectory)
+    Engine::Engine(const EngineParams& params)
+        : m_WorkingDirectory(params.WorkingDirectory)
     {
         VANTA_PROFILE_FUNCTION();
 

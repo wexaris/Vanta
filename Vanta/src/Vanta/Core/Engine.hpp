@@ -9,9 +9,22 @@
 #include "Vanta/Render/GraphicsAPI.hpp"
 
 namespace Vanta {
+    struct CommandLineArguments {
+        usize Count = 0;
+        char** Args = nullptr;
+
+        CommandLineArguments() = default;
+        CommandLineArguments(usize argc, char** argv)
+            : Count(argc), Args(argv) {}
+
+        const char* operator[](usize idx) const {
+            VANTA_CORE_ASSERT(idx < Count, "Invalid command line argument index: {} of {}", idx + 1, Count);
+            return Args[idx];
+        }
+    };
+
     struct EngineParams {
-        uint MinTickRate = 60;
-        uint MaxSubsteps = 4;
+        CommandLineArguments CommandLineArgs;
         Path WorkingDirectory = std::filesystem::current_path();
         WindowParams Window;
     };
@@ -29,6 +42,8 @@ namespace Vanta {
 
         uint GetFPS() const         { return (uint)(1.0 / m_DeltaTime + 0.5); }
         double GetDeltaTime() const { return m_DeltaTime; }
+
+        const CommandLineArguments& GetCommandLineArgs() const { return m_CommandLineArgs; }
 
         static Path RuntimeDirectory() { return s_RuntimeDirectory; }
         Path WorkingDirectory() const  { return m_WorkingDirectory; }
@@ -49,8 +64,7 @@ namespace Vanta {
         LayerStack m_LayerStack;
         GUILayer* m_GUILayer;
 
-        uint m_MinTickRate;
-        uint m_MaxSubsteps;
+        CommandLineArguments m_CommandLineArgs;
         Path m_WorkingDirectory;
 
         double m_DeltaTime;

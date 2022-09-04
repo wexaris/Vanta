@@ -16,12 +16,12 @@ namespace Vanta {
 
     void CreateLogSinks(Log::SinkList& sinks) {
         auto console_sink = NewRef<Editor::ConsoleSink_mt>();
-        //console_sink->set_pattern("[%T] [%1] %n: %v");
         sinks.push_back(console_sink);
     }
 
-    Engine* CreateEngine() {
+    Engine* CreateEngine(CommandLineArguments args) {
         EngineParams params;
+        params.CommandLineArgs = args;
         params.Window.Title = "Vanta Editor";
         params.Window.Width = 1600;
         params.Window.Height = 1000;

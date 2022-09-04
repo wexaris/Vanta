@@ -24,15 +24,13 @@ namespace Vanta {
             fbParams.Height = 720;
             m_Framebuffer = Framebuffer::Create(fbParams);
 
-            // TODO: Load scene from CLI
-            /*auto commandLineArgs = Engine::Get().GetParams().CommandLineArgs;
-            if (commandLineArgs.size() > 1) {
-                auto scenePath = commandLineArgs[1];
-                SceneSerializer serializer;
-                m_ActiveScene = serializer.Deserialize(scenePath);
-            }*/
-
             NewScene();
+
+            auto& commandLineArgs = Engine::Get().GetCommandLineArgs();
+            if (commandLineArgs.Count > 1) {
+                auto scenePath = commandLineArgs[1];
+                OpenScene(scenePath);
+            }
         }
 
         void EditorLayer::OnDetach() {
@@ -622,7 +620,7 @@ namespace Vanta {
                 VANTA_ERROR("Failed to parse scene: {}", filepath.filename());
                 return;
             }
- 
+
             m_EditorScene = newScene;
             m_EditorScene->OnViewportResize((uint)m_ViewportSize.x, (uint)m_ViewportSize.y);
 

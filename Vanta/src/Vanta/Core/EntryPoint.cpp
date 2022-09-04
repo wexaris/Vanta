@@ -2,13 +2,14 @@
 #include "Vanta/Core/Engine.hpp"
 
 namespace Vanta {
-    extern Engine* CreateEngine();
+    extern Engine* CreateEngine(CommandLineArguments);
 
-    static int main(int /*argc*/, char* /*argv*/[]) {
+    static int main(int argc, char** argv) {
         Log::Init("Vanta.log");
 
         VANTA_PROFILE_BEGIN("Startup", "VantaProfile-Startup.json");
-        auto engine = CreateEngine();
+        auto args = CommandLineArguments(argc, argv);
+        auto engine = CreateEngine(args);
         VANTA_PROFILE_END();
 
         VANTA_PROFILE_BEGIN("Runtime", "VantaProfile-Runtime.json");
