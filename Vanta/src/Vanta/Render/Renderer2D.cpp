@@ -1,6 +1,7 @@
 #include "vantapch.hpp"
 #include "Vanta/Render/RenderCommand.hpp"
 #include "Vanta/Render/Renderer2D.hpp"
+#include "Vanta/Render/UniformBuffer.hpp"
 #include "Vanta/Render/VertexArray.hpp"
 #include "Vanta/Scene/Components.hpp"
 
@@ -25,9 +26,9 @@ namespace Vanta {
     struct QuadVertex {
         glm::vec3 Position;
         glm::vec4 Color;
-        uint TexID;
-        glm::vec2 TexCoord;
+        glm::vec2 TexCoords;
         float TilingFactor;
+        int TexID;
 
         // Editor data
         int EntityID = -1;
@@ -36,9 +37,9 @@ namespace Vanta {
             return {
                 { Shader::DataType::Float3, "aPosition" },
                 { Shader::DataType::Float4, "aColor" },
-                { Shader::DataType::UInt,   "aTexID" },
                 { Shader::DataType::Float2, "aTexCoords" },
                 { Shader::DataType::Float,  "aTilingFactor" },
+                { Shader::DataType::Int,    "aTexID" },
                 { Shader::DataType::Int,    "aEntityID" },
             };
         }
@@ -118,6 +119,13 @@ namespace Vanta {
         std::array<Ref<Texture2D>, MaxTextureSlots> TextureSlots;
         uint TextureSlotIdx = 1; // 0 = white texture
 
+        // Uniforms
+        struct CameraData {
+            glm::mat4 ViewProjection;
+        };
+        CameraData CameraBuffer;
+        Ref<UniformBuffer> CameraUniformBuffer;
+
         // Misc
         float LineWidth = 2.0f;
 
@@ -180,6 +188,9 @@ namespace Vanta {
         constexpr uint32 white = 0xffffffff;
         s_Data.TextureSlots[0] = Texture2D::Create(1, 1);
         s_Data.TextureSlots[0]->SetData(&white, sizeof(uint32));
+
+        // Setup uniforms
+        s_Data.CameraUniformBuffer = UniformBuffer::Create(sizeof(RenderData::CameraData), 0);
     }
 
     void Renderer2D::Shutdown() {
@@ -192,11 +203,9 @@ namespace Vanta {
     void Renderer2D::SceneBegin(Camera* camera) {
         VANTA_PROFILE_RENDER_FUNCTION();
 
-        // Upload uniform to GPU
-        auto cameraViewProj = camera->GetViewProjection();
-        s_Data.QuadShader->SetMat4("uViewProjection", cameraViewProj);
-        s_Data.CircleShader->SetMat4("uViewProjection", cameraViewProj);
-        s_Data.LineShader->SetMat4("uViewProjection", cameraViewProj);
+        // Upload uniforms to GPU
+        s_Data.CameraBuffer.ViewProjection = camera->GetViewProjection();
+        s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer, sizeof(RenderData::CameraData));
 
         BatchBegin();
     }
@@ -329,7 +338,7 @@ namespace Vanta {
             s_Data.QuadVertexBufferPtr->Position = transform * Quad::VERTEX_POS[i];
             s_Data.QuadVertexBufferPtr->Color = color;
             s_Data.QuadVertexBufferPtr->TexID = 0;
-            s_Data.QuadVertexBufferPtr->TexCoord = Quad::TEX_COORDS[i];
+            s_Data.QuadVertexBufferPtr->TexCoords = Quad::TEX_COORDS[i];
             s_Data.QuadVertexBufferPtr->TilingFactor = 1;
             s_Data.QuadVertexBufferPtr->EntityID = entityID;
             s_Data.QuadVertexBufferPtr++;
@@ -351,7 +360,7 @@ namespace Vanta {
             s_Data.QuadVertexBufferPtr->Position = transform * Quad::VERTEX_POS[i];
             s_Data.QuadVertexBufferPtr->Color = tint;
             s_Data.QuadVertexBufferPtr->TexID = texID;
-            s_Data.QuadVertexBufferPtr->TexCoord = Quad::TEX_COORDS[i];
+            s_Data.QuadVertexBufferPtr->TexCoords = Quad::TEX_COORDS[i];
             s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
             s_Data.QuadVertexBufferPtr->EntityID = entityID;
             s_Data.QuadVertexBufferPtr++;

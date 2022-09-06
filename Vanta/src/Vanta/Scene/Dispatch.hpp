@@ -31,6 +31,17 @@ namespace Vanta {
     /// </summary>
     class ParallelBarrier {
     public:
+        /// <summary>
+        /// Setup function for synchronizer thread.
+        /// </summary>
+        void StartFibers(usize jobCount) {
+            Fibers::Begin(jobCount);
+            m_Barrier = new fibers::barrier(jobCount + 1); // + 1 for this thread
+        }
+
+        /// <summary>
+        /// Wait function for synchronizer thread.
+        /// </summary>
         void Wait() {
             if (m_Barrier != nullptr) {
                 m_Barrier->wait();
@@ -40,21 +51,16 @@ namespace Vanta {
             }
         }
 
-    private:
-        template<typename..., typename Func>
-        friend void ParallelView(ParallelBarrier& barrier, entt::registry& registry, Func&& func);
-
-        fibers::barrier* m_Barrier = nullptr;
-
-        void StartFibers(usize jobCount) {
-            Fibers::Begin(jobCount);
-            m_Barrier = new fibers::barrier(jobCount + 1); // + 1 for this spawner thread
-        }
-
+        /// <summary>
+        /// Wait function for a fiber instance.
+        /// </summary>
         void WaitFiber() {
             if (m_Barrier != nullptr)
                 m_Barrier->wait();
         }
+
+    private:
+        fibers::barrier* m_Barrier = nullptr;
     };
 
     /// <summary>

@@ -1,0 +1,4 @@
+#pragma once
+
+#define VANTA_OPENGL_VERSION_MAJOR 4
+#define VANTA_OPENGL_VERSION_MINOR 6

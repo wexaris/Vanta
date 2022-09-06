@@ -43,8 +43,8 @@ namespace Vanta {
             // Set context parameters
             switch (GraphicsAPI::GetAPI()) {
             case GraphicsAPI::OpenGL:
-                glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-                glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+                glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, VANTA_OPENGL_VERSION_MAJOR);
+                glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, VANTA_OPENGL_VERSION_MINOR);
                 glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 #ifdef VANTA_DEBUG
                 glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);

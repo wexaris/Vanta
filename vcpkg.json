@@ -15,6 +15,7 @@
         },
         "imguizmo",
         "spdlog",
+        "spirv-cross",
         "stb",
         "yaml-cpp"
     ]

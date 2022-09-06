@@ -30,7 +30,8 @@ namespace Vanta {
         GLint verMajor, verMinor;
         glGetIntegerv(GL_MAJOR_VERSION, &verMajor);
         glGetIntegerv(GL_MINOR_VERSION, &verMinor);
-        VANTA_CORE_ASSERT(verMajor > 4 || (verMajor == 4 && verMinor >= 3), "Vanta requires OpenGL 4.3 or newer!");
+        VANTA_CORE_ASSERT(verMajor > VANTA_OPENGL_VERSION_MAJOR || (verMajor == VANTA_OPENGL_VERSION_MAJOR && verMinor >= VANTA_OPENGL_VERSION_MINOR),
+            "Vanta requires OpenGL {}.{} or newer!", VANTA_OPENGL_VERSION_MAJOR, VANTA_OPENGL_VERSION_MINOR);
     }
 
     void OpenGLContext::SwapBuffers() {

@@ -11,28 +11,25 @@ namespace Vanta {
 
         std::string File::Read() const {
             std::string content;
-
-            std::ifstream file(Filepath.c_str(), std::ios::in | std::ios::binary);
-            if (file) {
-                file.seekg(0, std::ios::end);
-                auto size = file.tellg();
-                if (size != -1) {
-                    content.resize((size_t)file.tellg());
-                    file.seekg(0, std::ios::beg);
-                    file.read(&content[0], content.size());
-                    file.close();
-                }
-                else VANTA_ERROR("Failed to read file: '{}'", Filepath);
-            }
-            else VANTA_ERROR("Failed to open file: '{}'", Filepath);
-
+            ReadTo(content);
             return content;
         }
 
-        void File::Write(const std::string& out) const {
-            std::ofstream file(Filepath.c_str());
+        std::vector<char> File::ReadBinary() const {
+            std::vector<char> buffer;
+            ReadTo(buffer);
+            return buffer;
+        }
+
+        void File::Write(const std::string& data) const {
+            Write(data.c_str(), data.size());
+        }
+
+        void File::Write(const char* data, usize count) const {
+            std::ofstream file(Filepath.c_str(), std::ios::out | std::ios::binary);
             if (file) {
-                file << out;
+                file.write(data, count);
+                file.flush();
             }
             else VANTA_ERROR("Failed to open file: '{}'", Filepath);
         }

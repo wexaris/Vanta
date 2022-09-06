@@ -154,3 +154,7 @@
 #define STRING(x) #x
 
 #define UNUSED(...) (void)(__VA_ARGS__)
+
+
+/// ///////////////////// CONFIG //////////////////////////
+#include "Vanta/Core/Config.hpp"

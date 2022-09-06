@@ -28,29 +28,31 @@ namespace Vanta {
         void SetMat4(const std::string& name, const glm::mat4& matrix) override;
 
     private:
-        using SourceMap = std::unordered_map<uint, std::string>;
-
         uint m_RendererID = 0;
         std::string m_Name;
+        Path m_Filepath;
+
+        std::unordered_map<uint, std::vector<uint32>> m_VulkanSPIRV;
+        std::unordered_map<uint, std::vector<uint32>> m_OpenGLSPIRV;
+
+        std::unordered_map<uint, std::string> m_OpenGLSources;
+
+        /// <summary>
+        /// Split a single shader source by the type of its parts.
+        /// </summary>
+        std::unordered_map<uint, std::string> PreProcess(const std::string& source);
+
+        void CompileOrLoadVulkanBinaries(const std::unordered_map<uint, std::string>& sources);
+        void CompileOrLoadOpenGLBinaries();
+
+        void CompileOpenGLSources(const std::unordered_map<uint, std::string>& sources);
 
         /// <summary>
         /// Compile the given shader sources.
         /// Automatically creates and saves the shader program.
         /// </summary>
-        void Compile(SourceMap sources);
+        void CreateProgram();
 
-        /// <summary>
-        /// Split a single shader source by the type of its parts.
-        /// </summary>
-        static SourceMap SplitSource(const std::string& source);
-
-        /// <summary>
-        /// Find the corresponding OpenGL shader type for the given type string.
-        /// </summary>
-        /// <returns>
-        /// Returns a non-zero value, if the string matches a type.
-        /// Returns a zero, if the string doesn't match any type. Doesn't log an error.
-        /// </returns>
-        static uint StringToShaderType(const std::string& str);
+        void Reflect(uint, const std::vector<uint32>& data);
     };
 }

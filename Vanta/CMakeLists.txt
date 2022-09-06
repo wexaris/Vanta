@@ -1,11 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 project(vanta LANGUAGES C CXX)
 
-#enable_language(ASM_NASM)
-#set(NASM_FLAGS "-f win64")
-#set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> ${NASM_FLAGS} -o <OBJECT> <SOURCE>")
-#set(CMAKE_ASM_NASM_CREATE_STATIC_LIBRARY "<CMAKE_AR> /OUT:<TARGET> <LINK_FLAGS> <OBJECTS>")
-
 find_package(Boost REQUIRED COMPONENTS fiber thread)
 find_package(entt CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
@@ -15,6 +10,9 @@ find_package(glm CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(imguizmo CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
+find_package(spirv_cross_core CONFIG REQUIRED)
+find_package(spirv_cross_glsl CONFIG REQUIRED)
+find_package(Vulkan REQUIRED COMPONENTS glslang shaderc_combined SPIRV-Tools)
 find_package(yaml-cpp CONFIG REQUIRED)
 find_path(STB_INCLUDE_DIRS "stb_image.h")
 
@@ -41,6 +39,7 @@ set(${PROJECT_NAME}_SOURCE
     "src/Vanta/Render/Renderer2D.cpp"
     "src/Vanta/Render/Shader.cpp"
     "src/Vanta/Render/Texture.cpp"
+    "src/Vanta/Render/UniformBuffer.cpp"
     "src/Vanta/Render/VertexArray.cpp"
     "src/Vanta/Scene/SceneCamera.cpp"
     "src/Vanta/Scene/Serializer.cpp"
@@ -54,22 +53,25 @@ set(${PROJECT_NAME}_SOURCE
     "src/Platform/OpenGL/GraphicsAPI.cpp"
     "src/Platform/OpenGL/Shader.cpp"
     "src/Platform/OpenGL/Texture.cpp"
+    "src/Platform/OpenGL/UniformBuffer.cpp"
     "src/Platform/OpenGL/VertexArray.cpp"
     "src/Platform/Windows/PlatformUtils.cpp"
     "src/Platform/Windows/Window.cpp"
     "src/Platform/Windows/Input.cpp"
 )
 
-set(${${PROJECT_NAME}_PCH} src/vantapch.hpp)
+set(${${PROJECT_NAME}_PCH} "${CMAKE_CURRENT_SOURCE_DIR}/src/vantapch.hpp")
 
-add_library(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCE})
+add_library(${PROJECT_NAME} STATIC ${${PROJECT_NAME}_SOURCE})
 target_precompile_headers(${PROJECT_NAME} PRIVATE ${${PROJECT_NAME}_PCH})
 
-target_include_directories(${PROJECT_NAME} PUBLIC src)
+target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 target_link_libraries(${PROJECT_NAME}
-    PUBLIC EnTT::EnTT fmt::fmt glm::glm spdlog::spdlog
-    PRIVATE Boost::boost Boost::fiber Boost::thread glad::glad glfw imgui::imgui imguizmo::imguizmo yaml-cpp)
+    PUBLIC EnTT::EnTT fmt::fmt glm::glm spdlog::spdlog imgui::imgui imguizmo::imguizmo
+    PRIVATE Boost::boost Boost::fiber Boost::thread glad::glad glfw 
+        Vulkan::Vulkan Vulkan::glslang Vulkan::shaderc_combined Vulkan::SPIRV-Tools
+        spirv-cross-core spirv-cross-glsl yaml-cpp)
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE
     $<$<BOOL:${VANTA_DISTRIB}>:
@@ -82,24 +84,23 @@ target_compile_options(${PROJECT_NAME} PRIVATE
         $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
             -Wall -Wextra -pedantic -O0 -g -Wno-unused-function -Wno-format-security -Wno-language-extension-token>
         $<$<CXX_COMPILER_ID:MSVC>:
-            /MDd /W4 /ZI /RTC1 /sdl /Od>>
+            /W4 /ZI /RTC1 /sdl /Od>>
     #RELEASE
     $<$<CONFIG:RELEASE>:
         $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
-            -Wall -Wextra -pedantic -O2 -Wno-format-security -Wno-language-extension-token>
+            -Wall -Wextra -pedantic -O3 -Wno-format-security -Wno-language-extension-token>
         $<$<CXX_COMPILER_ID:MSVC>:
-            /MD /Zi /GL /O2>>
+            /Zi /GL /O2>>
 )
 
 target_link_options(${PROJECT_NAME} PUBLIC
     $<$<CONFIG:RELEASE>:$<$<CXX_COMPILER_ID:MSVC>:
-        /SUBSYSTEM:WINDOWS /LTCG>>
+        /LTCG>>
 )
 
-# Remove /W3 from MSVC flags
-#string(REGEX REPLACE "/W3" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+# Copy assets to runtime directory
+add_custom_command(
+    TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_CURRENT_SOURCE_DIR}/assets" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Assets")
 
-
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy_directory
-                       ${CMAKE_CURRENT_SOURCE_DIR}/assets ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Assets)

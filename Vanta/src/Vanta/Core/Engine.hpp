@@ -49,6 +49,7 @@ namespace Vanta {
         Path WorkingDirectory() const  { return m_WorkingDirectory; }
         Path AssetDirectory() const    { return m_WorkingDirectory / "Assets"; }
         Path SourceDirectory() const   { return m_WorkingDirectory / "Source"; }
+        Path CacheDirectory() const    { return m_WorkingDirectory / "Cache"; }
         Path CorrectFilepath(const Path& path);
 
         bool IsMinimized() const { return m_Minimized; }
