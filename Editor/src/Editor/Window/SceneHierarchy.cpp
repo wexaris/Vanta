@@ -66,6 +66,7 @@ namespace Vanta {
             }
 
             if (opened) {
+                // TODO: Draw child entity items
                 ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
                 bool opened = ImGui::TreeNodeEx((void*)9817239, flags, name.c_str());
                 if (opened)

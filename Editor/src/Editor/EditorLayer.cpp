@@ -251,7 +251,7 @@ namespace Vanta {
 
             Console::Get().OnGUIRender(!m_ViewportActive);
             m_ScenePanel.OnGUIRender(!m_ViewportActive);
-            //m_ContentBrowserPanel.OnGUIRender(!m_ViewportActive);
+            m_ContentPanel.OnGUIRender(!m_ViewportActive);
 
             {
                 ImGui::Begin("Stats");
@@ -302,7 +302,7 @@ namespace Vanta {
                 if (m_ViewportHovered && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
                     ImGui::SetWindowFocus();
                     auto event = MouseButtonPressEvent(Mouse::ButtonRight);
-                    m_EditorCamera.OnEvent(event);
+                    OnEvent(event);
                 }
 
                 if (m_State == State::Edit || m_State == State::Simulate) {
