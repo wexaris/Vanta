@@ -162,7 +162,7 @@ namespace Vanta {
             camera->Resize(width, height);
     }
 
-    void Scene::SetActiveCameraEntity(Entity& camera) {
+    void Scene::SetActiveCameraEntity(Entity camera) {
         m_ActiveCameraEntity = camera.operator entt::entity();
     }
 

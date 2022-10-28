@@ -5,6 +5,25 @@
 #include <yaml-cpp/yaml.h>
 
 template<>
+struct YAML::convert<glm::vec2> {
+    static Node encode(const glm::vec2& val) {
+        Node node;
+        node.push_back(val.x);
+        node.push_back(val.y);
+        return node;
+    }
+
+    static bool decode(const Node& node, glm::vec2& val) {
+        if (!node.IsSequence() || node.size() != 2)
+            return false;
+
+        val.x = node[0].as<float>();
+        val.y = node[1].as<float>();
+        return true;
+    }
+};
+
+template<>
 struct YAML::convert<glm::vec3> {
     static Node encode(const glm::vec3& val) {
         Node node;
@@ -134,6 +153,11 @@ namespace Vanta {
         out << YAML::BeginMap;
         out << YAML::Key << "Scene" << YAML::Value << "Unnamed"; // TODO: Add names to scenes
 
+        // Serialize active camera
+        if (auto activeCamera = m_Scene->GetActiveCameraEntity()) {
+            out << YAML::Key << "ActiveCamera" << YAML::Value << activeCamera.GetUUID();
+        }
+
         // Serialize entity list
         out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
         m_Scene->GetRegistry().each([&](auto entityID) {
@@ -145,13 +169,7 @@ namespace Vanta {
         });
         out << YAML::EndSeq;
 
-        // Serialize active camera
-        if (auto activeCamera = m_Scene->GetActiveCameraEntity()) {
-            out << YAML::Key << "ActiveCamera" << YAML::Value << activeCamera.GetUUID();
-        }
-        
         out << YAML::EndMap;
-
         file.Write(out.c_str());
     }
 
@@ -165,6 +183,11 @@ namespace Vanta {
         std::string sceneName = data["Scene"].as<std::string>();
         VANTA_CORE_TRACE("Deserializing scene: {}", sceneName);
 
+        // UUID of active camera
+        auto activeCamera = data["ActiveCamera"];
+        UUID activeCameraUUID = activeCamera ? UUID(activeCamera.as<uint64>()) : UUID();
+
+        // Entity list
         auto entities = data["Entities"];
         if (entities) {
             for (auto item : entities) {
@@ -175,6 +198,11 @@ namespace Vanta {
                 Entity entity = m_Scene->CreateEntity(name, uuid);
 
                 VANTA_CORE_TRACE("Deserializing entity: {} [{}]", name, uuid);
+
+                // Check for active camera entity
+                if (uuid == activeCameraUUID) {
+                    m_Scene->SetActiveCameraEntity(entity);
+                }
                 
                 auto transformComponent = item["TransformComponent"];
                 if (transformComponent) {
@@ -223,11 +251,6 @@ namespace Vanta {
                     sc.Color = spriteComponent["Color"].as<glm::vec4>();
                 }
             }
-        }
-
-        auto activeCamera = data["ActiveCameraEntity"];
-        if (activeCamera) {
-            VANTA_CORE_ERROR("Active camera serialization not implemented!");
         }
 
         return true;

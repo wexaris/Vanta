@@ -82,7 +82,7 @@ namespace Vanta {
 
         void OnViewportResize(uint width, uint height);
 
-        void SetActiveCameraEntity(Entity& camera);
+        void SetActiveCameraEntity(Entity camera);
         Entity GetActiveCameraEntity();
         Camera* GetActiveCamera();
 
