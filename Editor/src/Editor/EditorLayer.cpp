@@ -40,7 +40,7 @@ namespace Vanta {
         void EditorLayer::OnUpdate(double delta) {
             VANTA_PROFILE_FUNCTION();
 
-            // Resize
+            // Handle resize
             if (auto& params = m_Framebuffer->GetParams();
                 m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && // zero sized framebuffer is invalid
                 (params.Width != m_ViewportSize.x || params.Height != m_ViewportSize.y))
@@ -48,16 +48,6 @@ namespace Vanta {
                 m_Framebuffer->Resize((uint32)m_ViewportSize.x, (uint32)m_ViewportSize.y);
                 m_EditorCamera.OnViewportResize((uint)m_ViewportSize.x, (uint)m_ViewportSize.y);
                 m_ActiveScene->OnViewportResize((uint)m_ViewportSize.x, (uint)m_ViewportSize.y);
-            }
-
-            constexpr float radius = 10.f;
-            float camX = sin((float)Vanta::Duration::SinceLaunch().AsSecondsf()) * radius;
-            float camY = cos((float)Vanta::Duration::SinceLaunch().AsSecondsf()) * radius;
-            auto view = glm::lookAt(glm::vec3(camX, camY, 5), glm::vec3(0, 0, 0), glm::vec3(0.f, 1.f, 0.f));
-            if (auto camera = m_ActiveScene->GetActiveCameraEntity()) {
-                auto& tc = camera.GetComponent<TransformComponent>();
-                tc.GetRealtime().SetTransform(glm::inverse(view));
-                tc.Snapshot();
             }
 
             // Render
@@ -91,6 +81,7 @@ namespace Vanta {
                 break;
             }
 
+            // Handle mouse over entity
             auto [mx, my] = ImGui::GetMousePos();
             mx -= m_ViewportBounds[0].x;
             my -= m_ViewportBounds[0].y;
