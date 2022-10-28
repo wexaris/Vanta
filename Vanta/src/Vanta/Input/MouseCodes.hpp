@@ -1,6 +1,7 @@
 #pragma once
 
 namespace Vanta {
+
     enum class MouseCode : uint16 {
         Button0 = 0,
         Button1 = 1,
@@ -17,16 +18,8 @@ namespace Vanta {
         ButtonMiddle = Button2
     };
     using Mouse = MouseCode;
-
-    //static std::ostream& operator<<(std::ostream& os, MouseCode key) {
-    //    return os << static_cast<std::underlying_type_t<MouseCode>>(key);
-    //}
 }
 
-template<>
-struct fmt::formatter<Vanta::MouseCode> : formatter<std::underlying_type_t<Vanta::MouseCode>> {
-    template <typename FormatContext>
-    auto format(Vanta::MouseCode key, FormatContext& ctx) const {
-        return formatter<std::underlying_type_t<Vanta::MouseCode>>::format(static_cast<std::underlying_type_t<Vanta::MouseCode>>(key), ctx);
-    }
-};
+inline std::ostream& operator<<(std::ostream& os, Vanta::MouseCode key) {
+    return os << static_cast<std::underlying_type_t<Vanta::MouseCode>>(key);
+}

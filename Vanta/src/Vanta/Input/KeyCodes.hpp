@@ -1,6 +1,7 @@
 #pragma once
 
 namespace Vanta {
+
     enum class KeyCode : uint16 {
         Space = 32,
         Apostrophe = 39,/* ' */
@@ -134,17 +135,8 @@ namespace Vanta {
         Menu = 348
     };
     using Key = KeyCode;
-
-    //static std::ostream& operator<<(std::ostream& os, KeyCode key) {
-    //    return os << static_cast<std::underlying_type_t<KeyCode>>(key);
-    //}
 }
 
-template<>
-struct fmt::formatter<Vanta::KeyCode> : formatter<std::underlying_type_t<Vanta::KeyCode>> {
-    template <typename FormatContext>
-    auto format(Vanta::KeyCode key, FormatContext& ctx) const {
-        return formatter<std::underlying_type_t<Vanta::KeyCode>>::format(static_cast<std::underlying_type_t<Vanta::KeyCode>>(key), ctx);
-    }
-};
-
+inline std::ostream& operator<<(std::ostream& os, Vanta::KeyCode key) {
+    return os << static_cast<std::underlying_type_t<Vanta::KeyCode>>(key);
+}
