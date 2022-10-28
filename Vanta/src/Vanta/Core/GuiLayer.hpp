@@ -18,6 +18,8 @@ namespace Vanta {
 
         void OnEvent(Event& e) override;
 
+        void SetDarkThemeColors();
+
     private:
         bool m_BlockEvents = true;
     };
