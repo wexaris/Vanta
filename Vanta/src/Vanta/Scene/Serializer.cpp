@@ -4,6 +4,29 @@
 
 #include <yaml-cpp/yaml.h>
 
+namespace Vanta {
+    namespace detail {
+        const char* Rigidbody2DTypeToString(Rigidbody2DComponent::BodyType type) {
+            switch (type) {
+            case Rigidbody2DComponent::BodyType::Static: return "Static";
+            case Rigidbody2DComponent::BodyType::Dynamic: return "Dynamic";
+            case Rigidbody2DComponent::BodyType::Kinematic: return "Kinematic";
+            default:
+                VANTA_UNREACHABLE("Invalid Rigidbody2D body type!");
+                return "Static";
+            }
+        }
+
+        Rigidbody2DComponent::BodyType StringToRigidbody2DType(const std::string& str) {
+            if (str == "Static") return Rigidbody2DComponent::BodyType::Static;
+            if (str == "Dynamic") return Rigidbody2DComponent::BodyType::Dynamic;
+            if (str == "Kinematic") return Rigidbody2DComponent::BodyType::Kinematic;
+            VANTA_UNREACHABLE("Invalid Rigidbody2D body type!");
+            return Rigidbody2DComponent::BodyType::Static;
+        }
+    }
+}
+
 template<>
 struct YAML::convert<glm::vec2> {
     static Node encode(const glm::vec2& val) {
@@ -67,6 +90,12 @@ struct YAML::convert<glm::vec4> {
     }
 };
 
+YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec2& val) {
+    out << YAML::Flow;
+    out << YAML::BeginSeq << val.x << val.y << YAML::EndSeq;
+    return out;
+}
+
 YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec3& val) {
     out << YAML::Flow;
     out << YAML::BeginSeq << val.x << val.y << val.z << YAML::EndSeq;
@@ -102,26 +131,18 @@ namespace Vanta {
         out << YAML::Flow << YAML::BeginSeq << idComponent.Name << idComponent.ID << YAML::EndSeq;
 
         SerializeComponent<TransformComponent>(entity, [&out](TransformComponent& component) {
-            auto& comp = component.GetSnapshot();
             out << YAML::Key << "TransformComponent";
             out << YAML::BeginMap;
-            out << YAML::Key << "Position" << YAML::Value << comp.Position;
-            out << YAML::Key << "Rotation" << YAML::Value << comp.GetRotationDegrees();
-            out << YAML::Key << "Scale" << YAML::Value << comp.Scale;
-            out << YAML::EndMap;
-        });
-
-        SerializeComponent<PhysicsComponent>(entity, [&out](PhysicsComponent& component) {
-            out << YAML::Key << "PhysicsComponent";
-            out << YAML::BeginMap;
-            out << YAML::Key << "Placeholder" << YAML::Value << component.Placeholder;
+            out << YAML::Key << "Position" << YAML::Value << component.Position;
+            out << YAML::Key << "Rotation" << YAML::Value << component.GetRotationDegrees();
+            out << YAML::Key << "Scale" << YAML::Value << component.Scale;
             out << YAML::EndMap;
         });
 
         SerializeComponent<CameraComponent>(entity, [&out](CameraComponent& component) {
             out << YAML::Key << "CameraComponent";
             out << YAML::BeginMap;
-            
+
             out << YAML::Key << "Camera" << YAML::Value << YAML::BeginMap;
             out << YAML::Key << "ProjectionType" << YAML::Value << (int)component.Camera.GetProjectionType();
             out << YAML::Key << "PerspectiveFOV" << YAML::Value << component.Camera.GetPerspectiveFOV();
@@ -142,6 +163,26 @@ namespace Vanta {
             //out << YAML::Key << "Texture" << YAML::Value << component.Texture;
             out << YAML::Key << "TilingFactor" << YAML::Value << component.TilingFactor;
             out << YAML::Key << "Color" << YAML::Value << component.Color;
+            out << YAML::EndMap;
+        });
+
+        SerializeComponent<Rigidbody2DComponent>(entity, [&out](Rigidbody2DComponent& component) {
+            out << YAML::Key << "Rigidbody2DComponent";
+            out << YAML::BeginMap;
+            out << YAML::Key << "BodyType" << YAML::Value << (int)component.Type;
+            out << YAML::Key << "FixedRotation" << YAML::Value << component.FixedRotation;
+            out << YAML::EndMap;
+        });
+
+        SerializeComponent<BoxCollider2DComponent>(entity, [&out](BoxCollider2DComponent& component) {
+            out << YAML::Key << "BoxCollider2DComponent";
+            out << YAML::BeginMap;
+            out << YAML::Key << "Size" << YAML::Value << component.Size;
+            out << YAML::Key << "Offset" << YAML::Value << component.Offset;
+            out << YAML::Key << "Density" << YAML::Value << component.Density;
+            out << YAML::Key << "Friction" << YAML::Value << component.Friction;
+            out << YAML::Key << "Restitution" << YAML::Value << component.Restitution;
+            out << YAML::Key << "RestitutionThreshold" << YAML::Value << component.RestitutionThreshold;
             out << YAML::EndMap;
         });
 
@@ -206,23 +247,15 @@ namespace Vanta {
                 
                 auto transformComponent = item["TransformComponent"];
                 if (transformComponent) {
-                    auto& snap = entity.GetComponent<TransformComponent>();
-                    auto& tc = snap.GetRealtime();
+                    auto& tc = entity.GetComponent<TransformComponent>();
                     auto pos = transformComponent["Position"].as<glm::vec3>();
                     auto rot = transformComponent["Rotation"].as<glm::vec3>();
                     auto scale = transformComponent["Scale"].as<glm::vec3>();
                     tc.SetTransform(pos, rot, scale);
-                    snap.Snapshot();
                 }
                 else {
                     VANTA_CORE_ERROR("Entity missing TransformComponent!");
                     return false;
-                }
-
-                auto physicsComponent = item["PhysicsComponent"];
-                if (physicsComponent) {
-                    auto& pc = entity.AddComponent<PhysicsComponent>();
-                    pc.Placeholder = physicsComponent["Placeholder"].as<uint>();
                 }
 
                 auto cameraComponent = item["CameraComponent"];
@@ -249,6 +282,24 @@ namespace Vanta {
                     //pc.Texture = spriteComponent["Texture"].as<std::string>();
                     sc.TilingFactor = spriteComponent["TilingFactor"].as<float>();
                     sc.Color = spriteComponent["Color"].as<glm::vec4>();
+                }
+
+                auto rigidbody2DComponent = item["Rigidbody2DComponent"];
+                if (rigidbody2DComponent) {
+                    auto& rb = entity.AddComponent<Rigidbody2DComponent>();
+                    rb.Type = (Rigidbody2DComponent::BodyType)rigidbody2DComponent["BodyType"].as<int>();
+                    rb.FixedRotation = rigidbody2DComponent["FixedRotation"].as<bool>();
+                }
+
+                auto boxCollider2DComponent = item["BoxCollider2DComponent"];
+                if (boxCollider2DComponent) {
+                    auto& bc = entity.AddComponent<BoxCollider2DComponent>();
+                    bc.Size = boxCollider2DComponent["Size"].as<glm::vec2>();
+                    bc.Offset = boxCollider2DComponent["Offset"].as<glm::vec2>();
+                    bc.Density = boxCollider2DComponent["Density"].as<float>();
+                    bc.Friction = boxCollider2DComponent["Friction"].as<float>();
+                    bc.Restitution = boxCollider2DComponent["Restitution"].as<float>();
+                    bc.RestitutionThreshold = boxCollider2DComponent["RestitutionThreshold"].as<float>();
                 }
             }
         }

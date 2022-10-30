@@ -9,7 +9,6 @@ public:
         camera_e.AddComponent<Vanta::CameraComponent>();
 
         auto sprite_e = m_ActiveScene.CreateEntity("Sprite");
-        sprite_e.AddComponent<Vanta::PhysicsComponent>();
         sprite_e.AddComponent<Vanta::SpriteComponent>(glm::vec4{ 0.3f, 0.2f, 0.6f, 1.f });
 
         m_ActiveScene.OnRuntimeBegin();

@@ -90,11 +90,6 @@ namespace Vanta {
 
     using TransformComponent = Snapshotable<TransformComponent_>;
 
-    struct PhysicsComponent {
-        uint Placeholder = 0;
-        PhysicsComponent() = default;
-        PhysicsComponent(const PhysicsComponent& other) = default;
-    };
 
     struct CameraComponent {
         SceneCamera Camera = SceneCamera::Perspective();
@@ -104,6 +99,35 @@ namespace Vanta {
         CameraComponent(const CameraComponent& other) = default;
         CameraComponent(const SceneCamera& camera, bool fixedAspectRatio = false)
             : Camera(camera), FixedAspectRatio(fixedAspectRatio) {}
+    };
+
+    struct Rigidbody2DComponent {
+        enum class BodyType { Static = 0, Dynamic, Kinematic };
+
+        BodyType Type = BodyType::Static;
+        bool FixedRotation = false;
+
+        // Physics runtime instance
+        void* RuntimeBody = nullptr;
+
+        Rigidbody2DComponent() = default;
+        Rigidbody2DComponent(const Rigidbody2DComponent& other) = default;
+    };
+
+    struct BoxCollider2DComponent {
+        glm::vec2 Size   = { 0.5f, 0.5f };
+        glm::vec2 Offset = { 0.0f, 0.0f };
+
+        float Density = 1.0f;
+        float Friction = 1.0f;
+        float Restitution = 1.0f;           // bounciness
+        float RestitutionThreshold = 0.5f;
+
+        // Physics runtime instance
+        void* RuntimeFixture = nullptr;
+
+        BoxCollider2DComponent() = default;
+        BoxCollider2DComponent(const BoxCollider2DComponent& other) = default;
     };
 
     struct SpriteComponent {
@@ -140,5 +164,6 @@ namespace Vanta {
     };
 
 
-    using AllComponents = ComponentList<TransformComponent, PhysicsComponent, CameraComponent, SpriteComponent, NativeScriptComponent>;
+    using AllComponents = ComponentList<TransformComponent, CameraComponent,
+        Rigidbody2DComponent, BoxCollider2DComponent, SpriteComponent, NativeScriptComponent>;
 }

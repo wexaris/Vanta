@@ -5,6 +5,11 @@
 #include "Vanta/Scene/NativeScript.hpp"
 #include "Vanta/Scene/Scene.hpp"
 
+#include <box2d/b2_body.h>
+#include <box2d/b2_world.h>
+#include <box2d/b2_fixture.h>
+#include <box2d/b2_polygon_shape.h>
+
 namespace Vanta {
 
     namespace detail {
@@ -21,6 +26,17 @@ namespace Vanta {
 
         void CopyComponents(Entity from, Entity to) {
             CopyComponents(AllComponents(), from, to);
+        }
+
+        b2BodyType Rigidbody2DTypeToBox2D(Rigidbody2DComponent::BodyType bodyType) {
+            switch (bodyType) {
+            case Rigidbody2DComponent::BodyType::Static: return b2_staticBody;
+            case Rigidbody2DComponent::BodyType::Dynamic: return b2_dynamicBody;
+            case Rigidbody2DComponent::BodyType::Kinematic: return b2_kinematicBody;
+            default:
+                VANTA_UNREACHABLE("Invalid Rigidbody2D body type!");
+                return b2_staticBody;
+            }
         }
     }
 
