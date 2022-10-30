@@ -4,6 +4,7 @@
     "dependencies": [
         "boost-fiber",
         "boost-thread",
+        "box2d",
         "entt",
         "fmt",
         "glad",

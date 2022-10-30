@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 project(vanta LANGUAGES C CXX)
 
 find_package(Boost REQUIRED COMPONENTS fiber thread)
+find_package(box2d CONFIG REQUIRED)
 find_package(entt CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
@@ -58,7 +59,7 @@ set(${PROJECT_NAME}_SOURCE
     "src/Platform/Windows/PlatformUtils.cpp"
     "src/Platform/Windows/Window.cpp"
     "src/Platform/Windows/Input.cpp"
-)
+ )
 
 set(${${PROJECT_NAME}_PCH} "${CMAKE_CURRENT_SOURCE_DIR}/src/vantapch.hpp")
 
@@ -68,10 +69,10 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE ${${PROJECT_NAME}_PCH})
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 target_link_libraries(${PROJECT_NAME}
-    PUBLIC EnTT::EnTT fmt::fmt glm::glm spdlog::spdlog imgui::imgui imguizmo::imguizmo
-    PRIVATE Boost::boost Boost::fiber Boost::thread glad::glad glfw 
-        Vulkan::Vulkan Vulkan::glslang Vulkan::shaderc_combined Vulkan::SPIRV-Tools
-        spirv-cross-core spirv-cross-glsl yaml-cpp)
+    PUBLIC Boost::boost Boost::fiber Boost::thread EnTT::EnTT fmt::fmt glm::glm
+        imgui::imgui imguizmo::imguizmo spdlog::spdlog 
+    PRIVATE box2d::box2d glad::glad glfw spirv-cross-core spirv-cross-glsl
+        Vulkan::Vulkan Vulkan::glslang Vulkan::shaderc_combined Vulkan::SPIRV-Tools yaml-cpp)
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE
     $<$<BOOL:${VANTA_DISTRIB}>:
