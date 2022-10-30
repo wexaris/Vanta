@@ -25,16 +25,16 @@ namespace Vanta {
         void OnUpdateSimulation(double delta, Camera* camera);
         void OnUpdateEditor(double delta, Camera* camera);
 
-        bool IsValid(Entity entity) const;
+        bool IsValid(entt::entity entity) const;
         Entity CreateEntity(const std::string& name, UUID uuid = UUID());
-        Entity DuplicateEntity(Entity entity);
-        void DestroyEntity(Entity entity);
+        Entity DuplicateEntity(entt::entity entity);
+        void DestroyEntity(entt::entity entity);
 
         /// <summary>
         /// Add a given component to an entity.
         /// </summary>
         template<typename Component, typename... Args>
-        Component& AddComponent(Entity entity, Args&&... args) {
+        Component& AddComponent(entt::entity entity, Args&&... args) {
             VANTA_ASSERT(!HasComponent<Component>(entity), "Entity already has component: {}", typeid(Component).name());
             Component& component = m_Registry.emplace<Component>(entity, std::forward<Args>(args)...);
             OnComponentAdded(entity, component);
@@ -45,7 +45,7 @@ namespace Vanta {
         /// Add to replace a given component to an entity.
         /// </summary>
         template<typename Component, typename... Args>
-        Component& AddOrReplaceComponent(Entity entity, Args&&... args) {
+        Component& AddOrReplaceComponent(entt::entity entity, Args&&... args) {
             Component& component = m_Registry.emplace_or_replace<Component>(entity, std::forward<Args>(args)...);
             OnComponentAdded(entity, component);
             return component;
@@ -55,7 +55,7 @@ namespace Vanta {
         /// Remove a given component from an entity.
         /// </summary>
         template<typename Component>
-        void RemoveComponent(Entity entity) {
+        void RemoveComponent(entt::entity entity) {
             VANTA_ASSERT(HasComponent<Component>(entity), "Entity does not have component: {}", typeid(Component).name());
             m_Registry.remove<Component>(entity);
         }
@@ -64,25 +64,25 @@ namespace Vanta {
         /// Get a given component from an entity.
         /// </summary>
         template<typename Component>
-        Component& GetComponent(Entity entity) {
+        Component& GetComponent(entt::entity entity) {
             VANTA_ASSERT(HasComponent<Component>(entity), "Entity does not have component: {}", typeid(Component).name());
             return m_Registry.get<Component>(entity);
         }
 
         template<typename Component>
-        const Component& GetComponent(Entity entity) const {
+        const Component& GetComponent(entt::entity entity) const {
             VANTA_ASSERT(HasComponent<Component>(entity), "Entity does not have component: {}", typeid(Component).name());
             return m_Registry.get<Component>(entity);
         }
 
         template<typename Component>
-        bool HasComponent(Entity entity) const {
+        bool HasComponent(entt::entity entity) const {
             return m_Registry.any_of<Component>(entity);
         }
 
         void OnViewportResize(uint width, uint height);
 
-        void SetActiveCameraEntity(Entity camera);
+        void SetActiveCameraEntity(entt::entity camera);
         Entity GetActiveCameraEntity();
         Camera* GetActiveCamera();
 
@@ -97,7 +97,7 @@ namespace Vanta {
 
         void OnScriptUpdate(double delta);
         void OnPhysicsUpdate(double delta);
-        void OnRender(double delta, Entity camera);
+        void OnRender(double delta, entt::entity camera);
         void OnRender(double delta, Camera* camera);
 
         template<typename T>

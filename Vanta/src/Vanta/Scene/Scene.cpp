@@ -125,12 +125,12 @@ namespace Vanta {
         });
     }
 
-    void Scene::OnRender(double delta, Entity camera) {
+    void Scene::OnRender(double delta, entt::entity camera) {
         VANTA_PROFILE_RENDER_FUNCTION();
-        if (camera) {
-            auto& tc = camera.GetComponent<TransformComponent>();
-            auto& cc = camera.GetComponent<CameraComponent>();
-            cc.Camera.SetView(glm::inverse(tc.GetSnapshot().Transform));
+        if (IsValid(camera)) {
+            auto& tr = GetComponent<TransformComponent>(camera);
+            auto& cc = GetComponent<CameraComponent>(camera);
+            cc.Camera.SetView(glm::inverse(tr.Transform));
             OnRender(delta, &cc.Camera);
         }
     }
@@ -146,26 +146,27 @@ namespace Vanta {
         }
     }
 
-    bool Scene::IsValid(Entity entity) const {
+    bool Scene::IsValid(entt::entity entity) const {
         return m_Registry.valid(entity);
     }
 
     Entity Scene::CreateEntity(const std::string& name, UUID uuid) {
         VANTA_PROFILE_FUNCTION();
         Entity entity = Entity(m_Registry.create(), this);
-        entity.AddComponent<IDComponent>(name, uuid);
-        entity.AddComponent<TransformComponent>();
+        AddComponent<IDComponent>(entity, name, uuid);
+        AddComponent<TransformComponent>(entity);
         return entity;
     }
 
-    Entity Scene::DuplicateEntity(Entity entity) {
+    Entity Scene::DuplicateEntity(entt::entity entity) {
         VANTA_PROFILE_FUNCTION();
-        Entity newEntity = CreateEntity(entity.GetName());
-        detail::CopyComponents(entity, newEntity);
+        Entity e(entity, this);
+        Entity newEntity = CreateEntity(e.GetName());
+        detail::CopyComponents(e, newEntity);
         return newEntity;
     }
 
-    void Scene::DestroyEntity(Entity entity) {
+    void Scene::DestroyEntity(entt::entity entity) {
         VANTA_PROFILE_FUNCTION();
         m_Registry.destroy(entity);
     }
@@ -178,8 +179,8 @@ namespace Vanta {
             camera->Resize(width, height);
     }
 
-    void Scene::SetActiveCameraEntity(Entity camera) {
-        m_ActiveCameraEntity = camera.operator entt::entity();
+    void Scene::SetActiveCameraEntity(entt::entity camera) {
+        m_ActiveCameraEntity = camera;
     }
 
     Entity Scene::GetActiveCameraEntity() {
