@@ -9,6 +9,7 @@
 #include <box2d/b2_world.h>
 #include <box2d/b2_fixture.h>
 #include <box2d/b2_polygon_shape.h>
+#include <box2d/b2_circle_shape.h>
 
 namespace Vanta {
 
@@ -134,6 +135,25 @@ namespace Vanta {
 
                 bc.RuntimeFixture = fixture;
             }
+
+            if (HasComponent<CircleCollider2DComponent>(e)) {
+                auto& cc = GetComponent<CircleCollider2DComponent>(e);
+
+                b2CircleShape shape;
+                shape.m_p.Set(cc.Offset.x, cc.Offset.y);
+                shape.m_radius = cc.Radius;
+
+                b2FixtureDef fixtureDef;
+                fixtureDef.shape = &shape;
+                fixtureDef.density = cc.Friction;
+                fixtureDef.friction = cc.Friction;
+                fixtureDef.restitution = cc.Restitution;
+                fixtureDef.restitutionThreshold = cc.RestitutionThreshold;
+
+                b2Fixture* fixture = body->CreateFixture(&fixtureDef);
+
+                cc.RuntimeFixture = fixture;
+            }
         });
     }
 
@@ -179,7 +199,7 @@ namespace Vanta {
         m_PhysicsWorld->Step((float)delta, velocityIterations, positionIterations);
 
         //ParallelView<TransformComponent, Rigidbody2DComponent>(m_Barrier, m_Registry, [&](entt::entity, TransformComponent& tr, Rigidbody2DComponent& rb) {
-        m_Registry.ViewNext<TransformComponent, Rigidbody2DComponent>([&](entt::entity e, TransformComponent& tr, Rigidbody2DComponent& rb) {
+        m_Registry.ViewNext<TransformComponent, Rigidbody2DComponent>([&](entt::entity, TransformComponent& tr, Rigidbody2DComponent& rb) {
             b2Body* body = (b2Body*)rb.RuntimeBody;
             auto& position = body->GetPosition();
             float angle = body->GetAngle();

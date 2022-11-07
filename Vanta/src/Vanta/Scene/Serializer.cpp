@@ -186,6 +186,18 @@ namespace Vanta {
             out << YAML::EndMap;
         });
 
+        SerializeComponent<CircleCollider2DComponent>(entity, [&out](CircleCollider2DComponent& component) {
+            out << YAML::Key << "CircleCollider2DComponent";
+            out << YAML::BeginMap;
+            out << YAML::Key << "Radius" << YAML::Value << component.Radius;
+            out << YAML::Key << "Offset" << YAML::Value << component.Offset;
+            out << YAML::Key << "Density" << YAML::Value << component.Density;
+            out << YAML::Key << "Friction" << YAML::Value << component.Friction;
+            out << YAML::Key << "Restitution" << YAML::Value << component.Restitution;
+            out << YAML::Key << "RestitutionThreshold" << YAML::Value << component.RestitutionThreshold;
+            out << YAML::EndMap;
+        });
+
         out << YAML::EndMap;
     }
 
@@ -300,6 +312,17 @@ namespace Vanta {
                     bc.Friction = boxCollider2DComponent["Friction"].as<float>();
                     bc.Restitution = boxCollider2DComponent["Restitution"].as<float>();
                     bc.RestitutionThreshold = boxCollider2DComponent["RestitutionThreshold"].as<float>();
+                }
+
+                auto circleCollider2DComponent = item["CircleCollider2DComponent"];
+                if (circleCollider2DComponent) {
+                    auto& cc = entity.AddComponent<CircleCollider2DComponent>();
+                    cc.Radius = circleCollider2DComponent["Radius"].as<float>();
+                    cc.Offset = circleCollider2DComponent["Offset"].as<glm::vec2>();
+                    cc.Density = circleCollider2DComponent["Density"].as<float>();
+                    cc.Friction = circleCollider2DComponent["Friction"].as<float>();
+                    cc.Restitution = circleCollider2DComponent["Restitution"].as<float>();
+                    cc.RestitutionThreshold = circleCollider2DComponent["RestitutionThreshold"].as<float>();
                 }
             }
         }

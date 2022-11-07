@@ -131,6 +131,22 @@ namespace Vanta {
         BoxCollider2DComponent(const BoxCollider2DComponent& other) = default;
     };
 
+    struct CircleCollider2DComponent {
+        float Radius = 1.0f;
+        glm::vec2 Offset = { 0.0f, 0.0f };
+
+        float Density = 1.0f;
+        float Friction = 1.0f;
+        float Restitution = 0.5f;           // bounciness
+        float RestitutionThreshold = 0.5f;
+
+        // Physics runtime instance
+        void* RuntimeFixture = nullptr;
+
+        CircleCollider2DComponent() = default;
+        CircleCollider2DComponent(const CircleCollider2DComponent& other) = default;
+    };
+
     struct SpriteComponent {
         Ref<Texture2D> Texture = nullptr;
         float TilingFactor = 1.f;
@@ -166,5 +182,5 @@ namespace Vanta {
 
 
     using AllComponents = ComponentList<TransformComponent, CameraComponent,
-        Rigidbody2DComponent, BoxCollider2DComponent, SpriteComponent, NativeScriptComponent>;
+        Rigidbody2DComponent, BoxCollider2DComponent, CircleCollider2DComponent, SpriteComponent, NativeScriptComponent>;
 }
