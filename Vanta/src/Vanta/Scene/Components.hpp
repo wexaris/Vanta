@@ -45,39 +45,43 @@ namespace Vanta {
         IDComponent(const std::string& name, UUID uuid) : ID(uuid), Name(name) {}
     };
 
-    struct TransformComponent_ {
+    struct TransformComponent {
+        glm::mat4 Transform = glm::mat4(1.f);
+
         glm::vec3 Position = { 0.f, 0.f, 0.f }; // Position
         glm::vec3 Rotation = { 0.f, 0.f, 0.f }; // Rotation in radians
         glm::vec3 Scale    = { 1.f, 1.f, 1.f }; // Scale
 
-        glm::mat4 Transform = glm::mat4(1.f);
-
-        TransformComponent_() = default;
-        TransformComponent_(const TransformComponent_& other) = default;
-        TransformComponent_(const glm::mat4& transform) {
+        TransformComponent() = default;
+        TransformComponent(const TransformComponent& other) = default;
+        TransformComponent(const glm::mat4& transform) {
             SetTransform(transform);
         }
-        TransformComponent_(const glm::vec3& position, const glm::vec3& degrees, const glm::vec3& scale) {
-            SetTransform(position, degrees, scale);
+        TransformComponent(const glm::vec3& position, const glm::vec3& degrees, const glm::vec3& scale) {
+            SetTransformDeg(position, degrees, scale);
         }
 
-        void SetTransform(const glm::vec3& position, const glm::vec3& degrees, const glm::vec3& scale) {
+        void SetTransformRad(const glm::vec3& position, const glm::vec3& radians, const glm::vec3& scale) {
             Position = position;
-            Rotation = glm::radians(degrees);
+            Rotation = radians;
             Scale = scale;
             Recalculate();
         }
 
-        void SetTransform(const glm::mat4& transform) {
-            Math::Decompose(transform, Position, Rotation, Scale);
-            Transform = transform;
+        void SetTransformDeg(const glm::vec3& position, const glm::vec3& degrees, const glm::vec3& scale) {
+            SetTransformRad(position, glm::radians(degrees), scale);
         }
 
-        void SetRotationDegrees(const glm::vec3& degrees) { Rotation = glm::radians(degrees); }
-        void SetRotationRadians(const glm::vec3& radians) { Rotation = radians; }
+        void SetTransform(const glm::mat4& transform) {
+            Transform = transform;
+            Math::Decompose(Transform, Position, Rotation, Scale);
+        }
 
-        glm::vec3 GetRotationDegrees() const         { return glm::degrees(Rotation); }
+        void SetRotationRad(const glm::vec3& radians) { Rotation = radians; }
+        void SetRotationDeg(const glm::vec3& degrees) { Rotation = glm::radians(degrees); }
+
         const glm::vec3& GetRotationRadians() const  { return Rotation; }
+        glm::vec3 GetRotationDegrees() const         { return glm::degrees(Rotation); }
 
     private:
         void Recalculate() {
@@ -87,9 +91,6 @@ namespace Vanta {
             Transform = (glm::mat4)(position * rotation * scale);
         }
     };
-
-    using TransformComponent = Snapshotable<TransformComponent_>;
-
 
     struct CameraComponent {
         SceneCamera Camera = SceneCamera::Perspective();
@@ -120,7 +121,7 @@ namespace Vanta {
 
         float Density = 1.0f;
         float Friction = 1.0f;
-        float Restitution = 1.0f;           // bounciness
+        float Restitution = 0.5f;           // bounciness
         float RestitutionThreshold = 0.5f;
 
         // Physics runtime instance

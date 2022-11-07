@@ -128,6 +128,21 @@ namespace Vanta {
 
     template <typename T, typename... Types>
     constexpr bool Contains_v = Contains<T, Types...>::value;
+
+    /// Find a type given a certain condition.
+    template<template<typename> typename Cond, typename... Types>
+    struct Find;
+
+    template<template<typename> typename Cond>
+    struct Find<Cond> { using type = void; };
+
+    template<template<typename> typename Cond, typename Head, typename... Tail>
+    struct Find<Cond, Head, Tail...> {
+        using type = typename std::conditional_t<Cond<Head>::value, Head, typename Find<Cond, Tail...>::type>;
+    };
+
+    template<template<typename> typename Cond, typename... Types>
+    using Find_t = Find<Cond, Types...>::type;
 }
 
 #include "Vanta/Util/Time.hpp"

@@ -1,5 +1,5 @@
 #pragma once
-#include <entt/entt.hpp>
+#include "Vanta/Scene/BufferedRegistry.hpp"
 
 #include <execution>
 
@@ -9,20 +9,16 @@ namespace Vanta {
     /// Job dispatcher that iterates over a collection of entities and components in sequence,
     /// on the calling thread.
     /// </summary>
-    template<typename... Components, typename Func>
-    void LinearView(entt::registry& registry, Func&& func) {
-        auto view = registry.view<Components...>();
-        auto each = view.each();
+    template<typename... Components, typename Registry, typename Func>
+    void LinearView(Registry& registry, Func&& func) {
+        registry.ViewIter<Components...>([&](auto, auto beg, auto end) {
+            if (beg == end)
+                return;
 
-        auto beg = each.begin();
-        auto end = each.end();
-
-        if (beg == end)
-            return;
-
-        for (; beg != end; ++beg) {
-            std::apply(func, *beg);
-        }
+            for (; beg != end; ++beg) {
+                std::apply(func, *beg);
+            }
+        });
     };
 
     /// <summary>
@@ -68,77 +64,69 @@ namespace Vanta {
     /// on the engine's thread pool.
     /// Makes use of `ParallelBarrier` for synchronizing with the caller thread.
     /// </summary>
-    template<typename... Components, typename Func> requires (sizeof...(Components) > 1) // View has `size_hint()` for > 1 component
-    void ParallelView(ParallelBarrier& barrier, entt::registry& registry, Func&& func) {
+    template<typename... Components, typename Registry, typename Func> requires (sizeof...(Components) > 1) // View has `size_hint()` for > 1 component
+    void ParallelView(ParallelBarrier& barrier, Registry& registry, Func&& func) {
         static constexpr usize CHUNK_SIZE = 16;
 
-        auto view = registry.view<Components...>();
-        auto each = view.each();
+        registry.ViewIter<Components...>([&](auto view, auto beg, auto end) {
+            if (beg == end)
+                return;
 
-        auto beg = each.begin();
-        auto end = each.end();
+            usize jobCount = (usize)std::ceil((float)view.size_hint() / CHUNK_SIZE);
 
-        if (beg == end)
-            return;
+            if (jobCount > 1) {
+                barrier.StartFibers(jobCount);
 
-        usize jobCount = (usize)std::ceil((float)view.size_hint() / CHUNK_SIZE);
-
-        if (jobCount > 1) {
-            barrier.StartFibers(jobCount);
-
-            for (usize i = 0; i < jobCount; i++) {
-                Fibers::Spawn([&func](auto* barrier, auto beg, auto end) {
-                    for (usize i = 0; i < CHUNK_SIZE && beg != end; ++i, ++beg) {
-                        std::apply(func, *beg);
-                    }
+                for (usize i = 0; i < jobCount; i++) {
+                    Fibers::Spawn([&func](auto* barrier, auto beg, auto end) {
+                        for (usize i = 0; i < CHUNK_SIZE && beg != end; ++i, ++beg) {
+                            std::apply(func, *beg);
+                        }
                     barrier->WaitFiber();
-                }, &barrier, beg, end);
+                    }, &barrier, beg, end);
 
-                for (usize j = 0; j < CHUNK_SIZE && beg != end; ++j)
-                    ++beg;
+                    for (usize j = 0; j < CHUNK_SIZE && beg != end; ++j)
+                        ++beg;
+                }
             }
-        }
-        else {
-            for (; beg != end; ++beg) {
-                std::apply(func, *beg);
+            else {
+                for (; beg != end; ++beg) {
+                    std::apply(func, *beg);
+                }
             }
-        }
+        });
     };
 
-    template<typename... Components, typename Func> requires (sizeof...(Components) == 1) // View has `size()` for 1 component
-    void ParallelView(ParallelBarrier& barrier, entt::registry& registry, Func&& func) {
+    template<typename... Components, typename Registry, typename Func> requires (sizeof...(Components) == 1) // View has `size()` for 1 component
+    void ParallelView(ParallelBarrier& barrier, Registry& registry, Func&& func) {
         static constexpr usize CHUNK_SIZE = 16;
 
-        auto view = registry.view<Components...>();
-        auto each = view.each();
+        registry.ViewIter<Components...>([&](auto view, auto beg, auto end) {
+            if (beg == end)
+                return;
 
-        auto beg = each.begin();
-        auto end = each.end();
+            usize jobCount = (usize)std::ceil((float)view.size() / CHUNK_SIZE);
 
-        if (beg == end)
-            return;
+            if (jobCount > 1) {
+                barrier.StartFibers(jobCount);
 
-        usize jobCount = (usize)std::ceil((float)view.size() / CHUNK_SIZE);
-
-        if (jobCount > 1) {
-            barrier.StartFibers(jobCount);
-
-            for (usize i = 0; i < jobCount; i++) {
-                Fibers::Spawn([&func](auto* barrier, auto beg, auto end) {
-                    for (usize i = 0; i < CHUNK_SIZE && beg != end; ++i, ++beg) {
-                        std::apply(func, *beg);
-                    }
+                for (usize i = 0; i < jobCount; i++) {
+                    Fibers::Spawn([&func](auto* barrier, auto beg, auto end) {
+                        for (usize i = 0; i < CHUNK_SIZE && beg != end; ++i, ++beg) {
+                            std::apply(func, *beg);
+                        }
                     barrier->WaitFiber();
-                }, &barrier, beg, end);
+                    }, &barrier, beg, end);
 
-                for (usize j = 0; j < CHUNK_SIZE && beg != end; ++j)
-                    ++beg;
+                    for (usize j = 0; j < CHUNK_SIZE && beg != end; ++j)
+                        ++beg;
+                }
             }
-        }
-        else {
-            for (; beg != end; ++beg) {
-                std::apply(func, *beg);
+            else {
+                for (; beg != end; ++beg) {
+                    std::apply(func, *beg);
+                }
             }
-        }
+        });
     };
 }

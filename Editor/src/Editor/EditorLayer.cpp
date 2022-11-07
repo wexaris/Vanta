@@ -68,7 +68,9 @@ namespace Vanta {
                 break;
 
             case State::Simulate:
-                m_EditorCamera.OnUpdate(delta);
+                if (m_ViewportFocused)
+                    m_EditorCamera.OnUpdate(delta);
+
                 m_ActiveScene->OnUpdateSimulation(delta, &m_EditorCamera.GetCamera());
                 break;
 
@@ -114,9 +116,9 @@ namespace Vanta {
                 Renderer2D::SceneBegin((Camera*) &m_EditorCamera);
             }
 
-            /*if (m_ShowPhysicsColliders) {
+            if (m_ShowPhysicsColliders) {
                 // Box Colliders
-                {
+                /*{
                     auto view = m_ActiveScene->GetAllEntitiesWith<TransformComponent, BoxCollider2DComponent>();
                     for (auto entity : view)
                     {
@@ -148,13 +150,13 @@ namespace Vanta {
 
                         Renderer2D::DrawCircle(transform, glm::vec4(0, 1, 0, 1), 0.01f);
                     }
-                }
-            }*/
+                }*/
+            }
 
             // Draw selected entity outline
             if (Entity selectedEntity = m_ScenePanel.GetSelected()) {
                 const TransformComponent& transform = selectedEntity.GetComponent<TransformComponent>();
-                Renderer2D::DrawRect(transform.GetSnapshot().Transform, glm::vec4(1.0f, 0.9f, 0.2f, 1.0f));
+                Renderer2D::DrawRect(transform.Transform, glm::vec4(1.0f, 0.9f, 0.2f, 1.0f));
             }
 
             Renderer2D::SceneEnd();
@@ -336,7 +338,7 @@ namespace Vanta {
 
                     // Entity transform
                     auto& tc = selectedEntity.GetComponent<TransformComponent>();
-                    glm::mat4 transform = tc.GetSnapshot().Transform;
+                    glm::mat4 transform = tc.Transform;
 
                     // Snapping
                     bool snap = Input::IsKeyPressed(Key::LeftControl);
@@ -352,8 +354,7 @@ namespace Vanta {
                         nullptr, snap ? snapValues : nullptr);
 
                     if (ImGuizmo::IsUsing()) {
-                        tc.GetRealtime().SetTransform(transform);
-                        tc.Snapshot();
+                        tc.SetTransform(transform);
                     }
                 }
 
@@ -517,6 +518,8 @@ namespace Vanta {
         }
 
         void EditorLayer::OnPlay() {
+            VANTA_PROFILE_FUNCTION();
+
             if (m_State == State::Simulate)
                 OnStop();
 
@@ -529,6 +532,8 @@ namespace Vanta {
         }
 
         void EditorLayer::OnSimulate() {
+            VANTA_PROFILE_FUNCTION();
+
             if (m_State == State::Play)
                 OnStop();
 

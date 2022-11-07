@@ -1,15 +1,23 @@
 #pragma once
 #include "Vanta/Event/WindowEvent.hpp"
-#include "Vanta/Scene/Components.hpp"
+#include "Vanta/Scene/BufferedRegistry.hpp"
 #include "Vanta/Scene/Dispatch.hpp"
 #include "Vanta/Render/Camera.hpp"
+
+class b2World;
 
 namespace Vanta {
 
     class Entity;
 
+    struct TransformComponent_1 : TransformComponent {};
+    struct TransformComponent_2 : TransformComponent {};
+
     class Scene {
     public:
+        using BufferedTransform = BufferedComponent<TransformComponent, TransformComponent_1, TransformComponent_2>;
+        using Registry = BufferedRegistry<BufferedTransform>;
+
         Scene();
         ~Scene();
 
@@ -36,7 +44,7 @@ namespace Vanta {
         template<typename Component, typename... Args>
         Component& AddComponent(entt::entity entity, Args&&... args) {
             VANTA_ASSERT(!HasComponent<Component>(entity), "Entity already has component: {}", typeid(Component).name());
-            Component& component = m_Registry.emplace<Component>(entity, std::forward<Args>(args)...);
+            Component& component = m_Registry.AddComponent<Component>(entity, std::forward<Args>(args)...);
             OnComponentAdded(entity, component);
             return component;
         }
@@ -46,9 +54,7 @@ namespace Vanta {
         /// </summary>
         template<typename Component, typename... Args>
         Component& AddOrReplaceComponent(entt::entity entity, Args&&... args) {
-            Component& component = m_Registry.emplace_or_replace<Component>(entity, std::forward<Args>(args)...);
-            OnComponentAdded(entity, component);
-            return component;
+            return m_Registry.AddOrReplaceComponent<Component>(entity, std::forward<Args>(args)...);
         }
 
         /// <summary>
@@ -57,7 +63,7 @@ namespace Vanta {
         template<typename Component>
         void RemoveComponent(entt::entity entity) {
             VANTA_ASSERT(HasComponent<Component>(entity), "Entity does not have component: {}", typeid(Component).name());
-            m_Registry.remove<Component>(entity);
+            m_Registry.RemoveComponent<Component>(entity);
         }
 
         /// <summary>
@@ -66,18 +72,18 @@ namespace Vanta {
         template<typename Component>
         Component& GetComponent(entt::entity entity) {
             VANTA_ASSERT(HasComponent<Component>(entity), "Entity does not have component: {}", typeid(Component).name());
-            return m_Registry.get<Component>(entity);
+            return m_Registry.GetComponent<Component>(entity);
         }
 
         template<typename Component>
         const Component& GetComponent(entt::entity entity) const {
             VANTA_ASSERT(HasComponent<Component>(entity), "Entity does not have component: {}", typeid(Component).name());
-            return m_Registry.get<Component>(entity);
+            return m_Registry.GetComponent<Component>(entity);
         }
 
         template<typename Component>
         bool HasComponent(entt::entity entity) const {
-            return m_Registry.any_of<Component>(entity);
+            return m_Registry.HasComponent<Component>(entity);
         }
 
         void OnViewportResize(uint width, uint height);
@@ -86,19 +92,26 @@ namespace Vanta {
         Entity GetActiveCameraEntity();
         Camera* GetActiveCamera();
 
-        entt::registry& GetRegistry() { return m_Registry; }
+        Registry& GetRegistry() { return m_Registry; }
 
     private:
-        entt::registry m_Registry;
-        entt::entity m_ActiveCameraEntity;
-        glm::uvec2 m_ViewportSize;
-
+        Registry m_Registry;
+        b2World* m_PhysicsWorld = nullptr;
         ParallelBarrier m_Barrier;
+
+        glm::uvec2 m_ViewportSize;
+        entt::entity m_ActiveCameraEntity;
+
+        void InitScripts();
+        void InitPhysics();
 
         void OnScriptUpdate(double delta);
         void OnPhysicsUpdate(double delta);
         void OnRender(double delta, entt::entity camera);
         void OnRender(double delta, Camera* camera);
+
+        void DestroyScripts();
+        void DestroyPhysics();
 
         template<typename T>
         void OnComponentAdded(entt::entity /*entity*/, T& /*component*/) {}

@@ -201,7 +201,7 @@ namespace Vanta {
 
         // Serialize entity list
         out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
-        m_Scene->GetRegistry().each([&](auto entityID) {
+        m_Scene->GetRegistry().Each([&](auto entityID) {
             Entity entity(entityID, m_Scene.get());
             if (!entity)
                 return;
@@ -251,7 +251,7 @@ namespace Vanta {
                     auto pos = transformComponent["Position"].as<glm::vec3>();
                     auto rot = transformComponent["Rotation"].as<glm::vec3>();
                     auto scale = transformComponent["Scale"].as<glm::vec3>();
-                    tc.SetTransform(pos, rot, scale);
+                    tc.SetTransformDeg(pos, rot, scale);
                 }
                 else {
                     VANTA_CORE_ERROR("Entity missing TransformComponent!");

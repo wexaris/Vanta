@@ -18,7 +18,7 @@ namespace Vanta {
         void SceneHierarchy::OnGUIRender(bool allowInteraction) {
             ImGui::Begin("Scene");
             if (m_Context) {
-                m_Context->GetRegistry().each([&](auto entityHandle) {
+                m_Context->GetRegistry().Each([&](auto entityHandle) {
                     Entity entity(entityHandle, m_Context.get());
                     DrawEntity(entity);
                 });
@@ -221,7 +221,7 @@ namespace Vanta {
                 DrawVec3Control("Rotation", rotation);
                 DrawVec3Control("Scale", scale, 1.0f);
                 if (component.Position != position || component.GetRotationDegrees() != rotation || component.Scale != scale) {
-                    component.SetTransform(position, rotation, scale);
+                    component.SetTransformDeg(position, rotation, scale);
                 }
             });
 
