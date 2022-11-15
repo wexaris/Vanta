@@ -1,6 +1,13 @@
 #type vertex
 #version 450 core
 
+layout(location = 0) in vec3 aPosition;
+layout(location = 1) in vec4 aColor;
+layout(location = 2) in vec2 aTexCoords;
+layout(location = 3) in float aTilingFactor;
+layout(location = 4) in int aTexID;
+layout(location = 5) in int aEntityID;
+
 layout(std140, binding = 0) uniform Camera {
     mat4 uViewProjection;
 };
@@ -10,13 +17,6 @@ struct VertexOutput {
     vec2 TexCoords;
     float TilingFactor;
 };
-
-layout(location = 0) in vec3 aPosition;
-layout(location = 1) in vec4 aColor;
-layout(location = 2) in vec2 aTexCoords;
-layout(location = 3) in float aTilingFactor;
-layout(location = 4) in int aTexID;
-layout(location = 5) in int aEntityID;
 
 layout(location = 0) out VertexOutput Output;
 layout(location = 3) out flat int vTexID;
@@ -91,10 +91,10 @@ void main() {
         //case 31: texColor *= texture(uTextures[31], Input.TexCoords * Input.TilingFactor); break;
     }
 
-    fColor = texColor;
-
-    if (fColor.a == 0.0)
+    if (texColor.a == 0.0)
         discard;
+
+    fColor = texColor;
 
     fEntityID = vEntityID;
 }

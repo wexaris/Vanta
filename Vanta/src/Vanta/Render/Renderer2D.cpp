@@ -155,23 +155,26 @@ namespace Vanta {
         s_Data.LineVAO->AddVertexBuffer(s_Data.LineVBO);
 
         { // Create index buffer
-            uint* quadIndices = new uint[s_Data.MaxIndices];
+            uint* indices = new uint[s_Data.MaxIndices];
 
             uint offset = 0;
             for (uint i = 0; i < s_Data.MaxIndices; i += 6) {
-                quadIndices[i + 0] = offset + 0;
-                quadIndices[i + 1] = offset + 1;
-                quadIndices[i + 2] = offset + 2;
-                quadIndices[i + 3] = offset + 2;
-                quadIndices[i + 4] = offset + 3;
-                quadIndices[i + 5] = offset + 0;
+                indices[i + 0] = offset + 0;
+                indices[i + 1] = offset + 1;
+                indices[i + 2] = offset + 2;
+                indices[i + 3] = offset + 2;
+                indices[i + 4] = offset + 3;
+                indices[i + 5] = offset + 0;
                 offset += 4;
             }
 
-            Ref<IndexBuffer> quadIB = IndexBuffer::Create(quadIndices, s_Data.MaxIndices);
-            s_Data.QuadVAO->SetIndexBuffer(quadIB);
-            s_Data.CircleVAO->SetIndexBuffer(quadIB);
-            delete[] quadIndices;
+            Ref<IndexBuffer> qib = IndexBuffer::Create(indices, s_Data.MaxIndices);
+            s_Data.QuadVAO->SetIndexBuffer(qib);
+
+            Ref<IndexBuffer> cib = IndexBuffer::Create(indices, s_Data.MaxIndices);
+            s_Data.CircleVAO->SetIndexBuffer(cib);
+
+            delete[] indices;
         }
 
         // Create dynamic vertex buffers
@@ -245,7 +248,7 @@ namespace Vanta {
                 s_Data.TextureSlots[i]->Bind(i);
 
             RenderCommand::DrawIndexed(s_Data.QuadVAO, s_Data.QuadIndexCount);
-            s_Data.Stats.DrawCalls++;
+            s_Data.Stats.DrawCalls++; 
         }
 
         if (s_Data.CircleIndexCount != 0) {
@@ -265,6 +268,7 @@ namespace Vanta {
 
             // Bind resources
             s_Data.LineShader->Bind();
+
             RenderCommand::SetLineWidth(s_Data.LineWidth);
             RenderCommand::DrawLines(s_Data.LineVAO, s_Data.LineVertexCount);
             s_Data.Stats.DrawCalls++;
@@ -331,7 +335,7 @@ namespace Vanta {
     void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, int entityID) {
         VANTA_PROFILE_RENDER_FUNCTION();
 
-        if (s_Data.QuadIndexCount + 6 >= s_Data.MaxIndices)
+        if (s_Data.QuadIndexCount >= s_Data.MaxIndices - 6)
             NextBatch();
 
         for (usize i = 0; i < Quad::VERTEX_COUNT; i++) {
@@ -351,7 +355,7 @@ namespace Vanta {
     void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& tex, float tilingFactor, const glm::vec4& tint, int entityID) {
         VANTA_PROFILE_RENDER_FUNCTION();
 
-        if (s_Data.QuadIndexCount + 6 >= s_Data.MaxIndices)
+        if (s_Data.QuadIndexCount >= s_Data.MaxIndices - 6)
             NextBatch();
 
         uint texID = BatchTexture(tex);
@@ -373,19 +377,18 @@ namespace Vanta {
     void Renderer2D::DrawCircle(const glm::mat4& transform, const glm::vec4& color, float thickness, float fade, int entityID) {
         VANTA_PROFILE_RENDER_FUNCTION();
 
-        if (s_Data.CircleIndexCount + 6 >= s_Data.MaxIndices)
-            NextBatch();
+        if (s_Data.CircleIndexCount >= s_Data.MaxIndices - 6)
+            NextBatch(); 
 
-        for (size_t i = 0; i < 4; i++) {
+        for (usize i = 0; i < Quad::VERTEX_COUNT; i++) {
             s_Data.CircleVertexBufferPtr->WorldPosition = transform * Quad::VERTEX_POS[i];
-            s_Data.CircleVertexBufferPtr->LocalPosition = Quad::VERTEX_POS[i] * 2.0f;
+            s_Data.CircleVertexBufferPtr->LocalPosition = Quad::VERTEX_POS[i] *2.0f;
             s_Data.CircleVertexBufferPtr->Color = color;
             s_Data.CircleVertexBufferPtr->Thickness = thickness;
             s_Data.CircleVertexBufferPtr->Fade = fade;
             s_Data.CircleVertexBufferPtr->EntityID = entityID;
             s_Data.CircleVertexBufferPtr++;
         }
-
         s_Data.CircleIndexCount += 6;
 
         s_Data.Stats.QuadCount++;
@@ -394,7 +397,7 @@ namespace Vanta {
     void Renderer2D::DrawLine(const glm::vec3& beg, const glm::vec3& end, const glm::vec4& color, int entityID) {
         VANTA_PROFILE_RENDER_FUNCTION();
 
-        if (s_Data.LineVertexCount + 2 >= s_Data.MaxVerts)
+        if (s_Data.LineVertexCount >= s_Data.MaxVerts - 2)
             NextBatch();
 
         s_Data.LineVertexBufferPtr->Position = beg;

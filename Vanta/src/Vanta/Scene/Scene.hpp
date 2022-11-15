@@ -39,6 +39,19 @@ namespace Vanta {
         void DestroyEntity(entt::entity entity);
 
         /// <summary>
+        /// Iterate over all entities with some given components, executing a given function.
+        /// </summary>
+        template<typename... Components, typename Func>
+        void View(Func&& func) {
+            m_Registry.View<Components...>(func);
+        }
+
+        template<typename... Components, typename Func>
+        void View(Func&& func) const {
+            m_Registry.View<Components...>(func);
+        }
+
+        /// <summary>
         /// Add a given component to an entity.
         /// </summary>
         template<typename Component, typename... Args>

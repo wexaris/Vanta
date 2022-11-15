@@ -105,7 +105,9 @@ namespace Vanta {
         // Create physics world
         m_PhysicsWorld = new b2World({ 0.f, -9.8f });
 
-        ParallelView<TransformComponent, Rigidbody2DComponent>(m_Barrier, m_Registry, [&](entt::entity e, TransformComponent& tr, Rigidbody2DComponent& rb) {
+        ParallelView<TransformComponent, Rigidbody2DComponent>(m_Barrier, m_Registry,
+            [&](entt::entity e, TransformComponent& tr, Rigidbody2DComponent& rb)
+        {
             Entity entity(e, this);
 
             b2BodyDef bodyDef;
@@ -199,7 +201,9 @@ namespace Vanta {
         m_PhysicsWorld->Step((float)delta, velocityIterations, positionIterations);
 
         //ParallelView<TransformComponent, Rigidbody2DComponent>(m_Barrier, m_Registry, [&](entt::entity, TransformComponent& tr, Rigidbody2DComponent& rb) {
-        m_Registry.ViewNext<TransformComponent, Rigidbody2DComponent>([&](entt::entity, TransformComponent& tr, Rigidbody2DComponent& rb) {
+        m_Registry.ViewNext<TransformComponent, Rigidbody2DComponent>(
+            [&](entt::entity, TransformComponent& tr, Rigidbody2DComponent& rb)
+        {
             b2Body* body = (b2Body*)rb.RuntimeBody;
             auto& position = body->GetPosition();
             float angle = body->GetAngle();
@@ -221,7 +225,9 @@ namespace Vanta {
         VANTA_PROFILE_RENDER_FUNCTION();
         if (camera) {
             Renderer2D::SceneBegin(camera);
-            LinearView<TransformComponent, SpriteComponent>(m_Registry, [&](entt::entity entity, TransformComponent& tr, SpriteComponent& sp) {
+            LinearView<TransformComponent, SpriteComponent>(m_Registry,
+                [&](entt::entity entity, TransformComponent& tr, SpriteComponent& sp)
+            {
                 Renderer2D::DrawSprite(tr.Transform, sp, (uint32)entity);
             });
             Renderer2D::SceneEnd();

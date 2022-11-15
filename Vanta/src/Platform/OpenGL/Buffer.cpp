@@ -47,7 +47,7 @@ namespace Vanta {
     {
         VANTA_PROFILE_RENDER_FUNCTION();
 
-        VANTA_CORE_ASSERT(indices, "Vertex pointer is null!");
+        VANTA_CORE_ASSERT(indices, "Index pointer is null!");
 
         glCreateBuffers(1, &m_RendererID);
         glNamedBufferData(m_RendererID, count * sizeof(uint), indices, GL_STATIC_DRAW);
