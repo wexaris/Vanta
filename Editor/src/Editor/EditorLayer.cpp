@@ -225,6 +225,8 @@ namespace Vanta {
                     if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
                         SaveSceneAs();
 
+                    ImGui::Separator();
+
                     if (ImGui::MenuItem("Exit"))
                         Engine::Get().Stop();
 

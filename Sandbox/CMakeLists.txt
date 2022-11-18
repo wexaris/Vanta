@@ -13,7 +13,7 @@ endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC src)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC vanta)
+target_link_libraries(${PROJECT_NAME} PUBLIC Vanta)
 
 target_compile_options(${PROJECT_NAME} PUBLIC
     #DEBUG

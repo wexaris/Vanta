@@ -47,8 +47,8 @@ namespace Vanta {
 
         static Path RuntimeDirectory() { return s_RuntimeDirectory; }
         Path WorkingDirectory() const  { return m_WorkingDirectory; }
-        Path AssetDirectory() const    { return m_WorkingDirectory / "Assets"; }
-        Path SourceDirectory() const   { return m_WorkingDirectory / "Source"; }
+        Path AssetDirectory() const    { return m_WorkingDirectory / "Resources"; }
+        Path ScriptDirectory() const   { return m_WorkingDirectory / "Resources/Scripts"; }
         Path CacheDirectory() const    { return m_WorkingDirectory / "Cache"; }
         Path CorrectFilepath(const Path& path);
 

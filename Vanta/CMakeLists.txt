@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
-project(vanta LANGUAGES C CXX)
+project(Vanta LANGUAGES C CXX)
+
+add_subdirectory(vendor)
 
 find_package(Boost REQUIRED COMPONENTS fiber thread)
 find_package(box2d CONFIG REQUIRED)
@@ -46,6 +48,7 @@ set(${PROJECT_NAME}_SOURCE
     "src/Vanta/Scene/Serializer.cpp"
     "src/Vanta/Scene/Entity.cpp"
     "src/Vanta/Scene/Scene.cpp"
+    "src/Vanta/Script/ScriptEngine.cpp"
     "src/Vanta/Util/Math.cpp"
     "src/Vanta/Util/Time.cpp"
     "src/Platform/OpenGL/Buffer.cpp"
@@ -59,7 +62,7 @@ set(${PROJECT_NAME}_SOURCE
     "src/Platform/Windows/PlatformUtils.cpp"
     "src/Platform/Windows/Window.cpp"
     "src/Platform/Windows/Input.cpp"
- )
+)
 
 set(${${PROJECT_NAME}_PCH} "${CMAKE_CURRENT_SOURCE_DIR}/src/vantapch.hpp")
 
@@ -71,7 +74,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/s
 target_link_libraries(${PROJECT_NAME}
     PUBLIC Boost::boost Boost::fiber Boost::thread EnTT::EnTT fmt::fmt glm::glm
         imgui::imgui imguizmo::imguizmo spdlog::spdlog 
-    PRIVATE box2d::box2d glad::glad glfw spirv-cross-core spirv-cross-glsl
+    PRIVATE box2d::box2d glad::glad glfw mono spirv-cross-core spirv-cross-glsl
         Vulkan::Vulkan Vulkan::glslang Vulkan::shaderc_combined Vulkan::SPIRV-Tools yaml-cpp)
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE
@@ -85,13 +88,13 @@ target_compile_options(${PROJECT_NAME} PRIVATE
         $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
             -Wall -Wextra -pedantic -O0 -g -Wno-unused-function -Wno-format-security -Wno-language-extension-token>
         $<$<CXX_COMPILER_ID:MSVC>:
-            /W4 /ZI /RTC1 /sdl /Od>>
+            /MP /W4 /ZI /RTC1 /sdl /Od>>
     #RELEASE
     $<$<CONFIG:RELEASE>:
         $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
             -Wall -Wextra -pedantic -O3 -Wno-format-security -Wno-language-extension-token>
         $<$<CXX_COMPILER_ID:MSVC>:
-            /Zi /GL /O2>>
+            /MP /Zi /GL /O2>>
 )
 
 target_link_options(${PROJECT_NAME} PUBLIC
@@ -103,5 +106,7 @@ target_link_options(${PROJECT_NAME} PUBLIC
 add_custom_command(
     TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-        "${CMAKE_CURRENT_SOURCE_DIR}/assets" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Assets")
-
+        "${CMAKE_CURRENT_SOURCE_DIR}/resources" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_CURRENT_SOURCE_DIR}/mono" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/mono"
+)

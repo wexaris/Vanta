@@ -3,6 +3,7 @@
 #include "Vanta/Input/Input.hpp"
 #include "Vanta/Render/Renderer.hpp"
 #include "Vanta/Scene/Scene.hpp"
+#include "Vanta/Script/ScriptEngine.hpp"
 
 namespace Vanta {
 
@@ -22,12 +23,12 @@ namespace Vanta {
         if (!params.WorkingDirectory.empty())
             std::filesystem::current_path(params.WorkingDirectory);
 
-        Fibers::Init();
-
         m_Window = Window::Create(params.Window);
         m_Window->SetEventCallback(EVENT_METHOD(Engine::OnEvent));
 
+        Fibers::Init();
         Renderer::Init();
+        ScriptEngine::Init();
 
         m_GUILayer = new GUILayer();
         PushOverlay(m_GUILayer);
@@ -35,6 +36,7 @@ namespace Vanta {
 
     Engine::~Engine() {
         VANTA_PROFILE_FUNCTION();
+        ScriptEngine::Shutdown();
         Renderer::Shutdown();
         Fibers::Shutdown();
     }
