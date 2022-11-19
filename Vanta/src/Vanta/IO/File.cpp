@@ -39,14 +39,14 @@ namespace Vanta {
         }
 
         Opt<File> FileDialog::OpenFile(const char* filter) {
-            Path path = platform::OpenFileDialog(filter);
+            Path path = Platform::OpenFileDialog(filter);
             if (path.empty())
                 return None;
             return File(path);
         }
 
         Opt<File> FileDialog::SaveFile(const char* filter) {
-            Path path = platform::SaveFileDialog(filter);
+            Path path = Platform::SaveFileDialog(filter);
             if (path.empty())
                 return None;
             return File(path);
