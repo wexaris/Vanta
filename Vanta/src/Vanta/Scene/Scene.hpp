@@ -67,7 +67,9 @@ namespace Vanta {
         /// </summary>
         template<typename Component, typename... Args>
         Component& AddOrReplaceComponent(entt::entity entity, Args&&... args) {
-            return m_Registry.AddOrReplaceComponent<Component>(entity, std::forward<Args>(args)...);
+            Component& component = m_Registry.AddOrReplaceComponent<Component>(entity, std::forward<Args>(args)...);
+            OnComponentAdded(entity, component);
+            return component;
         }
 
         /// <summary>

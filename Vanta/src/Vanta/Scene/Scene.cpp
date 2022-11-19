@@ -57,6 +57,9 @@ namespace Vanta {
             Entity oldEntity(entity, other.get());
             Entity newEntity = scene->CreateEntity(id.Name, id.ID);
             detail::CopyComponents(oldEntity, newEntity);
+
+            if (oldEntity == other->m_ActiveCameraEntity)
+                scene->SetActiveCameraEntity(newEntity);
         });
 
         return scene;
