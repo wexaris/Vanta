@@ -20,6 +20,7 @@ namespace Vanta {
     using Mouse = MouseCode;
 }
 
-inline std::ostream& operator<<(std::ostream& os, Vanta::MouseCode key) {
-    return os << static_cast<std::underlying_type_t<Vanta::MouseCode>>(key);
+template<typename Out>
+inline Out& operator<<(Out& out, Vanta::MouseCode key) {
+    return out << static_cast<std::underlying_type_t<Vanta::MouseCode>>(key);
 }

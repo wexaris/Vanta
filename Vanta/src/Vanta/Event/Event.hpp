@@ -51,13 +51,10 @@ namespace Vanta {
     };
 }
 
-template<typename E>
-struct fmt::formatter<E, std::enable_if_t<std::is_base_of_v<Vanta::Event, E>, char>> : formatter<std::string> {
-    template <typename FormatContext>
-    auto format(const E& e, FormatContext& ctx) const {
-        return formatter<std::string>::format(e.ToString(), ctx);
-    }
-};
+template<typename Out>
+inline Out& operator<<(Out& out, const Vanta::Event& e) {
+    return out << e.ToString();
+}
 
 #define VANTA_GEN_EVENT_TYPE(name) \
     static constexpr Event::Type StaticType = Event::Type::name;\

@@ -137,6 +137,7 @@ namespace Vanta {
     using Key = KeyCode;
 }
 
-inline std::ostream& operator<<(std::ostream& os, Vanta::KeyCode key) {
-    return os << static_cast<std::underlying_type_t<Vanta::KeyCode>>(key);
+template<typename Out>
+inline Out& operator<<(Out& out, Vanta::KeyCode key) {
+    return out << static_cast<std::underlying_type_t<Vanta::KeyCode>>(key);
 }
