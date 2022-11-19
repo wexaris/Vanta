@@ -167,6 +167,15 @@ namespace Vanta {
             out << YAML::EndMap;
         });
 
+        SerializeComponent<CircleRendererComponent>(entity, [&out](CircleRendererComponent& component) {
+            out << YAML::Key << "CircleRendererComponent";
+            out << YAML::BeginMap;
+            out << YAML::Key << "Color" << YAML::Value << component.Color;
+            out << YAML::Key << "Thickness" << YAML::Value << component.Thickness;
+            out << YAML::Key << "Fade" << YAML::Value << component.Fade;
+            out << YAML::EndMap;
+        });
+
         SerializeComponent<Rigidbody2DComponent>(entity, [&out](Rigidbody2DComponent& component) {
             out << YAML::Key << "Rigidbody2DComponent";
             out << YAML::BeginMap;
@@ -291,6 +300,14 @@ namespace Vanta {
                         sp.Texture = Texture2D::Create(spriteComponent["Texture"].as<std::string>());
                     sp.TilingFactor = spriteComponent["TilingFactor"].as<float>();
                     sp.Color = spriteComponent["Color"].as<glm::vec4>();
+                }
+
+                auto circleRendererComponent = item["CircleRendererComponent"];
+                if (circleRendererComponent) {
+                    auto& cr = entity.AddComponent<CircleRendererComponent>();
+                    cr.Color = circleRendererComponent["Color"].as<glm::vec4>();
+                    cr.Thickness = circleRendererComponent["Thickness"].as<float>();
+                    cr.Fade = circleRendererComponent["Fade"].as<float>();
                 }
 
                 auto rigidbody2DComponent = item["Rigidbody2DComponent"];

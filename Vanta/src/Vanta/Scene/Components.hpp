@@ -160,6 +160,12 @@ namespace Vanta {
             : Texture(texture), Color(tint) {}
     };
 
+    struct CircleRendererComponent {
+        glm::vec4 Color = { 1.f, 1.f, 1.f, 1.f };
+        float Thickness = 1.f;
+        float Fade = 0.01f;
+    };
+
     class NativeScript; // Forward declare
 
     struct NativeScriptComponent {
@@ -180,7 +186,7 @@ namespace Vanta {
         }
     };
 
-
     using AllComponents = ComponentList<TransformComponent, CameraComponent,
-        Rigidbody2DComponent, BoxCollider2DComponent, CircleCollider2DComponent, SpriteComponent, NativeScriptComponent>;
+        Rigidbody2DComponent, BoxCollider2DComponent, CircleCollider2DComponent,
+        SpriteComponent, CircleRendererComponent, NativeScriptComponent>;
 }

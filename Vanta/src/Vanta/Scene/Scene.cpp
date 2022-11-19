@@ -228,6 +228,12 @@ namespace Vanta {
         VANTA_PROFILE_RENDER_FUNCTION();
         if (camera) {
             Renderer2D::SceneBegin(camera);
+            LinearView<TransformComponent, CircleRendererComponent>(m_Registry,
+                [&](entt::entity entity, TransformComponent& tr, CircleRendererComponent& cr)
+            {
+                Renderer2D::DrawCircle(tr.Transform, cr.Color, cr.Thickness, cr.Fade, (uint32)entity);
+            });
+
             LinearView<TransformComponent, SpriteComponent>(m_Registry,
                 [&](entt::entity entity, TransformComponent& tr, SpriteComponent& sp)
             {

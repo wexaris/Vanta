@@ -206,6 +206,7 @@ namespace Vanta {
             if (ImGui::BeginPopup("AddComponent")) {
                 DrawAddComponentMenu<CameraComponent>("Camera");
                 DrawAddComponentMenu<SpriteComponent>("Sprite Renderer");
+                DrawAddComponentMenu<CircleRendererComponent>("Circle Renderer");
                 DrawAddComponentMenu<Rigidbody2DComponent>("Rigidbody 2D"); 
                 DrawAddComponentMenu<BoxCollider2DComponent>("Box Collider 2D");
                 DrawAddComponentMenu<CircleCollider2DComponent>("Circle Collider 2D");
@@ -314,6 +315,12 @@ namespace Vanta {
                 }
 
                 ImGui::DragFloat("Tiling Factor", &component.TilingFactor, 0.1f, 0.0f, 100.0f);
+            });
+
+            DrawComponent<CircleRendererComponent>("Circle", entity, [](auto& component) {
+                ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
+                ImGui::DragFloat("Thickness", &component.Thickness, 0.025f, 0.0f, 1.0f);
+                ImGui::DragFloat("Fade", &component.Fade, 0.00025f, 0.0f, 1.0f);
             });
 
             DrawComponent<Rigidbody2DComponent>("Rigidbody 2D", entity, [](auto& component) {
