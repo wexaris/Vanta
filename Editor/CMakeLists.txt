@@ -11,7 +11,7 @@ set(${PROJECT_NAME}_SOURCE
 )
 
 if(WIN32)
-    add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCE})
+    add_executable(${PROJECT_NAME} WIN32 ${${PROJECT_NAME}_SOURCE})
 else()
     add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCE})
 endif()

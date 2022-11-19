@@ -48,6 +48,7 @@ set(${PROJECT_NAME}_SOURCE
     "src/Vanta/Scene/Serializer.cpp"
     "src/Vanta/Scene/Entity.cpp"
     "src/Vanta/Scene/Scene.cpp"
+    "src/Vanta/Script/Interface.cpp"
     "src/Vanta/Script/ScriptEngine.cpp"
     "src/Vanta/Util/Math.cpp"
     "src/Vanta/Util/Time.cpp"

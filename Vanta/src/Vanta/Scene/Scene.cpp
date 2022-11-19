@@ -4,6 +4,7 @@
 #include "Vanta/Scene/Entity.hpp"
 #include "Vanta/Scene/NativeScript.hpp"
 #include "Vanta/Scene/Scene.hpp"
+#include "Vanta/Script/ScriptEngine.hpp"
 
 #include <box2d/b2_body.h>
 #include <box2d/b2_world.h>
@@ -67,14 +68,15 @@ namespace Vanta {
 
     void Scene::OnRuntimeBegin() {
         VANTA_PROFILE_FUNCTION();
-        InitScripts();
         InitPhysics();
+        InitScripts();
     }
 
     void Scene::OnRuntimeEnd() {
         VANTA_PROFILE_FUNCTION();
         DestroyScripts();
         DestroyPhysics();
+
     }
 
     void Scene::OnSimulationBegin() {
@@ -88,20 +90,38 @@ namespace Vanta {
     }
 
     void Scene::InitScripts() {
+        ScriptEngine::RuntimeBegin(this);
+
         // Instantiate native scripts
         ParallelView<NativeScriptComponent>(m_Barrier, m_Registry, [&](entt::entity entity, NativeScriptComponent& script) {
             script.Create();
             script.Instance->m_Entity = Entity(entity, this);
             script.Instance->OnCreate();
         });
+
+        // Instantiate C# scripts
+        View<ScriptComponent>([&](entt::entity, ScriptComponent& script) {
+            if (ScriptEngine::EntityClassExists(script.ClassName)) {
+                script.Instance = ScriptEngine::CreateInstance(script.ClassName);
+                script.Instance->OnCreate();
+            }
+        });
     }
 
     void Scene::DestroyScripts() {
+        // Destroy C# scripts
+        View<ScriptComponent>([&](entt::entity, ScriptComponent& script) {
+            script.Instance->OnDestroy();
+            script.Instance = nullptr;
+        });
+
         // Destroy native scripts
         ParallelView<NativeScriptComponent>(m_Barrier, m_Registry, [](entt::entity, NativeScriptComponent& script) {
             script.Instance->OnDestroy();
             script.Destroy();
         });
+
+        ScriptEngine::RuntimeEnd();
     }
 
     void Scene::InitPhysics() {
@@ -193,6 +213,11 @@ namespace Vanta {
 
         ParallelView<NativeScriptComponent>(m_Barrier, m_Registry, [=](entt::entity, NativeScriptComponent& script) {
             script.Instance->OnUpdate(delta);
+        });
+
+        // Instantiate C# scripts
+        View<ScriptComponent>([&](entt::entity, ScriptComponent& script) {
+            script.Instance->OnUpdate((float)delta);
         });
     }
 

@@ -1,5 +1,7 @@
 #include "Editor/Window/SceneHierarchy.hpp"
 
+#include <Vanta/Script/ScriptEngine.hpp>
+
 #include <imgui.h>
 #include <imgui_internal.h>
 
@@ -205,6 +207,7 @@ namespace Vanta {
 
             if (ImGui::BeginPopup("AddComponent")) {
                 DrawAddComponentMenu<CameraComponent>("Camera");
+                DrawAddComponentMenu<ScriptComponent>("Script");
                 DrawAddComponentMenu<SpriteComponent>("Sprite Renderer");
                 DrawAddComponentMenu<CircleRendererComponent>("Circle Renderer");
                 DrawAddComponentMenu<Rigidbody2DComponent>("Rigidbody 2D"); 
@@ -282,7 +285,23 @@ namespace Vanta {
                 }
             });
 
-            DrawComponent<SpriteComponent>("Sprite", entity, [](auto& component) {
+            DrawComponent<ScriptComponent>("Circle", entity, [](ScriptComponent& component) {
+                static char buffer[64];
+                strcpy_s(buffer, component.ClassName.c_str());
+
+                bool classExists = ScriptEngine::EntityClassExists(component.ClassName);
+
+                if (!classExists)
+                    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.9f, 0.2f, 0.3f, 1.0f));
+
+                if (ImGui::InputText("Class", buffer, sizeof(buffer)))
+                    component.ClassName = buffer;
+
+                if (!classExists)
+                    ImGui::PopStyleColor();
+            });
+
+            DrawComponent<SpriteComponent>("Sprite", entity, [](SpriteComponent& component) {
                 ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
 
                 if (component.Texture) {
@@ -304,13 +323,13 @@ namespace Vanta {
                     }
                 }
                 else {
-                ImGui::Button("Texture", ImVec2(100.0f, 0.0f));
-                if (ImGui::BeginDragDropTarget()) {
-                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM")) {
-                        const wchar_t* path = (const wchar_t*)payload->Data;
-                        component.Texture = Texture2D::Create(path);
-                    }
-                    ImGui::EndDragDropTarget();
+                    ImGui::Button("Texture", ImVec2(100.0f, 0.0f));
+                    if (ImGui::BeginDragDropTarget()) {
+                        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM")) {
+                            const wchar_t* path = (const wchar_t*)payload->Data;
+                            component.Texture = Texture2D::Create(path);
+                        }
+                        ImGui::EndDragDropTarget();
                     }
                 }
 

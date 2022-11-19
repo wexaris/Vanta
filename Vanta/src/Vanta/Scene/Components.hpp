@@ -41,7 +41,7 @@ namespace Vanta {
     struct IDComponent {
         UUID ID;
         std::string Name;
-        IDComponent(const IDComponent& other) = default;
+        IDComponent(const IDComponent&) = default;
         IDComponent(const std::string& name, UUID uuid) : ID(uuid), Name(name) {}
     };
 
@@ -53,7 +53,7 @@ namespace Vanta {
         glm::vec3 Scale    = { 1.f, 1.f, 1.f }; // Scale
 
         TransformComponent() = default;
-        TransformComponent(const TransformComponent& other) = default;
+        TransformComponent(const TransformComponent&) = default;
         TransformComponent(const glm::mat4& transform) {
             SetTransform(transform);
         }
@@ -97,7 +97,7 @@ namespace Vanta {
         bool FixedAspectRatio = false;
 
         CameraComponent() = default;
-        CameraComponent(const CameraComponent& other) = default;
+        CameraComponent(const CameraComponent&) = default;
         CameraComponent(const SceneCamera& camera, bool fixedAspectRatio = false)
             : Camera(camera), FixedAspectRatio(fixedAspectRatio) {}
     };
@@ -112,7 +112,7 @@ namespace Vanta {
         void* RuntimeBody = nullptr;
 
         Rigidbody2DComponent() = default;
-        Rigidbody2DComponent(const Rigidbody2DComponent& other) = default;
+        Rigidbody2DComponent(const Rigidbody2DComponent&) = default;
     };
 
     struct BoxCollider2DComponent {
@@ -120,31 +120,31 @@ namespace Vanta {
         glm::vec2 Offset = { 0.0f, 0.0f };
 
         float Density = 1.0f;
-        float Friction = 1.0f;
-        float Restitution = 0.5f;           // bounciness
+        float Friction = 0.4f;
+        float Restitution = 0.3f;           // bounciness
         float RestitutionThreshold = 0.5f;
 
         // Physics runtime instance
         void* RuntimeFixture = nullptr;
 
         BoxCollider2DComponent() = default;
-        BoxCollider2DComponent(const BoxCollider2DComponent& other) = default;
+        BoxCollider2DComponent(const BoxCollider2DComponent&) = default;
     };
 
     struct CircleCollider2DComponent {
-        float Radius = 1.0f;
+        float Radius = 0.5f;
         glm::vec2 Offset = { 0.0f, 0.0f };
 
         float Density = 1.0f;
-        float Friction = 1.0f;
-        float Restitution = 0.5f;           // bounciness
+        float Friction = 0.4f;
+        float Restitution = 0.2f;           // bounciness
         float RestitutionThreshold = 0.5f;
 
         // Physics runtime instance
         void* RuntimeFixture = nullptr;
 
         CircleCollider2DComponent() = default;
-        CircleCollider2DComponent(const CircleCollider2DComponent& other) = default;
+        CircleCollider2DComponent(const CircleCollider2DComponent&) = default;
     };
 
     struct SpriteComponent {
@@ -153,7 +153,7 @@ namespace Vanta {
         glm::vec4 Color = { 1.f, 1.f, 1.f, 1.f };
 
         SpriteComponent() = default;
-        SpriteComponent(const SpriteComponent& other) = default;
+        SpriteComponent(const SpriteComponent&) = default;
         SpriteComponent(const glm::vec4& color)
             : SpriteComponent(nullptr, color) {}
         SpriteComponent(const Ref<Texture2D>& texture, const glm::vec4& tint)
@@ -166,15 +166,29 @@ namespace Vanta {
         float Fade = 0.01f;
     };
 
+    class ScriptInstance;
+
+    struct ScriptComponent {
+        std::string ClassName;
+
+        // Script runtime instance
+        Ref<ScriptInstance> Instance = nullptr;
+
+        ScriptComponent() = default;
+        ScriptComponent(const ScriptComponent&) = default;
+    };
+
     class NativeScript; // Forward declare
 
     struct NativeScriptComponent {
+        // Script runtime instance
         NativeScript* Instance;
 
         NativeScript* (*CreateInstance)();
         void (*DestroyInstance)(NativeScript*);
 
         NativeScriptComponent() = default;
+        NativeScriptComponent(const NativeScriptComponent&) = default;
 
         void Create()  { Instance = CreateInstance(); }
         void Destroy() { DestroyInstance(Instance); Instance = nullptr; }
@@ -188,5 +202,5 @@ namespace Vanta {
 
     using AllComponents = ComponentList<TransformComponent, CameraComponent,
         Rigidbody2DComponent, BoxCollider2DComponent, CircleCollider2DComponent,
-        SpriteComponent, CircleRendererComponent, NativeScriptComponent>;
+        SpriteComponent, CircleRendererComponent, ScriptComponent, NativeScriptComponent>;
 }

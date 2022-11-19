@@ -29,9 +29,6 @@ namespace Vanta {
 INT WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPTSTR /*lpCmdLine*/, INT /*nCmdShow*/) {
     return Vanta::main(__argc, __argv);
 }
-int main(int argc, char* argv[]) {
-    return Vanta::main(argc, argv);
-}
 #else
 int main(int argc, char* argv[]) {
     return Vanta::main(argc, argv);

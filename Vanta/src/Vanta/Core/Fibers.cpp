@@ -11,7 +11,7 @@ namespace Vanta {
     static fibers::mutex s_StopMutex;
     static fibers::condition_variable s_StopCondition;
 
-    void WorkerRun() {
+    static void WorkerRun() {
         // Continue to work while waiting on the stop condition
         std::unique_lock<fibers::mutex> lock(s_StopMutex);
         s_StopCondition.wait(lock);

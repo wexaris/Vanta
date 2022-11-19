@@ -1,27 +1,16 @@
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Vanta
 {
-    public class Main
+    public static class Internal
     {
-        public float Float = 5.0f;
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void Info(string text);
+    }
 
-        public Main()
-        {
-            Console.WriteLine("Hello world!");
-            PrintFloatVar();
-            IncrementFloatVar(2.0f);
-            PrintFloatVar();
-        }
-
-        public void PrintFloatVar()
-        {
-            Console.WriteLine("Float = {0:F}", Float);
-        }
-
-        private void IncrementFloatVar(float value)
-        {
-            Float += value;
-        }
+    public class Entity
+    {
+        public Entity() {}
     }
 }

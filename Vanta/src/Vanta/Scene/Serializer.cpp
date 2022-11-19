@@ -93,22 +93,22 @@ struct YAML::convert<glm::vec4> {
 namespace Vanta {
 
     static YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec2& val) {
-    out << YAML::Flow;
-    out << YAML::BeginSeq << val.x << val.y << YAML::EndSeq;
-    return out;
-}
+        out << YAML::Flow;
+        out << YAML::BeginSeq << val.x << val.y << YAML::EndSeq;
+        return out;
+    }
 
     static YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec3& val) {
-    out << YAML::Flow;
-    out << YAML::BeginSeq << val.x << val.y << val.z << YAML::EndSeq;
-    return out;
-}
+        out << YAML::Flow;
+        out << YAML::BeginSeq << val.x << val.y << val.z << YAML::EndSeq;
+        return out;
+    }
 
     static YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec4& val) {
-    out << YAML::Flow;
-    out << YAML::BeginSeq << val.x << val.y << val.z << val.w << YAML::EndSeq;
-    return out;
-}
+        out << YAML::Flow;
+        out << YAML::BeginSeq << val.x << val.y << val.z << val.w << YAML::EndSeq;
+        return out;
+    }
 
     SceneSerializer::SceneSerializer(const Ref<Scene>& scene)
         : m_Scene(scene) {}
@@ -154,6 +154,13 @@ namespace Vanta {
             out << YAML::EndMap;
 
             out << YAML::Key << "FixedAspectRatio" << YAML::Value << component.FixedAspectRatio;
+            out << YAML::EndMap;
+        });
+
+        SerializeComponent<ScriptComponent>(entity, [&out](ScriptComponent& component) {
+            out << YAML::Key << "ScriptComponent";
+            out << YAML::BeginMap;
+            out << YAML::Key << "Class" << YAML::Value << component.ClassName;
             out << YAML::EndMap;
         });
 
@@ -261,7 +268,7 @@ namespace Vanta {
                 Entity entity = m_Scene->CreateEntity(name, uuid);
 
                 VANTA_CORE_TRACE("Deserializing entity: {} [{}]", name, uuid);
-
+                
                 auto transformComponent = item["TransformComponent"];
                 if (transformComponent) {
                     auto& tc = entity.GetComponent<TransformComponent>();
@@ -291,6 +298,12 @@ namespace Vanta {
                     cc.Camera.SetOrthographicFarClip(camera["OrthographicFar"].as<float>());
 
                     cc.FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
+                }
+
+                auto scriptComponent = item["ScriptComponent"];
+                if (scriptComponent) {
+                    auto& sc = entity.AddComponent<ScriptComponent>();
+                    sc.ClassName = scriptComponent["Class"].as<std::string>();
                 }
 
                 auto spriteComponent = item["SpriteComponent"];
