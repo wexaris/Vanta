@@ -26,7 +26,9 @@ namespace Vanta {
         glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }
 
-    OpenGLTexture2D::OpenGLTexture2D(const Path& path) {
+    OpenGLTexture2D::OpenGLTexture2D(const Path& path)
+        : m_Path(path)
+    {
         VANTA_PROFILE_RENDER_FUNCTION();
 
         auto image = IO::Image(path);

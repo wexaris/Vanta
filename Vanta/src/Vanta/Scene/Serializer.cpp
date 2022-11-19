@@ -160,7 +160,8 @@ namespace Vanta {
         SerializeComponent<SpriteComponent>(entity, [&out](SpriteComponent& component) {
             out << YAML::Key << "SpriteComponent";
             out << YAML::BeginMap;
-            //out << YAML::Key << "Texture" << YAML::Value << component.Texture;
+            if (component.Texture && !component.Texture->GetPath().empty())
+                out << YAML::Key << "Texture" << YAML::Value << component.Texture->GetPath().string();
             out << YAML::Key << "TilingFactor" << YAML::Value << component.TilingFactor;
             out << YAML::Key << "Color" << YAML::Value << component.Color;
             out << YAML::EndMap;
@@ -252,11 +253,6 @@ namespace Vanta {
 
                 VANTA_CORE_TRACE("Deserializing entity: {} [{}]", name, uuid);
 
-                // Check for active camera entity
-                if (uuid == activeCameraUUID) {
-                    m_Scene->SetActiveCameraEntity(entity);
-                }
-                
                 auto transformComponent = item["TransformComponent"];
                 if (transformComponent) {
                     auto& tc = entity.GetComponent<TransformComponent>();
@@ -290,10 +286,11 @@ namespace Vanta {
 
                 auto spriteComponent = item["SpriteComponent"];
                 if (spriteComponent) {
-                    auto& sc = entity.AddComponent<SpriteComponent>();
-                    //pc.Texture = spriteComponent["Texture"].as<std::string>();
-                    sc.TilingFactor = spriteComponent["TilingFactor"].as<float>();
-                    sc.Color = spriteComponent["Color"].as<glm::vec4>();
+                    auto& sp = entity.AddComponent<SpriteComponent>();
+                    if (spriteComponent["Texture"])
+                        sp.Texture = Texture2D::Create(spriteComponent["Texture"].as<std::string>());
+                    sp.TilingFactor = spriteComponent["TilingFactor"].as<float>();
+                    sp.Color = spriteComponent["Color"].as<glm::vec4>();
                 }
 
                 auto rigidbody2DComponent = item["Rigidbody2DComponent"];
@@ -323,6 +320,11 @@ namespace Vanta {
                     cc.Friction = circleCollider2DComponent["Friction"].as<float>();
                     cc.Restitution = circleCollider2DComponent["Restitution"].as<float>();
                     cc.RestitutionThreshold = circleCollider2DComponent["RestitutionThreshold"].as<float>();
+                }
+
+                // Check for active camera entity
+                if (uuid == activeCameraUUID) {
+                    m_Scene->SetActiveCameraEntity(entity);
                 }
             }
         }

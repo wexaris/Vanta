@@ -15,6 +15,8 @@ namespace Vanta {
 
         bool IsValid() const override { return m_RendererID != 0; }
 
+        const Path& GetPath() const override { return m_Path; }
+
         uint32 GetWidth() const override  { return m_Width; }
         uint32 GetHeight() const override { return m_Height; }
 
@@ -33,5 +35,7 @@ namespace Vanta {
         uint32 m_Height = 0;
         uint m_InternalFormat = 0;
         uint m_DataFormat = 0;
+
+        Path m_Path;
     };
 }

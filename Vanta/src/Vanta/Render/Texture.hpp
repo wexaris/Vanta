@@ -12,6 +12,8 @@ namespace Vanta {
 
         virtual bool IsValid() const = 0;
 
+        virtual const Path& GetPath() const = 0;
+
         virtual uint32 GetWidth() const = 0;
         virtual uint32 GetHeight() const = 0;
 
