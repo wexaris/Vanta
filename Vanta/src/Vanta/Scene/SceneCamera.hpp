@@ -39,9 +39,10 @@ namespace Vanta {
         float GetPerspectiveNearClip() const { return m_PerspectiveNear; }
         float GetPerspectiveFarClip() const  { return m_PerspectiveFar; }
 
-        void SetOrthographicSize(float size) { m_OrthographicSize = size;
+        void SetOrthographicSize(float size) {
+            m_OrthographicSize = size;
             if (m_Projection == Projection::Orthographic)
-            Recalculate();
+                Recalculate();
         }
         void SetOrthographicNearClip(float nearClip) {
             m_OrthographicNear = nearClip;

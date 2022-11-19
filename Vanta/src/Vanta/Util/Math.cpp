@@ -2,7 +2,6 @@
 #include "Vanta/Util/Math.hpp"
 
 #include <glm/gtx/matrix_decompose.hpp>
-#include <glm/gtx/string_cast.hpp>
 
 namespace Vanta {
     namespace Math {
