@@ -15,21 +15,21 @@ namespace Vanta {
 
     namespace detail {
         template<typename... Components>
-        void CopyComponents(Entity from, Entity to) {
+        static void CopyComponents(Entity from, Entity to) {
             ((from.HasComponent<Components>() ?
                 (void)to.AddOrReplaceComponent<Components>(from.GetComponent<Components>()) : void()), ...);
         }
 
         template<typename... Components>
-        void CopyComponents(ComponentList<Components...>, Entity from, Entity to) {
+        static void CopyComponents(ComponentList<Components...>, Entity from, Entity to) {
             CopyComponents<Components...>(from, to);
         }
 
-        void CopyComponents(Entity from, Entity to) {
+        static void CopyComponents(Entity from, Entity to) {
             CopyComponents(AllComponents(), from, to);
         }
 
-        b2BodyType Rigidbody2DTypeToBox2D(Rigidbody2DComponent::BodyType bodyType) {
+        static b2BodyType Rigidbody2DTypeToBox2D(Rigidbody2DComponent::BodyType bodyType) {
             switch (bodyType) {
             case Rigidbody2DComponent::BodyType::Static: return b2_staticBody;
             case Rigidbody2DComponent::BodyType::Dynamic: return b2_dynamicBody;

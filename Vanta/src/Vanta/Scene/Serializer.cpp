@@ -6,7 +6,7 @@
 
 namespace Vanta {
     namespace detail {
-        const char* Rigidbody2DTypeToString(Rigidbody2DComponent::BodyType type) {
+        static const char* Rigidbody2DTypeToString(Rigidbody2DComponent::BodyType type) {
             switch (type) {
             case Rigidbody2DComponent::BodyType::Static: return "Static";
             case Rigidbody2DComponent::BodyType::Dynamic: return "Dynamic";
@@ -17,7 +17,7 @@ namespace Vanta {
             }
         }
 
-        Rigidbody2DComponent::BodyType StringToRigidbody2DType(const std::string& str) {
+        static Rigidbody2DComponent::BodyType StringToRigidbody2DType(const std::string& str) {
             if (str == "Static") return Rigidbody2DComponent::BodyType::Static;
             if (str == "Dynamic") return Rigidbody2DComponent::BodyType::Dynamic;
             if (str == "Kinematic") return Rigidbody2DComponent::BodyType::Kinematic;
@@ -90,25 +90,25 @@ struct YAML::convert<glm::vec4> {
     }
 };
 
-YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec2& val) {
+namespace Vanta {
+
+    static YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec2& val) {
     out << YAML::Flow;
     out << YAML::BeginSeq << val.x << val.y << YAML::EndSeq;
     return out;
 }
 
-YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec3& val) {
+    static YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec3& val) {
     out << YAML::Flow;
     out << YAML::BeginSeq << val.x << val.y << val.z << YAML::EndSeq;
     return out;
 }
 
-YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec4& val) {
+    static YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec4& val) {
     out << YAML::Flow;
     out << YAML::BeginSeq << val.x << val.y << val.z << val.w << YAML::EndSeq;
     return out;
 }
-
-namespace Vanta {
 
     SceneSerializer::SceneSerializer(const Ref<Scene>& scene)
         : m_Scene(scene) {}

@@ -2,8 +2,8 @@
 #include <glm/gtx/string_cast.hpp>
 
 namespace Vanta {
-    namespace Math {
 
+    namespace Math {
         bool Decompose(const glm::mat4& transform, glm::vec3& position, glm::vec3& rotation, glm::vec3& scale);
         bool Decompose(const glm::mat4& transform, glm::vec3& position, glm::vec3& rotation);
     }

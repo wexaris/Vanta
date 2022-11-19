@@ -7,15 +7,15 @@ namespace Vanta {
 
     namespace detail {
 
-        GLenum TextureTarget(bool multisampled) {
+        static GLenum TextureTarget(bool multisampled) {
             return multisampled ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
         }
 
-        void CreateTextures(bool multisampled, GLuint* outID, GLsizei count) {
+        static void CreateTextures(bool multisampled, GLuint* outID, GLsizei count) {
             glCreateTextures(TextureTarget(multisampled), count, outID);
         }
 
-        void AttachColorTexture(GLuint framebufferID, GLuint texID, GLsizei samples, GLenum internalFormat, GLenum /*format*/, GLsizei width, GLsizei height, int index) {
+        static void AttachColorTexture(GLuint framebufferID, GLuint texID, GLsizei samples, GLenum internalFormat, GLenum /*format*/, GLsizei width, GLsizei height, int index) {
             bool multisampled = samples > 1;
             if (multisampled) {
                 glTextureStorage2DMultisample(texID, samples, internalFormat, width, height, GL_FALSE);
@@ -34,7 +34,7 @@ namespace Vanta {
             glNamedFramebufferTexture(framebufferID, GL_COLOR_ATTACHMENT0 + index, texID, 0);
         }
 
-        void AttachDepthTexture(GLuint framebufferID, GLuint texID, GLsizei samples, GLenum format, GLenum attachmentType, GLsizei width, GLsizei height) {
+        static void AttachDepthTexture(GLuint framebufferID, GLuint texID, GLsizei samples, GLenum format, GLenum attachmentType, GLsizei width, GLsizei height) {
             bool multisampled = samples > 1;
             if (multisampled) {
                 glTextureStorage2DMultisample(texID, samples, format, width, height, GL_FALSE);
@@ -53,14 +53,14 @@ namespace Vanta {
             glNamedFramebufferTexture(framebufferID, attachmentType, texID, 0);
         }
 
-        bool IsDepthFormat(FramebufferTextureFormat format) {
+        static bool IsDepthFormat(FramebufferTextureFormat format) {
             switch (format) {
             case FramebufferTextureFormat::DEPTH24STENCIL8: return true;
             default: return false;
             }
         }
 
-        GLenum GLTextureFormat(FramebufferTextureFormat format) {
+        static GLenum GLTextureFormat(FramebufferTextureFormat format) {
             switch (format) {
             case FramebufferTextureFormat::RGBA8:       return GL_RGBA8;
             case FramebufferTextureFormat::RED_INTEGER: return GL_RED_INTEGER;

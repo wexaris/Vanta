@@ -11,7 +11,7 @@
 namespace Vanta {
 
     namespace detail {
-        std::string GetProgramInfoLog(uint program) {
+        static std::string GetProgramInfoLog(uint program) {
             // Get length of log messages
             GLint msgLength = 0;
             glGetProgramiv(program, GL_INFO_LOG_LENGTH, &msgLength);
@@ -26,7 +26,7 @@ namespace Vanta {
             return "";
         }
 
-        std::string GetShaderInfoLog(uint shader) {
+        static std::string GetShaderInfoLog(uint shader) {
             // Get length of log messages
             GLint msgLength = 0;
             glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &msgLength);
@@ -41,11 +41,11 @@ namespace Vanta {
             return "";
         }
 
-        Path GetCacheDirectory() {
+        static Path GetCacheDirectory() {
             return Engine::Get().CacheDirectory() / "Shader" / "OpenGL";
         }
 
-        void CreateCacheDirectory() {
+        static void CreateCacheDirectory() {
             auto path = GetCacheDirectory();
             if (!std::filesystem::exists(path))
                 std::filesystem::create_directories(path);
@@ -58,13 +58,13 @@ namespace Vanta {
         /// Returns a non-zero value, if the string matches a type.
         /// Returns a zero, if the string doesn't match any type. Doesn't log an error.
         /// </returns>
-        uint StringToShaderType(const std::string& str) {
+        static uint StringToShaderType(const std::string& str) {
             if (str == "vertex")                          { return GL_VERTEX_SHADER; }
             else if (str == "fragment" || str == "pixel") { return GL_FRAGMENT_SHADER; }
             else                                          { return 0; }
         }
 
-        const char* ShaderTypeToString(GLenum type) {
+        static const char* ShaderTypeToString(GLenum type) {
             switch (type) {
             case GL_VERTEX_SHADER:   return "GL_VERTEX_SHADER";
             case GL_FRAGMENT_SHADER: return "GL_FRAGMENT_SHADER";
@@ -73,7 +73,7 @@ namespace Vanta {
             return nullptr;
         }
 
-        shaderc_shader_kind ShaderTypeToShaderC(GLenum type) {
+        static shaderc_shader_kind ShaderTypeToShaderC(GLenum type) {
             switch (type) {
             case GL_VERTEX_SHADER:   return shaderc_glsl_vertex_shader;
             case GL_FRAGMENT_SHADER: return shaderc_glsl_fragment_shader;
@@ -82,7 +82,7 @@ namespace Vanta {
             return (shaderc_shader_kind)0;
         }
 
-        const char* ShaderTypeCachedFileExtensionOpenGL(GLenum type) {
+        static const char* ShaderTypeCachedFileExtensionOpenGL(GLenum type) {
             switch (type) {
             case GL_VERTEX_SHADER:    return ".cached_opengl.vert";
             case GL_FRAGMENT_SHADER:  return ".cached_opengl.frag";
@@ -91,7 +91,7 @@ namespace Vanta {
             return "";
         }
 
-        const char* ShaderTypeCachedFileExtensionVulkan(GLenum type) {
+        static const char* ShaderTypeCachedFileExtensionVulkan(GLenum type) {
             switch (type) {
             case GL_VERTEX_SHADER:    return ".cached_vulkan.vert";
             case GL_FRAGMENT_SHADER:  return ".cached_vulkan.frag";

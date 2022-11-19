@@ -132,7 +132,7 @@ namespace Vanta {
         Renderer2D::Statistics Stats;
     };
 
-    RenderData s_Data;
+    static RenderData s_Data;
 
     void Renderer2D::Init() {
         VANTA_PROFILE_RENDER_FUNCTION();
