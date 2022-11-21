@@ -10,13 +10,9 @@ namespace Vanta {
 
     class Entity;
 
-    struct TransformComponent_1 : TransformComponent {};
-    struct TransformComponent_2 : TransformComponent {};
-
     class Scene {
     public:
-        using BufferedTransform = BufferedComponent<TransformComponent, TransformComponent_1, TransformComponent_2>;
-        using Registry = BufferedRegistry<BufferedTransform>;
+        using Registry = BufferedRegistry<TransformComponent>;
 
         Scene();
         ~Scene();
@@ -38,16 +34,13 @@ namespace Vanta {
         Entity DuplicateEntity(entt::entity entity);
         void DestroyEntity(entt::entity entity);
 
+        Entity GetEntityByID(UUID uuid);
+
         /// <summary>
         /// Iterate over all entities with some given components, executing a given function.
         /// </summary>
         template<typename... Components, typename Func>
         void View(Func&& func) {
-            m_Registry.View<Components...>(func);
-        }
-
-        template<typename... Components, typename Func>
-        void View(Func&& func) const {
             m_Registry.View<Components...>(func);
         }
 
@@ -85,17 +78,14 @@ namespace Vanta {
         /// Get a given component from an entity.
         /// </summary>
         template<typename Component>
-        Component& GetComponent(entt::entity entity) {
+        decltype(auto) GetComponent(entt::entity entity) {
             VANTA_ASSERT(HasComponent<Component>(entity), "Entity does not have component: {}", typeid(Component).name());
             return m_Registry.GetComponent<Component>(entity);
         }
 
-        template<typename Component>
-        const Component& GetComponent(entt::entity entity) const {
-            VANTA_ASSERT(HasComponent<Component>(entity), "Entity does not have component: {}", typeid(Component).name());
-            return m_Registry.GetComponent<Component>(entity);
-        }
-
+        /// <summary>
+        /// Check if an entity has a given component.
+        /// </summary>
         template<typename Component>
         bool HasComponent(entt::entity entity) const {
             return m_Registry.HasComponent<Component>(entity);
@@ -117,6 +107,8 @@ namespace Vanta {
         glm::uvec2 m_ViewportSize;
         entt::entity m_ActiveCameraEntity;
 
+        std::unordered_map<UUID, entt::entity> m_EntityMap;
+
         void InitScripts();
         void InitPhysics();
 
@@ -128,8 +120,8 @@ namespace Vanta {
         void DestroyScripts();
         void DestroyPhysics();
 
-        template<typename T>
-        void OnComponentAdded(entt::entity /*entity*/, T& /*component*/) {}
+        template<typename Component>
+        void OnComponentAdded(entt::entity, Component&) {}
 
         template<>
         void OnComponentAdded<CameraComponent>(entt::entity entity, CameraComponent& component) {

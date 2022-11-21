@@ -133,9 +133,9 @@ namespace Vanta {
         SerializeComponent<TransformComponent>(entity, [&out](TransformComponent& component) {
             out << YAML::Key << "TransformComponent";
             out << YAML::BeginMap;
-            out << YAML::Key << "Position" << YAML::Value << component.Position;
+            out << YAML::Key << "Position" << YAML::Value << component.GetPosition();
             out << YAML::Key << "Rotation" << YAML::Value << component.GetRotationDegrees();
-            out << YAML::Key << "Scale" << YAML::Value << component.Scale;
+            out << YAML::Key << "Scale" << YAML::Value << component.GetScale();
             out << YAML::EndMap;
         });
 
@@ -271,7 +271,7 @@ namespace Vanta {
                 
                 auto transformComponent = item["TransformComponent"];
                 if (transformComponent) {
-                    auto& tc = entity.GetComponent<TransformComponent>();
+                    auto& tc = entity.GetComponent<TransformComponent>().Get();
                     auto pos = transformComponent["Position"].as<glm::vec3>();
                     auto rot = transformComponent["Rotation"].as<glm::vec3>();
                     auto scale = transformComponent["Scale"].as<glm::vec3>();

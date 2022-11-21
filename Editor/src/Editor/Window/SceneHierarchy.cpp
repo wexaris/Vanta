@@ -156,7 +156,6 @@ namespace Vanta {
                 ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap;
 
             if (entity.HasComponent<T>()) {
-                auto& component = entity.GetComponent<T>();
                 ImVec2 contentRegion = ImGui::GetContentRegionAvail();
 
                 ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
@@ -179,7 +178,7 @@ namespace Vanta {
                 }
 
                 if (open) {
-                    uiFunction(component);
+                    uiFunction(entity.GetComponent<T>());
                     ImGui::TreePop();
                 }
 
@@ -218,15 +217,20 @@ namespace Vanta {
 
             ImGui::PopItemWidth();
 
-            DrawComponent<TransformComponent>("Transform", entity, [](auto& component) {
-                glm::vec3 position = component.Position;
-                glm::vec3 rotation = component.GetRotationDegrees();
-                glm::vec3 scale = component.Scale;
+            DrawComponent<TransformComponent>("Transform", entity, [](auto buffer) {
+                auto& curr = buffer.Get();
+                auto& next = buffer.Set();
+
+                glm::vec3 position = curr.GetPosition();
+                glm::vec3 rotation = curr.GetRotationDegrees();
+                glm::vec3 scale = curr.GetScale();
+
                 DrawVec3Control("Position", position);
                 DrawVec3Control("Rotation", rotation);
                 DrawVec3Control("Scale", scale, 1.0f);
-                if (component.Position != position || component.GetRotationDegrees() != rotation || component.Scale != scale) {
-                    component.SetTransformDeg(position, rotation, scale);
+
+                if (curr.GetPosition() != position || curr.GetRotationDegrees() != rotation || curr.GetScale() != scale) {
+                    next.SetTransformDeg(position, rotation, scale);
                 }
             });
 

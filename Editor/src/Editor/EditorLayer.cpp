@@ -121,11 +121,11 @@ namespace Vanta {
                 m_ActiveScene->View<TransformComponent, BoxCollider2DComponent>(
                     [](auto, TransformComponent& tr, BoxCollider2DComponent& bc)
                 {
-                    glm::vec3 translation = tr.Position + glm::vec3(bc.Offset, 0.001f);
-                    glm::vec3 scale = tr.Scale * glm::vec3(bc.Size * 2.0f, 1.0f);
+                    glm::vec3 translation = tr.GetPosition() + glm::vec3(bc.Offset, 0.001f);
+                    glm::vec3 scale = tr.GetScale() * glm::vec3(bc.Size * 2.0f, 1.0f);
                 
                     glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
-                        * glm::rotate(glm::mat4(1.0f), tr.Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f))
+                        * glm::rotate(glm::mat4(1.0f), tr.GetRotationRadians().z, glm::vec3(0.0f, 0.0f, 1.0f))
                         * glm::scale(glm::mat4(1.0f), scale);
                 
                     Renderer2D::DrawRect(transform, glm::vec4(0, 1, 0, 1));
@@ -135,8 +135,8 @@ namespace Vanta {
                 m_ActiveScene->View<TransformComponent, CircleCollider2DComponent>(
                     [](auto, TransformComponent& tr, CircleCollider2DComponent& cc)
                 {
-                    glm::vec3 translation = tr.Position + glm::vec3(cc.Offset, 0.001f);
-                    glm::vec3 scale = tr.Scale * glm::vec3(cc.Radius * 2.0f);
+                    glm::vec3 translation = tr.GetPosition() + glm::vec3(cc.Offset, 0.001f);
+                    glm::vec3 scale = tr.GetScale() * glm::vec3(cc.Radius * 2.0f);
 
                     glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
                         * glm::scale(glm::mat4(1.0f), scale);
@@ -147,8 +147,8 @@ namespace Vanta {
 
             // Draw selected entity outline
             if (Entity selectedEntity = m_ScenePanel.GetSelected()) {
-                const TransformComponent& transform = selectedEntity.GetComponent<TransformComponent>();
-                Renderer2D::DrawRect(transform.Transform, glm::vec4(1.0f, 0.9f, 0.2f, 1.0f));
+                TransformComponent& transform = selectedEntity.GetComponent<TransformComponent>();
+                Renderer2D::DrawRect(transform.GetTransform(), glm::vec4(1.0f, 0.9f, 0.2f, 1.0f));
             }
 
             Renderer2D::SceneEnd();
@@ -331,8 +331,8 @@ namespace Vanta {
                     glm::mat4 cameraView = m_EditorCamera.GetCamera().GetView();
 
                     // Entity transform
-                    auto& tc = selectedEntity.GetComponent<TransformComponent>();
-                    glm::mat4 transform = tc.Transform;
+                    auto tc = selectedEntity.GetComponent<TransformComponent>();
+                    glm::mat4 transform = tc.Get().GetTransform();
 
                     // Snapping
                     bool snap = Input::IsKeyPressed(Key::LeftControl);
@@ -348,7 +348,7 @@ namespace Vanta {
                         nullptr, snap ? snapValues : nullptr);
 
                     if (ImGuizmo::IsUsing()) {
-                        tc.SetTransform(transform);
+                        tc.Set().SetTransform(transform);
                     }
                 }
 

@@ -93,16 +93,16 @@ namespace Vanta {
         ScriptEngine::RuntimeBegin(this);
 
         // Instantiate native scripts
-        ParallelView<NativeScriptComponent>(m_Barrier, m_Registry, [&](entt::entity entity, NativeScriptComponent& script) {
+        ParallelView<NativeScriptComponent>(m_Barrier, m_Registry, [&](entt::entity e, NativeScriptComponent& script) {
             script.Create();
-            script.Instance->m_Entity = Entity(entity, this);
+            script.Instance->m_Entity = Entity(e, this);
             script.Instance->OnCreate();
         });
 
         // Instantiate C# scripts
-        View<ScriptComponent>([&](entt::entity, ScriptComponent& script) {
+        View<ScriptComponent>([&](entt::entity e, ScriptComponent& script) {
             if (ScriptEngine::EntityClassExists(script.ClassName)) {
-                script.Instance = ScriptEngine::CreateInstance(script.ClassName);
+                script.Instance = ScriptEngine::CreateInstance(script.ClassName, Entity(e, this));
                 script.Instance->OnCreate();
             }
         });
@@ -135,7 +135,7 @@ namespace Vanta {
 
             b2BodyDef bodyDef;
             bodyDef.type = detail::Rigidbody2DTypeToBox2D(rb.Type);
-            bodyDef.position = { tr.Position.x, tr.Position.y };
+            bodyDef.position = { tr.GetPosition().x, tr.GetPosition().y};
             bodyDef.angle = tr.GetRotationRadians().z;
 
             b2Body* body = m_PhysicsWorld->CreateBody(&bodyDef);
@@ -147,7 +147,7 @@ namespace Vanta {
                 auto& bc = GetComponent<BoxCollider2DComponent>(e);
 
                 b2PolygonShape shape;
-                shape.SetAsBox(bc.Size.x * tr.Scale.x, bc.Size.y * tr.Scale.y);
+                shape.SetAsBox(bc.Size.x * tr.GetScale().x, bc.Size.y * tr.GetScale().y);
 
                 b2FixtureDef fixtureDef;
                 fixtureDef.shape = &shape;
@@ -229,22 +229,23 @@ namespace Vanta {
         m_PhysicsWorld->Step((float)delta, velocityIterations, positionIterations);
 
         //ParallelView<TransformComponent, Rigidbody2DComponent>(m_Barrier, m_Registry, [&](entt::entity, TransformComponent& tr, Rigidbody2DComponent& rb) {
-        m_Registry.ViewNext<TransformComponent, Rigidbody2DComponent>(
+        m_Registry.View<1, TransformComponent, Rigidbody2DComponent>(
             [&](entt::entity, TransformComponent& tr, Rigidbody2DComponent& rb)
         {
             b2Body* body = (b2Body*)rb.RuntimeBody;
             auto& position = body->GetPosition();
             float angle = body->GetAngle();
-            tr.SetTransformRad({ position.x, position.y, tr.Position.z }, { 0.f, 0.f, angle }, tr.Scale);
+
+            tr.SetTransformRad({position.x, position.y, tr.GetPosition().z}, {0.f, 0.f, angle}, tr.GetScale());
         });
     }
 
     void Scene::OnRender(double delta, entt::entity camera) {
         VANTA_PROFILE_RENDER_FUNCTION();
         if (IsValid(camera)) {
-            auto& tr = GetComponent<TransformComponent>(camera);
+            auto& tr = GetComponent<TransformComponent>(camera).Get();
             auto& cc = GetComponent<CameraComponent>(camera);
-            cc.Camera.SetView(glm::inverse(tr.Transform));
+            cc.Camera.SetView(glm::inverse(tr.GetTransform()));
             OnRender(delta, &cc.Camera);
         }
     }
@@ -256,13 +257,13 @@ namespace Vanta {
             LinearView<TransformComponent, CircleRendererComponent>(m_Registry,
                 [&](entt::entity entity, TransformComponent& tr, CircleRendererComponent& cr)
             {
-                Renderer2D::DrawCircle(tr.Transform, cr.Color, cr.Thickness, cr.Fade, (uint32)entity);
+                Renderer2D::DrawCircle(tr.GetTransform(), cr.Color, cr.Thickness, cr.Fade, (uint32)entity);
             });
 
             LinearView<TransformComponent, SpriteComponent>(m_Registry,
                 [&](entt::entity entity, TransformComponent& tr, SpriteComponent& sp)
             {
-                Renderer2D::DrawSprite(tr.Transform, sp, (uint32)entity);
+                Renderer2D::DrawSprite(tr.GetTransform(), sp, (uint32)entity);
             });
             Renderer2D::SceneEnd();
         }
@@ -277,6 +278,9 @@ namespace Vanta {
         Entity entity = Entity(m_Registry.Create(), this);
         AddComponent<IDComponent>(entity, name, uuid);
         AddComponent<TransformComponent>(entity);
+
+        m_EntityMap[uuid] = entity.GetHandle();
+
         return entity;
     }
 
@@ -290,7 +294,16 @@ namespace Vanta {
 
     void Scene::DestroyEntity(entt::entity entity) {
         VANTA_PROFILE_FUNCTION();
+        auto& id = GetComponent<IDComponent>(entity);
         m_Registry.Destroy(entity);
+        m_EntityMap.erase(id.ID);
+    }
+
+    Entity Scene::GetEntityByID(UUID uuid) {
+        auto iter = m_EntityMap.find(uuid);
+        if (iter != m_EntityMap.end())
+            return Entity(iter->second, this);
+        return Entity();
     }
 
     void Scene::OnViewportResize(uint width, uint height) {

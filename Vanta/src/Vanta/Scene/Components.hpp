@@ -46,17 +46,13 @@ namespace Vanta {
     };
 
     struct TransformComponent {
-        glm::mat4 Transform = glm::mat4(1.f);
-
-        glm::vec3 Position = { 0.f, 0.f, 0.f }; // Position
-        glm::vec3 Rotation = { 0.f, 0.f, 0.f }; // Rotation in radians
-        glm::vec3 Scale    = { 1.f, 1.f, 1.f }; // Scale
-
         TransformComponent() = default;
         TransformComponent(const TransformComponent&) = default;
+
         TransformComponent(const glm::mat4& transform) {
             SetTransform(transform);
         }
+
         TransformComponent(const glm::vec3& position, const glm::vec3& degrees, const glm::vec3& scale) {
             SetTransformDeg(position, degrees, scale);
         }
@@ -65,7 +61,7 @@ namespace Vanta {
             Position = position;
             Rotation = radians;
             Scale = scale;
-            Recalculate();
+            DirtyTransform = true;
         }
 
         void SetTransformDeg(const glm::vec3& position, const glm::vec3& degrees, const glm::vec3& scale) {
@@ -77,18 +73,53 @@ namespace Vanta {
             Math::Decompose(Transform, Position, Rotation, Scale);
         }
 
-        void SetRotationRad(const glm::vec3& radians) { Rotation = radians; }
-        void SetRotationDeg(const glm::vec3& degrees) { Rotation = glm::radians(degrees); }
+        void SetPosition(const glm::vec3& position) {
+            Position = position;
+            DirtyTransform = true;
+        }
 
-        const glm::vec3& GetRotationRadians() const  { return Rotation; }
-        glm::vec3 GetRotationDegrees() const         { return glm::degrees(Rotation); }
+        void SetRotationDeg(const glm::vec3& degrees) {
+            SetRotationRad(glm::radians(degrees));
+        }
+
+        void SetRotationRad(const glm::vec3& radians) {
+            Rotation = radians;
+            DirtyTransform = true;
+        }
+
+        void SetScale(const glm::vec3& scale) {
+            Scale = scale;
+            DirtyTransform = true;
+        }
+
+        const glm::mat4& GetTransform() {
+            if (DirtyTransform)
+                Recalculate();
+            return Transform;
+        }
+
+        const glm::vec3& GetPosition() const { return Position; }
+
+        const glm::vec3& GetRotationRadians() const { return Rotation; }
+        glm::vec3 GetRotationDegrees() const        { return glm::degrees(Rotation); }
+
+        const glm::vec3& GetScale() const { return Scale; }
 
     private:
+        glm::mat4 Transform = glm::mat4(1.f);
+
+        glm::vec3 Position = { 0.f, 0.f, 0.f }; // Position
+        glm::vec3 Rotation = { 0.f, 0.f, 0.f }; // Rotation in radians
+        glm::vec3 Scale = { 1.f, 1.f, 1.f }; // Scale
+
+        bool DirtyTransform = false;
+
         void Recalculate() {
             auto position = glm::translate(glm::mat4(1.f), Position);
             auto rotation = glm::mat4_cast(glm::quat(Rotation));
             auto scale = glm::scale(glm::mat4(1.f), Scale);
             Transform = (glm::mat4)(position * rotation * scale);
+            DirtyTransform = false;
         }
     };
 

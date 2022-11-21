@@ -37,15 +37,16 @@ namespace Vanta {
 
         /// Get a component of a certain type.
         template<typename Component>
-        Component& GetComponent() {
+        decltype(auto) GetComponent() {
             return m_Scene->GetComponent<Component>(*this);
         }
 
         template<typename Component>
-        const Component& GetComponent() const {
+        decltype(auto) GetComponent() const {
             return m_Scene->GetComponent<Component>(*this);
         }
 
+        /// Check if entity has a component of a certain type.
         template<typename Component>
         bool HasComponent() const {
             VANTA_ASSERT(IsValid(), "Attempting to access invalid entity!");

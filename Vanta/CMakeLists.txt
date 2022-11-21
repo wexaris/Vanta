@@ -102,7 +102,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE
 
 target_link_options(${PROJECT_NAME} PUBLIC
     $<$<CONFIG:RELEASE>:$<$<CXX_COMPILER_ID:MSVC>:
-        /LTCG>>
+        /LTCG /ignore:4099>>
 )
 
 # Copy assets to runtime directory
