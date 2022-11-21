@@ -53,6 +53,7 @@ namespace Vanta {
         MonoAssembly* CoreAssembly = nullptr;
         MonoImage* CoreAssemblyImage = nullptr;
 
+        ScriptClass EntityClass;
         std::unordered_map<std::string, Ref<ScriptClass>> EntityClasses;
 
         Scene* SceneContext = nullptr;
@@ -65,6 +66,8 @@ namespace Vanta {
         LoadAssembly(Engine::Get().ScriptDirectory() / "Vanta-Script.dll");
 
         Interface::RegisterFunctions();
+
+        s_Data.EntityClass = ScriptClass("Vanta", "Entity");
     }
 
     void ScriptEngine::Shutdown() {
@@ -133,21 +136,25 @@ namespace Vanta {
         return object;
     }
 
-    void ScriptEngine::RuntimeBegin(Scene* scene) {
-        s_Data.SceneContext = scene;
+    void ScriptEngine::RuntimeBegin(Scene* context) {
+        s_Data.SceneContext = context;
     }
 
     void ScriptEngine::RuntimeEnd() {
         s_Data.SceneContext = nullptr;
     }
 
-    Ref<ScriptInstance> ScriptEngine::CreateInstance(const std::string& fullName) {
+    Ref<ScriptInstance> ScriptEngine::CreateInstance(const std::string& fullName, Entity entity) {
         VANTA_CORE_ASSERT(EntityClassExists(fullName), "Invalid class!");
-        return NewRef<ScriptInstance>(s_Data.EntityClasses[fullName]);
+        return NewRef<ScriptInstance>(s_Data.EntityClasses[fullName], entity);
     }
 
     bool ScriptEngine::EntityClassExists(const std::string& fullName) {
         return s_Data.EntityClasses.find(fullName) != s_Data.EntityClasses.end();
+    }
+
+    Scene* ScriptEngine::GetContext() {
+        return s_Data.SceneContext;
     }
 
     ScriptClass::ScriptClass(const std::string& namespaceName, const std::string& className)
@@ -176,12 +183,19 @@ namespace Vanta {
         return mono_runtime_invoke(method, instance, params, nullptr);
     }
 
-    ScriptInstance::ScriptInstance(Ref<ScriptClass> scriptClass) : m_ScriptClass(scriptClass)
+    ScriptInstance::ScriptInstance(Ref<ScriptClass> scriptClass, Entity entity) : m_ScriptClass(scriptClass)
     {
         m_Instance = m_ScriptClass->Instantiate();
+
+        m_Constructor = s_Data.EntityClass.GetMethod(".ctor", 1);
         m_OnCreateMethod = m_ScriptClass->GetMethod("OnCreate", 0);
         m_OnUpdateMethod = m_ScriptClass->GetMethod("OnUpdate", 1);
         m_OnDestroyMethod = m_ScriptClass->GetMethod("OnDestroy", 0);
+
+        // Call constructor with entity ID
+        UUID entityID = entity.GetUUID();
+        void* param = &entityID;
+        m_ScriptClass->InvokeMethod(m_Instance, m_Constructor, &param);
     }
 
     void ScriptInstance::OnCreate() {

@@ -1,4 +1,5 @@
 #pragma once
+#include "Vanta/Scene/Entity.hpp"
 
 extern "C" {
     typedef struct _MonoAssembly MonoAssembly;
@@ -15,7 +16,7 @@ namespace Vanta {
 
     class ScriptInstance {
     public:
-        ScriptInstance(Ref<ScriptClass> klass);
+        ScriptInstance(Ref<ScriptClass> klass, Entity entity);
 
         void OnCreate();
         void OnUpdate(float delta);
@@ -25,6 +26,7 @@ namespace Vanta {
         Ref<ScriptClass> m_ScriptClass;
 
         MonoObject* m_Instance = nullptr;
+        MonoMethod* m_Constructor = nullptr;
         MonoMethod* m_OnCreateMethod = nullptr;
         MonoMethod* m_OnUpdateMethod = nullptr;
         MonoMethod* m_OnDestroyMethod = nullptr;
@@ -56,8 +58,10 @@ namespace Vanta {
         static void RuntimeBegin(Scene* scene);
         static void RuntimeEnd();
 
-        static Ref<ScriptInstance> CreateInstance(const std::string& fullName);
+        static Ref<ScriptInstance> CreateInstance(const std::string& fullName, Entity entity);
         static bool EntityClassExists(const std::string& fullName);
+
+        static Scene* GetContext();
 
     private:
         friend class ScriptClass;
