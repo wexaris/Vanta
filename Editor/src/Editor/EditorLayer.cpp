@@ -431,7 +431,9 @@ namespace Vanta {
             if (e.Button == Mouse::ButtonLeft) {
                 if (m_State == State::Edit || m_State == State::Simulate) {
                     if (m_ViewportHovered) {
-                        m_ScenePanel.SetSelected(m_HoveredEntity);
+                        if ((m_HoveredEntity && m_HoveredEntity != m_ScenePanel.GetSelected()) || !ImGuizmo::IsOver()) {
+                            m_ScenePanel.SetSelected(m_HoveredEntity);
+                        }
                     }
                 }
             }
