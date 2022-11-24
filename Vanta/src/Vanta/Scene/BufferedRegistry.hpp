@@ -26,7 +26,7 @@ namespace Vanta {
     /// Scene registry with support for multiple buffered components.
     /// Allows for iteration over entities, while automatically resolving the
     /// current buffer instance.
-    /// Use `View()` and `ViewNext()` to iterate over entities with the current or next instances of buffers.
+    /// Use `View()` to iterate over entities.
     /// Use `SwapBuffers()` to go to the next buffer instance.
     /// </summary>
     template<typename... ToBuffer>

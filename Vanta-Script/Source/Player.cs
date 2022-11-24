@@ -5,33 +5,36 @@ using Vanta;
 namespace Sandbox {
 
     public class Player : Entity {
+        private TransformComponent m_Transform;
+        private Rigidbody2DComponent m_Rigidbody;
+
         void OnCreate() {
-            Internal.Info("Player.OnCreate");
+            Log.Info("Player.OnCreate");
+
+            m_Transform = GetComponent<TransformComponent>();
+            m_Rigidbody = GetComponent<Rigidbody2DComponent>();
         }
 
         void OnUpdate(float delta) {
-            Internal.Info($"Player.OnUpdate: {delta}");
 
-            const float speed = 1.0f;
-            Vector3 velocity = Vector3.Zero;
+            const float speed = 0.01f;
+            Vector2 velocity = Vector2.Zero;
 
             if (Input.IsKeyDown(KeyCode.W))
-                velocity.Y += 1.0f;
+                velocity.Y += speed;
             if (Input.IsKeyDown(KeyCode.S))
-                velocity.Y -= 1.0f;
+                velocity.Y -= speed;
 
             if (Input.IsKeyDown(KeyCode.A))
-                velocity.X -= 1.0f;
+                velocity.X -= speed;
             if (Input.IsKeyDown(KeyCode.D))
-                velocity.X += 1.0f;
+                velocity.X += speed;
 
-            Vector3 position = Position;
-            position += velocity * delta;
-            Position = position;
-        }
+            m_Rigidbody.ApplyLinearImpulse(velocity);
 
-        void OnDestroy() {
-            Internal.Info("Player.OnDestroy");
+            //Vector3 position = Position;
+            //position += velocity * delta;
+            //Position = position;
         }
     }
 }

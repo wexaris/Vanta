@@ -62,9 +62,11 @@ namespace Vanta {
         static bool EntityClassExists(const std::string& fullName);
 
         static Scene* GetContext();
+        static MonoImage* GetCoreAssemblyImage();
 
     private:
         friend class ScriptClass;
+        friend struct Interface;
 
         ScriptEngine() = delete;
 

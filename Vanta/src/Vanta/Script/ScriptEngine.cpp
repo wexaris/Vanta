@@ -66,6 +66,7 @@ namespace Vanta {
         LoadAssembly(Engine::Get().ScriptDirectory() / "Vanta-Script.dll");
 
         Interface::RegisterFunctions();
+        Interface::RegisterComponents();
 
         s_Data.EntityClass = ScriptClass("Vanta", "Entity");
     }
@@ -80,7 +81,8 @@ namespace Vanta {
         s_Data.RootDomain = mono_jit_init("VantaJIT");
         VANTA_CORE_ASSERT(s_Data.RootDomain, "Failed to initialize Mono JIT runtime!");
 
-        s_Data.AppDomain = mono_domain_create_appdomain(const_cast<char*>("VantaScripts"), nullptr);
+        std::string domainName = "VantaScripts";
+        s_Data.AppDomain = mono_domain_create_appdomain(domainName.data(), nullptr);
         mono_domain_set(s_Data.AppDomain, true);
     }
 
@@ -157,6 +159,10 @@ namespace Vanta {
         return s_Data.SceneContext;
     }
 
+    MonoImage* ScriptEngine::GetCoreAssemblyImage() {
+        return s_Data.CoreAssemblyImage;
+    }
+
     ScriptClass::ScriptClass(const std::string& namespaceName, const std::string& className)
         : m_NamespaceName(namespaceName), m_ClassName(className)
     {
@@ -183,11 +189,14 @@ namespace Vanta {
         return mono_runtime_invoke(method, instance, params, nullptr);
     }
 
-    ScriptInstance::ScriptInstance(Ref<ScriptClass> scriptClass, Entity entity) : m_ScriptClass(scriptClass)
+    ScriptInstance::ScriptInstance(Ref<ScriptClass> scriptClass, Entity entity)
+        : m_ScriptClass(scriptClass)
     {
         m_Instance = m_ScriptClass->Instantiate();
 
         m_Constructor = s_Data.EntityClass.GetMethod(".ctor", 1);
+        VANTA_CORE_ASSERT(m_Constructor, "Script class missing valid constructor!");
+
         m_OnCreateMethod = m_ScriptClass->GetMethod("OnCreate", 0);
         m_OnUpdateMethod = m_ScriptClass->GetMethod("OnUpdate", 1);
         m_OnDestroyMethod = m_ScriptClass->GetMethod("OnDestroy", 0);
@@ -199,15 +208,21 @@ namespace Vanta {
     }
 
     void ScriptInstance::OnCreate() {
-        m_ScriptClass->InvokeMethod(m_Instance, m_OnCreateMethod);
+        if (m_OnCreateMethod) {
+            m_ScriptClass->InvokeMethod(m_Instance, m_OnCreateMethod);
+        }
     }
 
     void ScriptInstance::OnUpdate(float delta) {
-        void* param = &delta;
-        m_ScriptClass->InvokeMethod(m_Instance, m_OnUpdateMethod, &param);
+        if (m_OnUpdateMethod) {
+            void* param = &delta;
+            m_ScriptClass->InvokeMethod(m_Instance, m_OnUpdateMethod, &param);
+        }
     }
 
     void ScriptInstance::OnDestroy() {
-        m_ScriptClass->InvokeMethod(m_Instance, m_OnDestroyMethod);
+        if (m_OnDestroyMethod) {
+            m_ScriptClass->InvokeMethod(m_Instance, m_OnDestroyMethod);
+        }
     }
 }

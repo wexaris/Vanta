@@ -2,9 +2,14 @@ cmake_minimum_required(VERSION 3.20)
 project(Vanta-Script VERSION 0.1.0 LANGUAGES CSharp)
 
 set(${PROJECT_NAME}_SOURCE
-    "Source/App.cs"
-    "Source/Player.cs"
+    "Source/Components.cs"
+    "Source/Entity.cs"
+    "Source/Input.cs"
+    "Source/Internal.cs"
     "Source/KeyCodes.cs"
+    "Source/Log.cs"
+    "Source/Math.cs"
+    "Source/Player.cs"
 )
 
 add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCE})

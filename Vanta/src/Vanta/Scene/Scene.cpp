@@ -76,7 +76,6 @@ namespace Vanta {
         VANTA_PROFILE_FUNCTION();
         DestroyScripts();
         DestroyPhysics();
-
     }
 
     void Scene::OnSimulationBegin() {
