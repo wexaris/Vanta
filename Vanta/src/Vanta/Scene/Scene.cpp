@@ -127,7 +127,7 @@ namespace Vanta {
         // Create physics world
         m_PhysicsWorld = new b2World({ 0.f, -9.8f });
 
-        ParallelView<TransformComponent, Rigidbody2DComponent>(m_Barrier, m_Registry,
+        m_Registry.View<TransformComponent, Rigidbody2DComponent>(
             [&](entt::entity e, TransformComponent& tr, Rigidbody2DComponent& rb)
         {
             Entity entity(e, this);
@@ -204,6 +204,7 @@ namespace Vanta {
 
     void Scene::OnUpdateEditor(double delta, Camera* camera) {
         VANTA_PROFILE_FUNCTION();
+        m_Registry.SwapBuffersFwd();
         OnRender(delta, camera);
     }
 
@@ -227,8 +228,7 @@ namespace Vanta {
         const uint positionIterations = 2;
         m_PhysicsWorld->Step((float)delta, velocityIterations, positionIterations);
 
-        //ParallelView<TransformComponent, Rigidbody2DComponent>(m_Barrier, m_Registry, [&](entt::entity, TransformComponent& tr, Rigidbody2DComponent& rb) {
-        m_Registry.View<1, TransformComponent, Rigidbody2DComponent>(
+        m_Registry.View<TransformComponent, Rigidbody2DComponent>(
             [&](entt::entity, TransformComponent& tr, Rigidbody2DComponent& rb)
         {
             b2Body* body = (b2Body*)rb.RuntimeBody;
@@ -323,9 +323,10 @@ namespace Vanta {
     }
 
     Camera* Scene::GetActiveCamera() {
-        if (IsValid(m_ActiveCameraEntity))
-            if (auto comp = m_Registry.TryGetComponent<CameraComponent>(m_ActiveCameraEntity))
-                return &comp->Camera;
+        if (IsValid(m_ActiveCameraEntity)) {
+            auto& cam = m_Registry.TryGetComponent<CameraComponent>(m_ActiveCameraEntity);
+            return &cam.Camera;
+        }
         return nullptr;
     }
 }

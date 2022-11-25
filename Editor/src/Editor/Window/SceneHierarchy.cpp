@@ -217,20 +217,22 @@ namespace Vanta {
 
             ImGui::PopItemWidth();
 
-            DrawComponent<TransformComponent>("Transform", entity, [](auto buffer) {
-                auto& curr = buffer.Get();
-                auto& next = buffer.Set();
+            DrawComponent<TransformComponent>("Transform", entity, [](auto& buffer) {
+                auto& tr = buffer.Get();
 
-                glm::vec3 position = curr.GetPosition();
-                glm::vec3 rotation = curr.GetRotationDegrees();
-                glm::vec3 scale = curr.GetScale();
+                glm::vec3 position = tr.GetPosition();
+                glm::vec3 rotation = tr.GetRotationDegrees();
+                glm::vec3 scale = tr.GetScale();
 
                 DrawVec3Control("Position", position);
                 DrawVec3Control("Rotation", rotation);
                 DrawVec3Control("Scale", scale, 1.0f);
 
-                if (curr.GetPosition() != position || curr.GetRotationDegrees() != rotation || curr.GetScale() != scale) {
-                    next.SetTransformDeg(position, rotation, scale);
+                if (position != tr.GetPosition() ||
+                    rotation != tr.GetRotationDegrees() ||
+                    scale != tr.GetScale())
+                {
+                    buffer.Set().SetTransformDeg(position, rotation, scale);
                 }
             });
 

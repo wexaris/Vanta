@@ -4,29 +4,6 @@
 
 #include <yaml-cpp/yaml.h>
 
-namespace Vanta {
-    namespace detail {
-        static const char* Rigidbody2DTypeToString(Rigidbody2DComponent::BodyType type) {
-            switch (type) {
-            case Rigidbody2DComponent::BodyType::Static: return "Static";
-            case Rigidbody2DComponent::BodyType::Dynamic: return "Dynamic";
-            case Rigidbody2DComponent::BodyType::Kinematic: return "Kinematic";
-            default:
-                VANTA_UNREACHABLE("Invalid Rigidbody2D body type!");
-                return "Static";
-            }
-        }
-
-        static Rigidbody2DComponent::BodyType StringToRigidbody2DType(const std::string& str) {
-            if (str == "Static") return Rigidbody2DComponent::BodyType::Static;
-            if (str == "Dynamic") return Rigidbody2DComponent::BodyType::Dynamic;
-            if (str == "Kinematic") return Rigidbody2DComponent::BodyType::Kinematic;
-            VANTA_UNREACHABLE("Invalid Rigidbody2D body type!");
-            return Rigidbody2DComponent::BodyType::Static;
-        }
-    }
-}
-
 template<>
 struct YAML::convert<glm::vec2> {
     static Node encode(const glm::vec2& val) {
@@ -271,7 +248,7 @@ namespace Vanta {
                 
                 auto transformComponent = item["TransformComponent"];
                 if (transformComponent) {
-                    auto& tc = entity.GetComponent<TransformComponent>().Get();
+                    auto& tc = entity.GetComponent<TransformComponent>().Set();
                     auto pos = transformComponent["Position"].as<glm::vec3>();
                     auto rot = transformComponent["Rotation"].as<glm::vec3>();
                     auto scale = transformComponent["Scale"].as<glm::vec3>();

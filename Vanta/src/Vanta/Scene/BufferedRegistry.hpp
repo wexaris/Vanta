@@ -3,23 +3,26 @@
 
 namespace Vanta {
 
-    template<typename Component>
-    struct BufferedComponent {
-        BufferedComponent(std::tuple<Component*, Component*> components)
-            : m_Curr(std::get<0>(components)), m_Next(std::get<1>(components)) {}
+    usize GetBufferIndex();
+    void SetBufferIndex(usize);
 
-        BufferedComponent(std::tuple<Component&, Component&> components)
-            : m_Curr(&std::get<0>(components)), m_Next(&std::get<1>(components)) {}
+    template<typename Base_t>
+    struct Buffered {
+    public:
+        using Base = Base_t;
 
-        Component& Get() { return *m_Curr; }
-        Component& Set() { return *m_Next; }
+        Buffered() = default;
+        Buffered(const Buffered&) = default;
 
-        operator Component*() { return m_Curr; }
-        operator Component&() { return *m_Curr; }
+        Base& Get() { return GetBufferIndex() == 0 ? m_First : m_Second; }
+        Base& Set() { return GetBufferIndex() == 0 ? m_Second : m_First; }
+
+        operator Base* () { return &Get(); }
+        operator Base& () { return Get(); }
 
     private:
-        Component* m_Curr = nullptr;
-        Component* m_Next = nullptr;
+        Base m_First = Base();
+        Base m_Second = Base();
     };
 
     /// <summary>
@@ -33,15 +36,6 @@ namespace Vanta {
     class BufferedRegistry {
     private:
         static constexpr uint SIZE = 2;
-
-        template<typename Base_t>
-        struct Buffered {
-            struct Buffer_1 : public Base_t {};
-            struct Buffer_2 : public Base_t {};
-
-            using Base = Base_t;
-            using List = ComponentList<Buffer_1, Buffer_2>;
-        };
 
         /// MapIf
         template<template<typename> typename Cond, template<typename> typename Map, typename... Type>
@@ -62,55 +56,18 @@ namespace Vanta {
         template<typename Base>
         static constexpr bool IsBuffered_v = IsBuffered<Base>::value;
 
-        /// IsBuffer
-        template<typename T>
-        struct IsBuffer {
-            static constexpr bool value = (Contains_v<T, typename Buffered<ToBuffer>::List> || ...);
-        };
-
-        template<typename Base>
-        static constexpr bool IsBuffer_v = IsBuffer<Base>::value;
-
-        /// BaseOf
-        template<typename T>
-        struct BaseOf {
-            template<typename Item>
-            using MatchBuffer = Contains<T, typename Item::List>;
-
-            using type = Find_t<MatchBuffer, Buffered<ToBuffer>...>::Base;
-        };
-
-        template<typename Buffer>
-        using BaseOf_t = BaseOf<Buffer>::type;
-
-        /// BuffersOf
-        template<typename T>
-        using BuffersOf = std::conditional_t<IsBuffered_v<T>, typename Buffered<T>::List, T>;
-
-        template<typename T>
-        using BuffersOf_t = BuffersOf<T>;
-
-        /// ResolvedComponents
-        template<usize Index, typename... Components>
+        /// Resolved
+        template<typename... Components>
         struct Resolved {
-            template<usize, typename Base>
-            struct Resolve { using type = Base; };
-
-            template<usize Index, typename Base> requires IsBuffered_v<Base>
-            struct Resolve<Index, Base> : public Get<Index, BuffersOf_t<Base>> {};
-
             template<typename Base>
-            using Resolve_x = Resolve<Index, Base>;
+            struct Buffer { using type = Buffered<Base>; };
 
             // ComponentList<Components...>
-            using type = MapIf_t<IsBuffered, Resolve_x, Components...>;
+            using type = MapIf_t<IsBuffered, Buffer, Components...>;
         };
 
         template<typename... Components>
-        using Resolved_0 = Resolved<0, Components...>::type;
-
-        template<typename... Components>
-        using Resolved_1 = Resolved<1, Components...>::type;
+        using Resolved_t = Resolved<Components...>::type;
 
     public:
         BufferedRegistry() = default;
@@ -119,7 +76,13 @@ namespace Vanta {
         /// Swap to the next buffer of any buffered components.
         /// </summary>
         void SwapBuffers() {
-            m_BufferIdx = (m_BufferIdx + 1) % SIZE;
+            SetBufferIndex((GetBufferIndex() + 1) % SIZE);
+        }
+
+        void SwapBuffersFwd() {
+            ((View<ToBuffer>([](auto, Buffered<ToBuffer>& buffer) {
+                buffer.Get() = buffer.Set();
+            })), ...);
         }
 
         /// <summary>
@@ -152,46 +115,17 @@ namespace Vanta {
         /// <summary>
         /// Get an entities component.
         /// </summary>
-        template<typename Component> requires !IsBuffered_v<Component>
-        Component& GetComponent(entt::entity entity) {
-            return Impl_Get<Component>::Exec(m_Registry, entity);
-        }
-
-        template<typename Component> requires IsBuffered_v<Component>
-        BufferedComponent<Component> GetComponent(entt::entity entity) {
-            auto[b1, b2] = Impl_Get<BuffersOf_t<Component>>::Exec(m_Registry, entity);
-            switch (m_BufferIdx) {
-            case 0: return BufferedComponent<Component>({ b1, b2 });
-            case 1: return BufferedComponent<Component>({ b2, b1 });
-            default:
-                VANTA_UNREACHABLE("Invalid buffer index; only two buffers are currently supported!");
-                return BufferedComponent<Component>({ nullptr, nullptr });
-            }
+        template<typename Component>
+        decltype(auto) GetComponent(entt::entity entity) {
+            return Impl_Get<Resolved_t<Component>>::Exec(m_Registry, entity);
         }
 
         /// <summary>
         /// Try to get an entities component.
         /// </summary>
         template<typename Component>
-        Component* TryGetComponent(entt::entity entity) {
-            switch (m_BufferIdx) {
-            case 0: return &Impl_TryGet<Resolved_0<Component>>::Exec(m_Registry, entity);
-            case 1: return &Impl_TryGet<Resolved_1<Component>>::Exec(m_Registry, entity);
-            default:
-                VANTA_UNREACHABLE("Invalid buffer index; only two buffers are currently supported!");
-                return nullptr;
-            }
-        }
-
-        template<typename Component>
-        const Component* TryGetComponent(entt::entity entity) const {
-            switch (m_BufferIdx) {
-            case 0: return Impl_TryGet<Resolved_0<Component>>::Exec(m_Registry, entity);
-            case 1: return Impl_TryGet<Resolved_1<Component>>::Exec(m_Registry, entity);
-            default:
-                VANTA_UNREACHABLE("Invalid buffer index; only two buffers are currently supported!");
-                return nullptr;
-            }
+        decltype(auto) TryGetComponent(entt::entity entity) {
+            return Impl_TryGet<Resolved_t<Component>>::Exec(m_Registry, entity);
         }
 
         /// <summary>
@@ -201,42 +135,7 @@ namespace Vanta {
         /// </summary>
         template<typename... Components, typename Func>
         void View(Func&& func) {
-            return View<0, Components...>(std::forward<Func>(func));
-        }
-
-        template<usize Offset, typename... Components, typename Func>
-        void View(Func&& func) {
-            switch ((m_BufferIdx + Offset) % SIZE) {
-            case 0:
-                Impl_View<Resolved_0<Components...>>::Exec(m_Registry, std::forward<Func>(func));
-                break;
-            case 1:
-                Impl_View<Resolved_1<Components...>>::Exec(m_Registry, std::forward<Func>(func));
-                break;
-            default:
-                VANTA_UNREACHABLE("Invalid buffer index; only two buffers are currently supported!");
-                break;
-            }
-        }
-
-        template<typename... Components, typename Func>
-        void View(Func&& func) const {
-            return View<0, Components...>(std::forward<Func>(func));
-        }
-
-        template<usize Offset, typename... Components, typename Func>
-        void View(Func&& func) const {
-            switch ((m_BufferIdx + Offset) % SIZE) {
-            case 0:
-                Impl_View<Resolved_0<Components...>>::Exec(m_Registry, std::forward<Func>(func));
-                break;
-            case 1:
-                Impl_View<Resolved_1<Components...>>::Exec(m_Registry, std::forward<Func>(func));
-                break;
-            default:
-                VANTA_UNREACHABLE("Invalid buffer index; only two buffers are currently supported!");
-                break;
-            }
+            Impl_View<Resolved_t<Components...>>::Exec(m_Registry, std::forward<Func>(func));
         }
 
         /// <summary>
@@ -246,73 +145,31 @@ namespace Vanta {
         /// </summary>
         template<typename... Components, typename Func>
         void ViewIter(Func&& func) {
-            switch (m_BufferIdx) {
-            case 0:
-                Impl_ViewIter<Resolved_0<Components...>>::Exec(m_Registry, std::forward<Func>(func));
-                break;
-            case 1:
-                Impl_ViewIter<Resolved_1<Components...>>::Exec(m_Registry, std::forward<Func>(func));
-                break;
-            default:
-                VANTA_UNREACHABLE("Invalid buffer index; only two buffers are currently supported!");
-                break;
-            }
-        }
-
-        template<typename... Components, typename Func>
-        void ViewIter(Func&& func) const {
-            switch (m_BufferIdx) {
-            case 0:
-                Impl_ViewIter<Resolved_0<Components...>>::Exec(m_Registry, std::forward<Func>(func));
-                break;
-            case 1:
-                Impl_ViewIter<Resolved_1<Components...>>::Exec(m_Registry, std::forward<Func>(func));
-                break;
-            default:
-                VANTA_UNREACHABLE("Invalid buffer index; only two buffers are currently supported!");
-                break;
-            }
+            Impl_ViewIter<Resolved_t<Components...>>::Exec(m_Registry, std::forward<Func>(func));
         }
 
         /// <summary>
         /// Add a given component to an entity.
         /// </summary>
-        template<typename Component, typename... Args> requires !IsBuffered_v<Component>
-        Component& AddComponent(entt::entity entity, Args&&... args) {
-            return Impl_Emplace<Component>::Exec(m_Registry, entity, args...);
-        }
-
-        template<typename Component, typename... Args> requires IsBuffered_v<Component>
-        BufferedComponent<Component> AddComponent(entt::entity entity, Args&&... args) {
-            Impl_Emplace<BuffersOf_t<Component>>::Exec(m_Registry, entity, args...);
-            return GetComponent<Component>(entity);
+        template<typename Component, typename... Args>
+        decltype(auto) AddComponent(entt::entity entity, Args&&... args) {
+            return Impl_Emplace<Resolved_t<Component>>::Exec(m_Registry, entity, args...);
         }
 
         /// <summary>
         /// Add or replace a given component to an entity.
         /// </summary>
-        template<typename Component, typename... Args> requires !IsBuffered_v<Component>
-        Component& AddOrReplaceComponent(entt::entity entity, Args&&... args) {
-            return Impl_EmplaceOrReplace<Component>::Exec(m_Registry, entity, args...);
-        }
-
-        template<typename Component, typename... Args> requires IsBuffered_v<Component>
-        Component& AddOrReplaceComponent(entt::entity entity, Args&&... args) {
-            Impl_EmplaceOrReplace<BuffersOf_t<Component>>::Exec(m_Registry, entity, args...);
-            return GetComponent<Component>(entity);
+        template<typename Component, typename... Args>
+        decltype(auto) AddOrReplaceComponent(entt::entity entity, Args&&... args) {
+            return Impl_EmplaceOrReplace<Resolved_t<Component>>::Exec(m_Registry, entity, args...);
         }
 
         /// <summary>
         /// Remove a given component from an entity.
         /// </summary>
-        template<typename Component> requires !IsBuffered_v<Component>
+        template<typename Component>
         void RemoveComponent(entt::entity entity) {
-            Impl_Remove<Component>::Exec(m_Registry, entity);
-        }
-
-        template<typename Component> requires IsBuffered_v<Component>
-        void RemoveComponent(entt::entity entity) {
-            Impl_Remove<BuffersOf_t<Component>>::Exec(m_Registry, entity);
+            Impl_Remove<Resolved_t<Component>>::Exec(m_Registry, entity);
         }
 
         /// <summary>
@@ -320,7 +177,7 @@ namespace Vanta {
         /// </summary>
         template<typename... Components>
         bool HasComponent(entt::entity entity) const {
-            return Impl_AnyOf<Resolved_0<Components...>::type>::Exec(m_Registry, entity);
+            return Impl_AnyOf<Resolved_t<Components...>>::Exec(m_Registry, entity);
         }
 
         /// <summary>
@@ -335,7 +192,6 @@ namespace Vanta {
         friend struct BufferedRegistryBuilder;
 
         entt::registry m_Registry;
-        usize m_BufferIdx = 0;
 
         /// <summary>
         /// Get

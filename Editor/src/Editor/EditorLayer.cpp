@@ -332,7 +332,7 @@ namespace Vanta {
                     const glm::mat4& cameraView = camera->GetView();
 
                     // Entity transform
-                    auto tc = selectedEntity.GetComponent<TransformComponent>();
+                    auto& tc = selectedEntity.GetComponent<TransformComponent>();
                     glm::mat4 transform = tc.Get().GetTransform();
 
                     // Snapping
