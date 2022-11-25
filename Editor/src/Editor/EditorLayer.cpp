@@ -123,11 +123,11 @@ namespace Vanta {
                 {
                     glm::vec3 translation = tr.GetPosition() + glm::vec3(bc.Offset, 0.001f);
                     glm::vec3 scale = tr.GetScale() * glm::vec3(bc.Size * 2.0f, 1.0f);
-                
+
                     glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
                         * glm::rotate(glm::mat4(1.0f), tr.GetRotationRadians().z, glm::vec3(0.0f, 0.0f, 1.0f))
                         * glm::scale(glm::mat4(1.0f), scale);
-                
+
                     Renderer2D::DrawRect(transform, glm::vec4(0, 1, 0, 1));
                 });
 
@@ -316,7 +316,7 @@ namespace Vanta {
 
                 // Gizmos
                 Entity selectedEntity = m_ScenePanel.GetSelected();
-                if (selectedEntity && m_GizmoType != -1) {
+                if (m_State != State::Play && selectedEntity && m_GizmoType != -1) {
                     ImGuizmo::SetOrthographic(false);
                     ImGuizmo::SetDrawlist();
 
@@ -326,9 +326,10 @@ namespace Vanta {
                         m_ViewportBounds[1].x - m_ViewportBounds[0].x,
                         m_ViewportBounds[1].y - m_ViewportBounds[0].y);
 
-                    // Editor camera
-                    const glm::mat4& cameraProjection = m_EditorCamera.GetCamera().GetProjection();
-                    glm::mat4 cameraView = m_EditorCamera.GetCamera().GetView();
+                    // Get current camera
+                    Camera& camera = m_EditorCamera.GetCamera();
+                    const glm::mat4& cameraProjection = camera->GetProjection();
+                    const glm::mat4& cameraView = camera->GetView();
 
                     // Entity transform
                     auto tc = selectedEntity.GetComponent<TransformComponent>();
