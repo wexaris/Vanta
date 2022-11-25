@@ -63,7 +63,7 @@ set(${PROJECT_NAME}_SOURCE
     "src/Platform/Windows/PlatformUtils.cpp"
     "src/Platform/Windows/Window.cpp"
     "src/Platform/Windows/Input.cpp"
-)
+ "src/Vanta/Scene/BufferedRegistry.cpp")
 
 set(${${PROJECT_NAME}_PCH} "${CMAKE_CURRENT_SOURCE_DIR}/src/vantapch.hpp")
 
@@ -101,6 +101,8 @@ target_compile_options(${PROJECT_NAME} PRIVATE
 )
 
 target_link_options(${PROJECT_NAME} PUBLIC
+    $<$<CONFIG:DEBUG>:$<$<CXX_COMPILER_ID:MSVC>:
+        /ignore:4099>>
     $<$<CONFIG:RELEASE>:$<$<CXX_COMPILER_ID:MSVC>:
         /LTCG /ignore:4099>>
 )

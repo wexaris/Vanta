@@ -1,19 +1,13 @@
 cmake_minimum_required(VERSION 3.20)
-project(Vanta-Script VERSION 0.1.0 LANGUAGES CSharp)
-
-set(VANTA_SCRIPT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/Resources/Scripts" CACHE INTERNAL "")
+project(Sandbox-Script VERSION 0.1.0 LANGUAGES CSharp)
 
 set(${PROJECT_NAME}_SOURCE
-    "Source/Components.cs"
-    "Source/Entity.cs"
-    "Source/Input.cs"
-    "Source/Internal.cs"
-    "Source/KeyCodes.cs"
-    "Source/Log.cs"
-    "Source/Math.cs"
+    "Source/Player.cs"
 )
 
 add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCE})
+
+target_link_libraries(${PROJECT_NAME} Vanta-Script)
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DOTNET_TARGET_FRAMEWORK_VERSION "v4.6.1")
 

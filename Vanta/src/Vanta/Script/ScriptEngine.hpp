@@ -35,13 +35,15 @@ namespace Vanta {
     class ScriptClass {
     public:
         ScriptClass() = default;
-        ScriptClass(const std::string& namespaceName, const std::string& className);
+        ScriptClass(MonoImage* image, const std::string& namespaceName, const std::string& className);
 
         MonoObject* Instantiate() const;
         MonoMethod* GetMethod(const std::string& name, int paramCount) const;
         MonoObject* InvokeMethod(MonoObject* instance, MonoMethod* method, void** params = nullptr) const;
 
     private:
+        friend class ScriptEngine;
+
         MonoClass* m_Class = nullptr;
 
         std::string m_NamespaceName;
@@ -53,7 +55,8 @@ namespace Vanta {
         static void Init();
         static void Shutdown();
 
-        static void LoadAssembly(const Path& filepath);
+        static void LoadCoreAssembly(const Path& filepath);
+        static void LoadAppAssembly(const Path& filepath);
 
         static void RuntimeBegin(Scene* scene);
         static void RuntimeEnd();
@@ -73,7 +76,7 @@ namespace Vanta {
         static void InitMono();
         static void ShutdownMono();
 
-        static void InspectAssembly(MonoAssembly* assembly);
+        static void InspectAssemblyImage(MonoImage* image);
         static MonoObject* InstantiateClass(MonoClass* klass);
     };
 }

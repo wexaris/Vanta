@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.20)
 project(Sandbox)
 
+add_subdirectory(scripts)
+
 set(${PROJECT_NAME}_SOURCE
     "src/Sandbox.cpp"
 )
@@ -11,9 +13,11 @@ else()
     add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCE})
 endif()
 
-target_include_directories(${PROJECT_NAME} PUBLIC src)
-
 target_link_libraries(${PROJECT_NAME} PUBLIC Vanta)
+
+add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}-Script)
+
+target_include_directories(${PROJECT_NAME} PUBLIC src)
 
 target_compile_options(${PROJECT_NAME} PUBLIC
     #DEBUG

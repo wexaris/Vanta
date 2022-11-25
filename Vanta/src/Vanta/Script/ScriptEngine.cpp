@@ -53,6 +53,9 @@ namespace Vanta {
         MonoAssembly* CoreAssembly = nullptr;
         MonoImage* CoreAssemblyImage = nullptr;
 
+        MonoAssembly* AppAssembly = nullptr;
+        MonoImage* AppAssemblyImage = nullptr;
+
         ScriptClass EntityClass;
         std::unordered_map<std::string, Ref<ScriptClass>> EntityClasses;
 
@@ -63,12 +66,15 @@ namespace Vanta {
 
     void ScriptEngine::Init() {
         InitMono();
-        LoadAssembly(Engine::Get().ScriptDirectory() / "Vanta-Script.dll");
+
+        LoadCoreAssembly(Engine::Get().ScriptDirectory() / "Vanta-Script.dll");
+        s_Data.EntityClass = ScriptClass(s_Data.CoreAssemblyImage, "Vanta", "Entity");
+
+        LoadAppAssembly(Engine::Get().ScriptDirectory() / "Sandbox-Script.dll");
+        InspectAssemblyImage(s_Data.AppAssemblyImage);
 
         Interface::RegisterFunctions();
         Interface::RegisterComponents();
-
-        s_Data.EntityClass = ScriptClass("Vanta", "Entity");
     }
 
     void ScriptEngine::Shutdown() {
@@ -92,20 +98,21 @@ namespace Vanta {
         s_Data.RootDomain = nullptr;
     }
 
-    void ScriptEngine::LoadAssembly(const Path& filepath) {
+    void ScriptEngine::LoadCoreAssembly(const Path& filepath) {
         s_Data.CoreAssembly = detail::LoadMonoAssembly(filepath);
         s_Data.CoreAssemblyImage = mono_assembly_get_image(s_Data.CoreAssembly);
-        InspectAssembly(s_Data.CoreAssembly);
     }
 
-    void ScriptEngine::InspectAssembly(MonoAssembly* assembly) {
+    void ScriptEngine::LoadAppAssembly(const Path& filepath) {
+        s_Data.AppAssembly = detail::LoadMonoAssembly(filepath);
+        s_Data.AppAssemblyImage = mono_assembly_get_image(s_Data.AppAssembly);
+    }
+
+    void ScriptEngine::InspectAssemblyImage(MonoImage* image) {
         s_Data.EntityClasses.clear();
 
-        MonoImage* image = mono_assembly_get_image(assembly);
         const MonoTableInfo* typeDefs = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
         int32 typeCount = mono_table_info_get_rows(typeDefs);
-
-        MonoClass* entityClass = mono_class_from_name(s_Data.CoreAssemblyImage, "Vanta", "Entity");
 
         for (int32 i = 0; i < typeCount; i++) {
             uint32 cols[MONO_TYPEDEF_SIZE];
@@ -116,17 +123,17 @@ namespace Vanta {
 
             MonoClass* klass = mono_class_from_name(image, namespaceName, className);
 
-            if (klass == entityClass)
+            if (klass == s_Data.EntityClass.m_Class)
                 continue;
 
             // Save classes that derive our `Entity` class
-            bool isEntity = mono_class_is_subclass_of(klass, entityClass, false);
+            bool isEntity = mono_class_is_subclass_of(klass, s_Data.EntityClass.m_Class, false);
 
             if (isEntity) {
                 std::string fullName = (strlen(namespaceName) != 0) ?
                     FMT("{}.{}", namespaceName, className) : className;
 
-                s_Data.EntityClasses[fullName] = NewRef<ScriptClass>(namespaceName, className);
+                s_Data.EntityClasses[fullName] = NewRef<ScriptClass>(image, namespaceName, className);
             }
         }
     }
@@ -163,10 +170,10 @@ namespace Vanta {
         return s_Data.CoreAssemblyImage;
     }
 
-    ScriptClass::ScriptClass(const std::string& namespaceName, const std::string& className)
+    ScriptClass::ScriptClass(MonoImage* image, const std::string& namespaceName, const std::string& className)
         : m_NamespaceName(namespaceName), m_ClassName(className)
     {
-        m_Class = mono_class_from_name(s_Data.CoreAssemblyImage, namespaceName.c_str(), className.c_str());
+        m_Class = mono_class_from_name(image, namespaceName.c_str(), className.c_str());
         if (!m_Class)
             VANTA_CORE_CRITICAL("Failed to retrieve class from C# assembly: {}.{}", namespaceName, className);
     }
