@@ -204,7 +204,14 @@ namespace Vanta {
 
     void Scene::OnUpdateEditor(double delta, Camera* camera) {
         VANTA_PROFILE_FUNCTION();
-        m_Registry.SwapBuffersFwd();
+        // Swap via state forwarding.
+        // Index swapping causes the buffer state to drift,
+        // as the editor overwrites the next state without touching the current one.
+        // This makes draw calls flip-flop between two significantly different states,
+        // making the model teleport each frame.
+        // This shouldn't be a problem in Simulate/Play, since editor interaction isn't expected,
+        // and entity state is make consistent by scripts or physics.
+        m_Registry.SwapBuffersFwd(); 
         OnRender(delta, camera);
     }
 
@@ -215,7 +222,6 @@ namespace Vanta {
             script.Instance->OnUpdate(delta);
         });
 
-        // Instantiate C# scripts
         View<ScriptComponent>([&](entt::entity, ScriptComponent& script) {
             script.Instance->OnUpdate((float)delta);
         });

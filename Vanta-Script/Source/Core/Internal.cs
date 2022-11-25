@@ -23,6 +23,9 @@ namespace Vanta {
         internal extern static bool Input_IsKeyDown(KeyCode key);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static bool Input_IsMouseDown(MouseButton button);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static bool Entity_HasComponent(UUID entityID, Type type);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]

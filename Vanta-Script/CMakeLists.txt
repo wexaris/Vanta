@@ -4,13 +4,14 @@ project(Vanta-Script VERSION 0.1.0 LANGUAGES CSharp)
 set(VANTA_SCRIPT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/Resources/Scripts" CACHE INTERNAL "")
 
 set(${PROJECT_NAME}_SOURCE
-    "Source/Components.cs"
-    "Source/Entity.cs"
-    "Source/Input.cs"
-    "Source/Internal.cs"
-    "Source/KeyCodes.cs"
-    "Source/Log.cs"
-    "Source/Math.cs"
+    "Source/Core/Internal.cs"
+    "Source/Core/Log.cs"
+    "Source/Input/Input.cs"
+    "Source/Input/KeyCode.cs"
+    "Source/Input/MouseButton.cs"
+    "Source/Math/Math.cs"
+    "Source/Scene/Components.cs"
+    "Source/Scene/Entity.cs"
 )
 
 add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCE})

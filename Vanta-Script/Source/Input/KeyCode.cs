@@ -133,5 +133,5 @@ namespace Vanta {
         RightAlt = 346,
         RightSuper = 347,
         Menu = 348
-    };
+    }
 }

@@ -73,12 +73,16 @@ namespace Vanta {
         BufferedRegistry() = default;
 
         /// <summary>
-        /// Swap to the next buffer of any buffered components.
+        /// Swap buffers by incrementing the current buffer index.
         /// </summary>
         void SwapBuffers() {
             SetBufferIndex((GetBufferIndex() + 1) % SIZE);
         }
 
+        /// <summary>
+        /// Swap buffers by copying the next one's data to the current one.
+        /// Slower than `SwapBuffers()` but not prone to state separation via editor interactions.
+        /// </summary>
         void SwapBuffersFwd() {
             ((View<ToBuffer>([](auto, Buffered<ToBuffer>& buffer) {
                 buffer.Get() = buffer.Set();

@@ -48,6 +48,10 @@ namespace Vanta {
         return Input::IsKeyPressed(key);
     }
 
+    static bool Input_IsMouseDown(MouseCode button) {
+        return Input::IsMouseButtonPressed(button);
+    }
+
     static bool Entity_HasComponent(UUID id, MonoReflectionType* type) {
         Scene* scene = ScriptEngine::GetContext();
         VANTA_CORE_ASSERT(scene, "Script engine context missing!");
@@ -100,6 +104,7 @@ namespace Vanta {
         VANTA_ADD_INTERNAL_CALL(Log_Critical);
 
         VANTA_ADD_INTERNAL_CALL(Input_IsKeyDown);
+        VANTA_ADD_INTERNAL_CALL(Input_IsMouseDown);
 
         VANTA_ADD_INTERNAL_CALL(Entity_HasComponent);
 
