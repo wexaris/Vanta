@@ -63,7 +63,7 @@ set(${PROJECT_NAME}_SOURCE
     "src/Platform/Windows/PlatformUtils.cpp"
     "src/Platform/Windows/Window.cpp"
     "src/Platform/Windows/Input.cpp"
- "src/Vanta/Scene/BufferedRegistry.cpp")
+ "src/Vanta/Scene/BufferedRegistry.cpp" "src/Vanta/Scene/Components.cpp")
 
 set(${${PROJECT_NAME}_PCH} "${CMAKE_CURRENT_SOURCE_DIR}/src/vantapch.hpp")
 

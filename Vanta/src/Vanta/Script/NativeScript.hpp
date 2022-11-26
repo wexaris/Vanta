@@ -19,6 +19,7 @@ namespace Vanta {
 
     private:
         friend class Scene;
+        friend struct NativeScriptComponent;
 
         Entity m_Entity;
     };

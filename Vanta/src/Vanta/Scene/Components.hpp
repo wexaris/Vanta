@@ -38,6 +38,8 @@ namespace Vanta {
 
     /// ///////////////// COMPONENTS //////////////////////////////////////////
 
+    class Scene;
+
     struct IDComponent {
         UUID ID;
         std::string Name;
@@ -110,7 +112,7 @@ namespace Vanta {
 
         glm::vec3 Position = { 0.f, 0.f, 0.f }; // Position
         glm::vec3 Rotation = { 0.f, 0.f, 0.f }; // Rotation in radians
-        glm::vec3 Scale = { 1.f, 1.f, 1.f }; // Scale
+        glm::vec3 Scale = { 1.f, 1.f, 1.f };    // Scale
 
         bool DirtyTransform = false;
 
@@ -205,6 +207,9 @@ namespace Vanta {
         // Script runtime instance
         Ref<ScriptInstance> Instance = nullptr;
 
+        void Create(entt::entity e, Scene* scene);
+        void Destroy();
+
         ScriptComponent() = default;
         ScriptComponent(const ScriptComponent&) = default;
     };
@@ -221,8 +226,8 @@ namespace Vanta {
         NativeScriptComponent() = default;
         NativeScriptComponent(const NativeScriptComponent&) = default;
 
-        void Create()  { Instance = CreateInstance(); }
-        void Destroy() { DestroyInstance(Instance); Instance = nullptr; }
+        void Create(entt::entity e, Scene* scene);
+        void Destroy();
 
         template<typename T> requires IsBase_v<NativeScript, T>
         void Bind() {

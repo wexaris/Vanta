@@ -328,8 +328,8 @@ namespace Vanta {
 
                     // Get current camera
                     Camera& camera = m_EditorCamera.GetCamera();
-                    const glm::mat4& cameraProjection = camera->GetProjection();
-                    const glm::mat4& cameraView = camera->GetView();
+                    const glm::mat4& cameraProjection = camera.GetProjection();
+                    const glm::mat4& cameraView = camera.GetView();
 
                     // Entity transform
                     auto& tc = selectedEntity.GetComponent<TransformComponent>();

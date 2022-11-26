@@ -305,6 +305,21 @@ namespace Vanta {
 
                 if (!classExists)
                     ImGui::PopStyleColor();
+
+                if (component.Instance) {
+                    const auto& fields = component.Instance->GetClass()->GetFields();
+                    for (const auto& [name, field] : fields) {
+                        switch (field.Type) {
+                        case FieldType::Float: {
+                            float data = component.Instance->GetFieldValue<float>(name);
+                            if (ImGui::DragFloat(name.c_str(), &data)) {
+                                component.Instance->SetFieldValue(name, data);
+                            }
+                        }
+                        default:;
+                        }
+                    }
+                }
             });
 
             DrawComponent<SpriteComponent>("Sprite", entity, [](SpriteComponent& component) {

@@ -2,9 +2,9 @@
 #include "Vanta/Core/Engine.hpp"
 #include "Vanta/Render/Renderer2D.hpp"
 #include "Vanta/Scene/Entity.hpp"
-#include "Vanta/Scene/NativeScript.hpp"
 #include "Vanta/Scene/Scene.hpp"
 #include "Vanta/Script/ScriptEngine.hpp"
+#include "Vanta/Script/NativeScript.hpp"
 
 #include <box2d/b2_body.h>
 #include <box2d/b2_world.h>
@@ -92,18 +92,17 @@ namespace Vanta {
         ScriptEngine::RuntimeBegin(this);
 
         // Instantiate native scripts
-        ParallelView<NativeScriptComponent>(m_Barrier, m_Registry, [&](entt::entity e, NativeScriptComponent& script) {
-            script.Create();
-            script.Instance->m_Entity = Entity(e, this);
+        ParallelView<NativeScriptComponent>(m_Barrier, m_Registry,
+            [&](entt::entity e, NativeScriptComponent& script)
+        {
+            script.Create(e, this);
             script.Instance->OnCreate();
         });
 
         // Instantiate C# scripts
         View<ScriptComponent>([&](entt::entity e, ScriptComponent& script) {
-            if (ScriptEngine::EntityClassExists(script.ClassName)) {
-                script.Instance = ScriptEngine::CreateInstance(script.ClassName, Entity(e, this));
-                script.Instance->OnCreate();
-            }
+            script.Create(e, this);
+            script.Instance->OnCreate();
         });
     }
 
@@ -111,11 +110,13 @@ namespace Vanta {
         // Destroy C# scripts
         View<ScriptComponent>([&](entt::entity, ScriptComponent& script) {
             script.Instance->OnDestroy();
-            script.Instance = nullptr;
+            script.Destroy();
         });
 
         // Destroy native scripts
-        ParallelView<NativeScriptComponent>(m_Barrier, m_Registry, [](entt::entity, NativeScriptComponent& script) {
+        ParallelView<NativeScriptComponent>(m_Barrier, m_Registry,
+            [](entt::entity, NativeScriptComponent& script)
+        {
             script.Instance->OnDestroy();
             script.Destroy();
         });
@@ -218,7 +219,9 @@ namespace Vanta {
     void Scene::OnScriptUpdate(double delta) {
         VANTA_PROFILE_FUNCTION();
 
-        ParallelView<NativeScriptComponent>(m_Barrier, m_Registry, [=](entt::entity, NativeScriptComponent& script) {
+        ParallelView<NativeScriptComponent>(m_Barrier, m_Registry,
+            [=](entt::entity, NativeScriptComponent& script)
+        {
             script.Instance->OnUpdate(delta);
         });
 
@@ -234,9 +237,7 @@ namespace Vanta {
         const uint positionIterations = 2;
         m_PhysicsWorld->Step((float)delta, velocityIterations, positionIterations);
 
-        m_Registry.View<TransformComponent, Rigidbody2DComponent>(
-            [&](entt::entity, TransformComponent& tr, Rigidbody2DComponent& rb)
-        {
+        View<TransformComponent, Rigidbody2DComponent>([&](entt::entity, TransformComponent& tr, Rigidbody2DComponent& rb) {
             b2Body* body = (b2Body*)rb.RuntimeBody;
             auto& position = body->GetPosition();
             float angle = body->GetAngle();
@@ -259,17 +260,15 @@ namespace Vanta {
         VANTA_PROFILE_RENDER_FUNCTION();
         if (camera) {
             Renderer2D::SceneBegin(camera);
-            LinearView<TransformComponent, CircleRendererComponent>(m_Registry,
-                [&](entt::entity entity, TransformComponent& tr, CircleRendererComponent& cr)
-            {
+
+            View<TransformComponent, CircleRendererComponent>([&](entt::entity entity, TransformComponent& tr, CircleRendererComponent& cr) {
                 Renderer2D::DrawCircle(tr.GetTransform(), cr.Color, cr.Thickness, cr.Fade, (uint32)entity);
             });
 
-            LinearView<TransformComponent, SpriteComponent>(m_Registry,
-                [&](entt::entity entity, TransformComponent& tr, SpriteComponent& sp)
-            {
+            View<TransformComponent, SpriteComponent>([&](entt::entity entity, TransformComponent& tr, SpriteComponent& sp) {
                 Renderer2D::DrawSprite(tr.GetTransform(), sp, (uint32)entity);
             });
+
             Renderer2D::SceneEnd();
         }
     }

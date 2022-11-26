@@ -6,6 +6,7 @@
 
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
+#include <mono/metadata/tabledefs.h>
 
 namespace Vanta {
 
@@ -29,7 +30,7 @@ namespace Vanta {
             return assembly;
         }
 
-        void PrintAssemblyTypes(MonoAssembly* assembly) {
+        static void PrintAssemblyTypes(MonoAssembly* assembly) {
             MonoImage* image = mono_assembly_get_image(assembly);
             const MonoTableInfo* typeDefs = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
             int32 numTypes = mono_table_info_get_rows(typeDefs);
@@ -43,6 +44,69 @@ namespace Vanta {
 
                 VANTA_CORE_INFO("{}.{}", nameSpace, name);
             }
+        }
+
+        static const char* FieldTypeToString(FieldType type) {
+            switch (type) {
+            case FieldType::Bool: return "Bool";
+            case FieldType::Char: return "Char";
+
+            case FieldType::Int8:  return "Int8";
+            case FieldType::Int16: return "Int16";
+            case FieldType::Int32: return "Int32";
+            case FieldType::Int64: return "Int64";
+
+            case FieldType::UInt8:  return "UInt8";
+            case FieldType::UInt16: return "UInt16";
+            case FieldType::UInt32: return "UInt32";
+            case FieldType::UInt64: return "UInt64";
+
+            case FieldType::Float:  return "Float";
+            case FieldType::Double: return "Double";
+
+            case FieldType::Vector2: return "Vector2";
+            case FieldType::Vector3: return "Vector3";
+            case FieldType::Vector4: return "Vector4";
+
+            case FieldType::Entity: return "Entity";
+
+            default:
+                VANTA_UNREACHABLE("Invalid script field type!");
+                return "<invalid>";
+            }
+        }
+
+        static std::unordered_map<std::string, FieldType> s_MonoFieldTypeMap = {
+            { "System.Boolean", FieldType::Bool },
+            { "System.Char", FieldType::Char },
+
+            { "System.Byte", FieldType::Int8 },
+            { "System.Int16", FieldType::Int16 },
+            { "System.Int32", FieldType::Int32 },
+            { "System.Int64", FieldType::Int64 },
+
+            { "System.UByte", FieldType::UInt8 },
+            { "System.UInt16", FieldType::UInt16 },
+            { "System.UInt32", FieldType::UInt32 },
+            { "System.UInt64", FieldType::UInt64 },
+
+            { "System.Single", FieldType::Float },
+            { "System.Double", FieldType::Double },
+
+            { "Vanta.Vector2", FieldType::Vector2 },
+            { "Vanta.Vector3", FieldType::Vector3 },
+            { "Vanta.Vector4", FieldType::Vector4 },
+
+            { "Vanta.Entity", FieldType::Entity },
+        };
+
+        static FieldType MonoTypeToFieldType(MonoType* type) {
+            std::string name = mono_type_get_name(type);
+            auto it = s_MonoFieldTypeMap.find(name);
+            if (it != s_MonoFieldTypeMap.end())
+                return it->second;
+            VANTA_CORE_ERROR("Invalid script field type: {}", name);
+            return FieldType::None;
         }
     }
 
@@ -123,17 +187,31 @@ namespace Vanta {
 
             MonoClass* klass = mono_class_from_name(image, namespaceName, className);
 
-            if (klass == s_Data.EntityClass.m_Class)
+            if (klass == s_Data.EntityClass)
+                continue;
+
+            bool isEntity = mono_class_is_subclass_of(klass, (MonoClass*)s_Data.EntityClass, false);
+            if (!isEntity)
                 continue;
 
             // Save classes that derive our `Entity` class
-            bool isEntity = mono_class_is_subclass_of(klass, s_Data.EntityClass.m_Class, false);
+            std::string fullName = (strlen(namespaceName) != 0) ? FMT("{}.{}", namespaceName, className) : className;
+            Ref<ScriptClass> scriptClass = NewRef<ScriptClass>(image, namespaceName, className);
+            s_Data.EntityClasses[fullName] = scriptClass;
 
-            if (isEntity) {
-                std::string fullName = (strlen(namespaceName) != 0) ?
-                    FMT("{}.{}", namespaceName, className) : className;
+            // Save public fields
+            void* fieldIterator = nullptr;
+            while (MonoClassField* field = mono_class_get_fields(klass, &fieldIterator)) {
+                auto flags = mono_field_get_flags(field);
 
-                s_Data.EntityClasses[fullName] = NewRef<ScriptClass>(image, namespaceName, className);
+                bool isPublic = flags & FIELD_ATTRIBUTE_PUBLIC;
+                if (!isPublic)
+                    continue;
+
+                const char* name = mono_field_get_name(field);
+                FieldType type = detail::MonoTypeToFieldType(mono_field_get_type(field));
+
+                scriptClass->m_Fields[name] = { name, type, field };
             }
         }
     }
@@ -231,5 +309,31 @@ namespace Vanta {
         if (m_OnDestroyMethod) {
             m_ScriptClass->InvokeMethod(m_Instance, m_OnDestroyMethod);
         }
+    }
+
+    bool ScriptInstance::GetFieldValue_Impl(const std::string& name, void* buffer) {
+        const auto& fields = m_ScriptClass->GetFields();
+        auto it = fields.find(name);
+        if (it == fields.end()) {
+            VANTA_CORE_ASSERT(false, "Script class field not found!");
+            return false;
+        }
+        
+        const ScriptClass::Field& field = it->second;
+        mono_field_get_value(m_Instance, field.MonoField, buffer);
+        return true;
+    }
+
+    bool ScriptInstance::SetFieldValue_Impl(const std::string& name, const void* value) {
+        const auto& fields = m_ScriptClass->GetFields();
+        auto it = fields.find(name);
+        if (it == fields.end()) {
+            VANTA_CORE_ASSERT(false, "Script class field not found!");
+            return false;
+        }
+
+        const ScriptClass::Field& field = it->second;
+        mono_field_set_value(m_Instance, field.MonoField, const_cast<void*>(value));
+        return true;
     }
 }

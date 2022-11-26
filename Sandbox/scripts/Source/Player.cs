@@ -8,6 +8,8 @@ namespace Sandbox {
         private TransformComponent m_Transform;
         private Rigidbody2DComponent m_Rigidbody;
 
+        public float Speed = 5.0f;
+
         void OnCreate() {
             Log.Info("Player.OnCreate");
 
@@ -16,21 +18,19 @@ namespace Sandbox {
         }
 
         void OnUpdate(float delta) {
-
-            const float speed = 0.01f;
             Vector2 velocity = Vector2.Zero;
 
             if (Input.IsKeyDown(KeyCode.W))
-                velocity.Y += speed;
+                velocity.Y += Speed;
             if (Input.IsKeyDown(KeyCode.S))
-                velocity.Y -= speed;
+                velocity.Y -= Speed;
 
             if (Input.IsKeyDown(KeyCode.A))
-                velocity.X -= speed;
+                velocity.X -= Speed;
             if (Input.IsKeyDown(KeyCode.D))
-                velocity.X += speed;
+                velocity.X += Speed;
 
-            m_Rigidbody.ApplyLinearImpulse(velocity);
+            m_Rigidbody.ApplyLinearImpulse(velocity / 50.0f);
 
             //Vector3 position = Position;
             //position += velocity * delta;
