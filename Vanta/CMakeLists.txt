@@ -44,10 +44,14 @@ set(${PROJECT_NAME}_SOURCE
     "src/Vanta/Render/Texture.cpp"
     "src/Vanta/Render/UniformBuffer.cpp"
     "src/Vanta/Render/VertexArray.cpp"
-    "src/Vanta/Scene/SceneCamera.cpp"
-    "src/Vanta/Scene/Serializer.cpp"
+    "src/Vanta/Scene/BufferedRegistry.cpp"
+    "src/Vanta/Scene/Components.cpp"
     "src/Vanta/Scene/Entity.cpp"
     "src/Vanta/Scene/Scene.cpp"
+    "src/Vanta/Scene/SceneCamera.cpp"
+    "src/Vanta/Scene/Serializer.cpp"
+    "src/Vanta/Script/Class.cpp"
+    "src/Vanta/Script/Field.cpp"
     "src/Vanta/Script/Interface.cpp"
     "src/Vanta/Script/ScriptEngine.cpp"
     "src/Vanta/Util/Math.cpp"
@@ -60,10 +64,10 @@ set(${PROJECT_NAME}_SOURCE
     "src/Platform/OpenGL/Texture.cpp"
     "src/Platform/OpenGL/UniformBuffer.cpp"
     "src/Platform/OpenGL/VertexArray.cpp"
+    "src/Platform/Windows/Input.cpp"
     "src/Platform/Windows/PlatformUtils.cpp"
     "src/Platform/Windows/Window.cpp"
-    "src/Platform/Windows/Input.cpp"
- "src/Vanta/Scene/BufferedRegistry.cpp" "src/Vanta/Scene/Components.cpp")
+)
 
 set(${${PROJECT_NAME}_PCH} "${CMAKE_CURRENT_SOURCE_DIR}/src/vantapch.hpp")
 
@@ -76,7 +80,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/s
 
 target_link_libraries(${PROJECT_NAME}
     PUBLIC Boost::boost Boost::fiber Boost::thread EnTT::EnTT fmt::fmt glm::glm
-        imgui::imgui imguizmo::imguizmo spdlog::spdlog 
+        imgui::imgui imguizmo::imguizmo spdlog::spdlog
     PRIVATE box2d::box2d glad::glad glfw mono spirv-cross-core spirv-cross-glsl
         Vulkan::Vulkan Vulkan::glslang Vulkan::shaderc_combined Vulkan::SPIRV-Tools yaml-cpp)
 

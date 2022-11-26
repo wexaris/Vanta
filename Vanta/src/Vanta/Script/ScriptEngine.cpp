@@ -46,66 +46,36 @@ namespace Vanta {
             }
         }
 
-        static const char* FieldTypeToString(FieldType type) {
-            switch (type) {
-            case FieldType::Bool: return "Bool";
-            case FieldType::Char: return "Char";
+        static std::unordered_map<std::string, ScriptFieldType> s_MonoFieldTypeMap = {
+            { "System.Boolean", ScriptFieldType::Bool },
+            { "System.Char", ScriptFieldType::Char },
 
-            case FieldType::Int8:  return "Int8";
-            case FieldType::Int16: return "Int16";
-            case FieldType::Int32: return "Int32";
-            case FieldType::Int64: return "Int64";
+            { "System.Byte", ScriptFieldType::Int8 },
+            { "System.Int16", ScriptFieldType::Int16 },
+            { "System.Int32", ScriptFieldType::Int32 },
+            { "System.Int64", ScriptFieldType::Int64 },
 
-            case FieldType::UInt8:  return "UInt8";
-            case FieldType::UInt16: return "UInt16";
-            case FieldType::UInt32: return "UInt32";
-            case FieldType::UInt64: return "UInt64";
+            { "System.UByte", ScriptFieldType::UInt8 },
+            { "System.UInt16", ScriptFieldType::UInt16 },
+            { "System.UInt32", ScriptFieldType::UInt32 },
+            { "System.UInt64", ScriptFieldType::UInt64 },
 
-            case FieldType::Float:  return "Float";
-            case FieldType::Double: return "Double";
+            { "System.Single", ScriptFieldType::Float },
+            { "System.Double", ScriptFieldType::Double },
 
-            case FieldType::Vector2: return "Vector2";
-            case FieldType::Vector3: return "Vector3";
-            case FieldType::Vector4: return "Vector4";
+            { "Vanta.Vector2", ScriptFieldType::Vector2 },
+            { "Vanta.Vector3", ScriptFieldType::Vector3 },
+            { "Vanta.Vector4", ScriptFieldType::Vector4 },
 
-            case FieldType::Entity: return "Entity";
-
-            default:
-                VANTA_UNREACHABLE("Invalid script field type!");
-                return "<invalid>";
-            }
-        }
-
-        static std::unordered_map<std::string, FieldType> s_MonoFieldTypeMap = {
-            { "System.Boolean", FieldType::Bool },
-            { "System.Char", FieldType::Char },
-
-            { "System.Byte", FieldType::Int8 },
-            { "System.Int16", FieldType::Int16 },
-            { "System.Int32", FieldType::Int32 },
-            { "System.Int64", FieldType::Int64 },
-
-            { "System.UByte", FieldType::UInt8 },
-            { "System.UInt16", FieldType::UInt16 },
-            { "System.UInt32", FieldType::UInt32 },
-            { "System.UInt64", FieldType::UInt64 },
-
-            { "System.Single", FieldType::Float },
-            { "System.Double", FieldType::Double },
-
-            { "Vanta.Vector2", FieldType::Vector2 },
-            { "Vanta.Vector3", FieldType::Vector3 },
-            { "Vanta.Vector4", FieldType::Vector4 },
-
-            { "Vanta.Entity", FieldType::Entity },
+            { "Vanta.Entity", ScriptFieldType::Entity },
         };
 
-        static FieldType MonoTypeToFieldType(MonoType* type) {
+        static ScriptFieldType MonoTypeToFieldType(MonoType* type) {
             std::string name = mono_type_get_name(type);
             auto it = s_MonoFieldTypeMap.find(name);
             if (it == s_MonoFieldTypeMap.end()) {
                 VANTA_CORE_ERROR("Invalid script field type: {}", name);
-                return FieldType::None;
+                return ScriptFieldType::None;
             }
             return it->second;
         }
@@ -214,7 +184,7 @@ namespace Vanta {
                     continue;
 
                 const char* name = mono_field_get_name(field);
-                FieldType type = detail::MonoTypeToFieldType(mono_field_get_type(field));
+                ScriptFieldType type = detail::MonoTypeToFieldType(mono_field_get_type(field));
 
                 scriptClass->m_Fields[name] = { name, type, field };
             }
@@ -247,9 +217,17 @@ namespace Vanta {
         return s_Data.EntityClasses.contains(fullName);
     }
 
-    Ref<ScriptClass>& ScriptEngine::GetClass(const std::string& fullName) {
+    Ref<ScriptClass> ScriptEngine::GetClass(const std::string& fullName) {
         VANTA_CORE_ASSERT(ClassExists(fullName), "Invalid class!");
         return s_Data.EntityClasses[fullName];
+    }
+
+    Ref<ScriptClass> ScriptEngine::TryGetClass(const std::string& fullName) {
+        return s_Data.EntityClasses[fullName];
+    }
+
+    const ScriptClass& ScriptEngine::GetEntityClass() {
+        return s_Data.EntityClass;
     }
 
     Scene* ScriptEngine::GetContext() {
@@ -265,94 +243,8 @@ namespace Vanta {
         return s_Data.EntityFieldInstances[entity.GetUUID()];
     }
 
-    ScriptClass::ScriptClass(MonoImage* image, const std::string& namespaceName, const std::string& className)
-        : m_NamespaceName(namespaceName), m_ClassName(className)
-    {
-        m_Class = mono_class_from_name(image, namespaceName.c_str(), className.c_str());
-        if (!m_Class)
-            VANTA_CORE_CRITICAL("Failed to retrieve class from C# assembly: {}.{}", namespaceName, className);
-    }
-
-    MonoObject* ScriptClass::Instantiate() const {
-        MonoObject* object = mono_object_new(s_Data.AppDomain, m_Class);
-        mono_runtime_object_init(object);
-        return object;
-    }
-
-    MonoMethod* ScriptClass::GetMethod(const std::string& name, int paramCount) const {
-        MonoMethod* method = mono_class_get_method_from_name(m_Class, name.c_str(), paramCount);
-        if (!method)
-            VANTA_CORE_CRITICAL("Failed to retrieve class method: {}({})", name, paramCount);
-
-        return method;
-    }
-
-    MonoObject* ScriptClass::InvokeMethod(MonoObject* instance, MonoMethod* method, void** params) const {
-        VANTA_CORE_ASSERT(instance, "Invalid script class instance!");
-        VANTA_CORE_ASSERT(method, "Invalid script class method!");
-        return mono_runtime_invoke(method, instance, params, nullptr);
-    }
-
-    ScriptInstance::ScriptInstance(Ref<ScriptClass> scriptClass, Entity entity)
-        : m_ScriptClass(scriptClass)
-    {
-        m_Instance = m_ScriptClass->Instantiate();
-
-        m_Constructor = s_Data.EntityClass.GetMethod(".ctor", 1);
-        VANTA_CORE_ASSERT(m_Constructor, "Script class missing valid constructor!");
-
-        m_OnCreateMethod = m_ScriptClass->GetMethod("OnCreate", 0);
-        m_OnUpdateMethod = m_ScriptClass->GetMethod("OnUpdate", 1);
-        m_OnDestroyMethod = m_ScriptClass->GetMethod("OnDestroy", 0);
-
-        // Call constructor with entity ID
-        UUID entityID = entity.GetUUID();
-        void* param = &entityID;
-        m_ScriptClass->InvokeMethod(m_Instance, m_Constructor, &param);
-    }
-
-    void ScriptInstance::OnCreate() {
-        if (m_OnCreateMethod) {
-            m_ScriptClass->InvokeMethod(m_Instance, m_OnCreateMethod);
-        }
-    }
-
-    void ScriptInstance::OnUpdate(float delta) {
-        if (m_OnUpdateMethod) {
-            void* param = &delta;
-            m_ScriptClass->InvokeMethod(m_Instance, m_OnUpdateMethod, &param);
-        }
-    }
-
-    void ScriptInstance::OnDestroy() {
-        if (m_OnDestroyMethod) {
-            m_ScriptClass->InvokeMethod(m_Instance, m_OnDestroyMethod);
-        }
-    }
-
-    bool ScriptInstance::GetFieldValue_Impl(const std::string& name, void* buffer) {
-        const auto& fields = m_ScriptClass->GetFields();
-        auto it = fields.find(name);
-        if (it == fields.end()) {
-            VANTA_CORE_ASSERT(false, "Script class field not found!");
-            return false;
-        }
-        
-        const ScriptField& field = it->second;
-        mono_field_get_value(m_Instance, field.MonoField, buffer);
-        return true;
-    }
-
-    bool ScriptInstance::SetFieldValue_Impl(const std::string& name, const void* value) {
-        const auto& fields = m_ScriptClass->GetFields();
-        auto it = fields.find(name);
-        if (it == fields.end()) {
-            VANTA_CORE_ASSERT(false, "Script class field not found!");
-            return false;
-        }
-
-        const ScriptField& field = it->second;
-        mono_field_set_value(m_Instance, field.MonoField, const_cast<void*>(value));
-        return true;
+    MonoObject* ScriptEngine::CreateObject(MonoClass* klass) {
+        VANTA_CORE_ASSERT(klass, "Invalid class!");
+        return mono_object_new(s_Data.AppDomain, klass);
     }
 }

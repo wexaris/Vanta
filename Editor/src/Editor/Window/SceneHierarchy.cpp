@@ -311,19 +311,19 @@ namespace Vanta {
                     const auto& fields = component.Instance->GetClass()->GetFields();
                     for (const auto& [name, field] : fields) {
                         switch (field.Type) {
-                        case FieldType::Float: {
+                        case ScriptFieldType::Float: {
                             float data = component.Instance->GetFieldValue<float>(name);
                             if (ImGui::DragFloat(name.c_str(), &data)) {
                                 component.Instance->SetFieldValue(name, data);
                             }
                         }
-                        default:;
+                        default: break;
                         }
                     }
                 }
                 // Editor field data
                 else if (classExists) {
-                    auto& klass = ScriptEngine::GetClass(component.ClassName);
+                    Ref<ScriptClass> klass = ScriptEngine::GetClass(component.ClassName);
                     auto& instances = ScriptEngine::GetFieldInstances(entity);
                     
                     // Loop though every class field and check
@@ -336,7 +336,7 @@ namespace Vanta {
                             auto& instance = it->second;
 
                             switch (field.Type) {
-                            case FieldType::Float: {
+                            case ScriptFieldType::Float: {
                                 float data = instance->GetFieldValue<float>();
                                 if (ImGui::DragFloat(name.c_str(), &data)) {
                                     instance->SetFieldValue(data);
@@ -348,7 +348,7 @@ namespace Vanta {
                         // Create new field instance
                         else {
                             switch (field.Type) {
-                            case FieldType::Float: {
+                            case ScriptFieldType::Float: {
                                 float data = 0.0f;
                                 if (ImGui::DragFloat(name.c_str(), &data)) {
                                     instances[name] = NewBox<ScriptFieldBuffer<float>>(field, data);

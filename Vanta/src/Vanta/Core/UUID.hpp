@@ -8,7 +8,7 @@ namespace Vanta {
         UUID(uint64 uuid);
         UUID(const UUID&) = default;
 
-        operator uint64_t() const { return m_UUID; }
+        operator uint64() const { return m_UUID; }
 
     private:
         uint64 m_UUID;

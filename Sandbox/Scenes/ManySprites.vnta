@@ -1,0 +1,1468 @@
+Scene: Unnamed
+ActiveCamera: 16495614365407630898
+Entities:
+  - Entity: [Camera, 16495614365407630898]
+    TransformComponent:
+      Position: [0, 0, 10]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 1
+        PerspectiveFOV: 45
+        PerspectiveNear: 0.100000001
+        PerspectiveFar: 1000
+        OrthographicSize: 15
+        OrthographicNear: -1
+        OrthographicFar: 100
+      FixedAspectRatio: false
+  - Entity: [Player, 18271338724100718183]
+    TransformComponent:
+      Position: [0, 1.01455295, 0]
+      Rotation: [0, -0, 0]
+      Scale: [0.5, 1, 1]
+    ScriptComponent:
+      Class: Sandbox.Player
+      Fields:
+        - Name: Speed
+          Type: Float
+          Value: 6
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [0.731384456, 0.809073091, 0.857142866, 1]
+    Rigidbody2DComponent:
+      BodyType: 1
+      FixedRotation: false
+    BoxCollider2DComponent:
+      Size: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 1
+      Friction: 0.400000006
+      Restitution: 0.300000012
+      RestitutionThreshold: 0.5
+  - Entity: [Floor, 12724003432013002180]
+    TransformComponent:
+      Position: [0, -3, 0]
+      Rotation: [0, -0, -4.07020998]
+      Scale: [9.99999142, 0.5, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [0.891891897, 0.889990568, 0.399457365, 1]
+    Rigidbody2DComponent:
+      BodyType: 0
+      FixedRotation: false
+    BoxCollider2DComponent:
+      Size: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 1
+      Friction: 0.400000006
+      Restitution: 0.300000012
+      RestitutionThreshold: 0.5
+  - Entity: [Entity, 12586793383901508534]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 4950862792069491187]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 17864683137122968930]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 11919230984580477157]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 16330620119768259663]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 16807056559973324883]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 12401822137244690508]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 6116636274343247631]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 8679092471604918877]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 12404252070705540417]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 17507962805815172833]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 14763324066914857502]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 17940124085026363031]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 16409143032549295191]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 2354552776288468700]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 16824653310179346770]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 3747709709609935667]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 17256629185642307710]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 3379962331640756987]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 2474919440463718460]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 3747265544113222128]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 18330521976301815042]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 2106712657874478841]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 11417226396045849624]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 8557796234048262908]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 8166778732124042620]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 14331840820660776844]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 8210789187114128654]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 12942256775235012924]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 10786835580471949858]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 3502720914594103133]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 4190077959263408343]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 14402260015613935026]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 7017157362934069611]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 4041602471524272904]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 5192128433538340125]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 8635335534566137720]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 18047441754592285690]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 6710411947369961385]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 14288785697242633674]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 8648429079663376281]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 16083390611369604780]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 1843490815111754806]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 5546089118305707101]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 398570787479143132]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 5536160419798612882]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 265357149466531255]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 9400300820497535790]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 11390184856611237267]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 13035657287670515537]
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 16863426017364983939]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 8814771541007387838]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 3281002986962343299]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 8470208353045305628]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 13381487809602283137]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 6339619293285853551]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 5424048863003859163]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 17620771719645695901]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 4826711385344948148]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 12075773626570236512]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 14597113897408367068]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 15729191927629982981]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 5828296572330847314]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 355905461367560594]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 3604201582909211114]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 16287097896607998552]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 16871163813400888357]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 4584395312165214728]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 1543469386163048136]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 4487536979690970300]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 17392564708290280257]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 3009038013179661704]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 3668595885940883194]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 1604788787624635318]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 9480339811056615074]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 6445730844407933799]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 6910259877768446083]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 14545884491894942946]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 5793031895210166273]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 1100303693321929418]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 17204967158942871555]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 13025717611486157265]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 8531558246104993876]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 13059092394475932788]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 1048726344137901452]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 8899772170898717437]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 8348580108629269403]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 16189295798872816123]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 7029614394474663241]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 5324751980724349252]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 18398199833655199875]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 218411903020295302]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 11283934286081903832]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 9945063493608482302]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 4405266687884068237]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 11087229943246841790]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 2350785807350393924]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 14532478299451476848]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 17053528017013861287]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 5504438464825840674]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 12444960785722432207]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 10216733759526199191]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 10359341850735787906]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 15245710812169444777]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 15079928656553669066]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 12182004220508710415]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 10330332408356427141]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 4654903047179973589]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 6947980775794543215]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 15721050108937688370]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 15727255424993093705]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 98256043070416912]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 13831026665521705469]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 3470346948066278349]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 1977117864857032283]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 4690126558244436733]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 14630350242045807310]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 6394969266615317550]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 16784994664532527296]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 14685283211822645301]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 4863739971298078439]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 13811901775178827627]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 11673477003581927400]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 10277282301779253309]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 12208329982125369710]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 17890350694670378078]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 4722171932046999859]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 16106908247245925324]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 1211732778596623906]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 9666016541631595932]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 17986240215071126458]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 3911533403385309213]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 17966583984235757015]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 17054456747507262615]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 12073643534945220624]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 4445870147738375408]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 4238475473820797029]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 14100122952526142401]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 9813599755237431007]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 17113473577336374020]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 7294746251313731765]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 1128055289305420677]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 5815285717482963450]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 5109511061120883178]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 12060690338768098606]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 5285380863510392817]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 16805400027810194240]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 12725796371898646374]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 11584890285056462546]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 10834723714047503056]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 14590569149405579355]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 6105134304448160666]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 10175475524428128211]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 7916464872288351110]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 14296417396107125918]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 1482722768554780434]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 17250608925729612108]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 7555520695727682977]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 14280575986349761299]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 8188228551804675139]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 1179376004165438478]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 4346537295562368400]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 13708406537733029320]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 9018575064584011884]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 10730906414043192095]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 13213087785064737335]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 17468791008826011924]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 11800241984450380517]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 5450497581152476468]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 16401792628999683963]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 8576563504893645691]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 11800145394445136602]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 2385228720898006177]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 1565627956607078633]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 14923625296858008334]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]
+  - Entity: [Entity, 12039311572982205243]
+    TransformComponent:
+      Position: [-1.49011612e-08, -3.7252903e-09, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      TilingFactor: 1
+      Color: [1, 1, 1, 1]

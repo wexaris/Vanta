@@ -11,8 +11,9 @@ namespace Vanta {
 
     Engine* Engine::s_Instance = nullptr;
 
-    Engine::Engine(const EngineParams& params)
-        : m_WorkingDirectory(params.WorkingDirectory)
+    Engine::Engine(const EngineParams& params) :
+        m_CommandLineArgs(params.CommandLineArgs),
+        m_WorkingDirectory(params.WorkingDirectory)
     {
         VANTA_PROFILE_FUNCTION();
 

@@ -278,7 +278,7 @@ namespace Vanta {
 
                 m_ViewportHovered = ImGui::IsWindowHovered();
                 m_ViewportFocused = ImGui::IsWindowFocused();
-                m_ViewportActive = m_EditorCamera.IsActive() || (m_ViewportFocused && m_ViewportHovered);
+                m_ViewportActive = m_EditorCamera.IsActive() || m_ViewportHovered;
                 Engine::Get().GetGUILayer()->BlockEvents(!m_ViewportActive);
 
                 if (m_ViewportHovered && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
@@ -580,7 +580,7 @@ namespace Vanta {
             VANTA_PROFILE_FUNCTION();
 
             m_EditorScene = NewRef<Scene>();
-            m_EditorScene->OnViewportResize((uint)m_ViewportSize.x, (uint)m_ViewportSize.y);
+            //m_EditorScene->OnViewportResize((uint)m_ViewportSize.x, (uint)m_ViewportSize.y);
 
             m_ActiveScene = m_EditorScene;
             m_ScenePanel.SetContext(m_ActiveScene);
@@ -615,7 +615,7 @@ namespace Vanta {
             }
 
             m_EditorScene = newScene;
-            m_EditorScene->OnViewportResize((uint)m_ViewportSize.x, (uint)m_ViewportSize.y);
+            //m_EditorScene->OnViewportResize((uint)m_ViewportSize.x, (uint)m_ViewportSize.y);
 
             m_ActiveScene = m_EditorScene;
             m_ScenePanel.SetContext(m_ActiveScene);
