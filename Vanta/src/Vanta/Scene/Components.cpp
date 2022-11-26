@@ -8,7 +8,7 @@ namespace Vanta {
 
     void ScriptComponent::Create(entt::entity e, Scene* scene) {
         Entity entity(e, scene);
-        Instance = ScriptEngine::CreateInstance(ClassName, entity);
+        Instance = ScriptEngine::Instantiate(ClassName, entity);
     }
 
     void ScriptComponent::Destroy() {

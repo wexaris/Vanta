@@ -21,7 +21,7 @@ namespace Sandbox {
             Vector2 velocity = Vector2.Zero;
 
             if (Input.IsKeyDown(KeyCode.W))
-                velocity.Y += Speed;
+                velocity.Y += Speed ;
             if (Input.IsKeyDown(KeyCode.S))
                 velocity.Y -= Speed;
 
@@ -30,7 +30,7 @@ namespace Sandbox {
             if (Input.IsKeyDown(KeyCode.D))
                 velocity.X += Speed;
 
-            m_Rigidbody.ApplyLinearImpulse(velocity / 50.0f);
+            m_Rigidbody.ApplyLinearImpulse(velocity * delta);
 
             //Vector3 position = Position;
             //position += velocity * delta;

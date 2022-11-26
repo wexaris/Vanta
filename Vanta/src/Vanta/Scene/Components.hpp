@@ -199,7 +199,7 @@ namespace Vanta {
         float Fade = 0.01f;
     };
 
-    class ScriptInstance;
+    class ScriptInstance; // Forward declare
 
     struct ScriptComponent {
         std::string ClassName;

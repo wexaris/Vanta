@@ -24,14 +24,54 @@ namespace Vanta {
         Entity,
     };
 
+    struct ScriptField {
+        std::string Name;
+        FieldType Type;
+        MonoClassField* MonoField;
+    };
+
+    struct ScriptFieldInstance {
+        ScriptField Field;
+        
+        template<typename T>
+        T GetFieldValue() {
+            return *(T*)m_Buffer;
+        }
+
+        template<typename T>
+        void SetFieldValue(const T& value) {
+            VANTA_CORE_ASSERT(sizeof(T) <= m_Size, "Type too large for script field!");
+            memcpy(m_Buffer, &value, sizeof(T));
+        }
+
+    protected:
+        ScriptFieldInstance(ScriptField field, void* data, usize size)
+            : Field(field), m_Buffer(data), m_Size(size)
+        {
+            memset(m_Buffer, 0, m_Size);
+        }
+
+    private:
+        friend class ScriptEngine;
+
+        void* m_Buffer = nullptr;
+        const usize m_Size;
+    };
+
+    template<typename T>
+    struct ScriptFieldBuffer : public ScriptFieldInstance {
+        static constexpr usize SIZE = sizeof(T);
+        char Buffer[SIZE];
+
+        ScriptFieldBuffer(ScriptField field) : ScriptFieldInstance(field, Buffer, SIZE) {}
+
+        ScriptFieldBuffer(ScriptField field, const T& value) : ScriptFieldInstance(field, Buffer, SIZE) {
+            SetFieldValue(value);
+        }
+    };
+
     class ScriptClass {
     public:
-        struct Field {
-            std::string Name;
-            FieldType Type;
-            MonoClassField* MonoField;
-        };
-
         ScriptClass() = default;
         ScriptClass(MonoImage* image, const std::string& namespaceName, const std::string& className);
 
@@ -39,7 +79,7 @@ namespace Vanta {
         MonoMethod* GetMethod(const std::string& name, int paramCount) const;
         MonoObject* InvokeMethod(MonoObject* instance, MonoMethod* method, void** params = nullptr) const;
 
-        const std::unordered_map<std::string, Field>& GetFields() const { return m_Fields; }
+        const std::unordered_map<std::string, ScriptField>& GetFields() const { return m_Fields; }
 
         operator MonoClass* () { return m_Class; }
 
@@ -48,7 +88,7 @@ namespace Vanta {
 
         MonoClass* m_Class = nullptr;
 
-        std::unordered_map<std::string, Field> m_Fields;
+        std::unordered_map<std::string, ScriptField> m_Fields;
 
         std::string m_NamespaceName;
         std::string m_ClassName;
@@ -79,6 +119,8 @@ namespace Vanta {
         }
 
     private:
+        friend class ScriptEngine;
+
         Ref<ScriptClass> m_ScriptClass;
 
         MonoObject* m_Instance = nullptr;
@@ -102,11 +144,15 @@ namespace Vanta {
         static void RuntimeBegin(Scene* scene);
         static void RuntimeEnd();
 
-        static Ref<ScriptInstance> CreateInstance(const std::string& fullName, Entity entity);
-        static bool EntityClassExists(const std::string& fullName);
+        static Ref<ScriptInstance> Instantiate(std::string fullName, Entity entity);
+
+        static bool ClassExists(const std::string& fullName);
+        static Ref<ScriptClass>& GetClass(const std::string& fullName);
 
         static Scene* GetContext();
         static MonoImage* GetCoreAssemblyImage();
+
+        static std::unordered_map<std::string, Box<ScriptFieldInstance>>& GetFieldInstances(Entity entity);
 
     private:
         friend class ScriptClass;
@@ -118,6 +164,5 @@ namespace Vanta {
         static void ShutdownMono();
 
         static void InspectAssemblyImage(MonoImage* image);
-        static MonoObject* InstantiateClass(MonoClass* klass);
     };
 }

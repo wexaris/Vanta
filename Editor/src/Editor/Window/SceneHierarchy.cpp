@@ -291,11 +291,11 @@ namespace Vanta {
                 }
             });
 
-            DrawComponent<ScriptComponent>("Circle", entity, [](ScriptComponent& component) {
+            DrawComponent<ScriptComponent>("Circle", entity, [entity](ScriptComponent& component) {
                 static char buffer[64];
                 strcpy_s(buffer, component.ClassName.c_str());
 
-                bool classExists = ScriptEngine::EntityClassExists(component.ClassName);
+                bool classExists = ScriptEngine::ClassExists(component.ClassName);
 
                 if (!classExists)
                     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.9f, 0.2f, 0.3f, 1.0f));
@@ -306,6 +306,7 @@ namespace Vanta {
                 if (!classExists)
                     ImGui::PopStyleColor();
 
+                // Runtime field data
                 if (component.Instance) {
                     const auto& fields = component.Instance->GetClass()->GetFields();
                     for (const auto& [name, field] : fields) {
@@ -317,6 +318,44 @@ namespace Vanta {
                             }
                         }
                         default:;
+                        }
+                    }
+                }
+                // Editor field data
+                else if (classExists) {
+                    auto& klass = ScriptEngine::GetClass(component.ClassName);
+                    auto& instances = ScriptEngine::GetFieldInstances(entity);
+                    
+                    // Loop though every class field and check
+                    // if an instance has already been created.
+                    for (auto& [name, field] : klass->GetFields()) {
+                        auto it = instances.find(name);
+
+                        // Field instance exists
+                        if (it != instances.end()) {
+                            auto& instance = it->second;
+
+                            switch (field.Type) {
+                            case FieldType::Float: {
+                                float data = instance->GetFieldValue<float>();
+                                if (ImGui::DragFloat(name.c_str(), &data)) {
+                                    instance->SetFieldValue(data);
+                                }
+                            }
+                            default:;
+                            }
+                        }
+                        // Create new field instance
+                        else {
+                            switch (field.Type) {
+                            case FieldType::Float: {
+                                float data = 0.0f;
+                                if (ImGui::DragFloat(name.c_str(), &data)) {
+                                    instances[name] = NewBox<ScriptFieldBuffer<float>>(field, data);
+                                }
+                            }
+                            default:;
+                            }
                         }
                     }
                 }

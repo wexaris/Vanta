@@ -60,7 +60,7 @@ namespace Vanta {
 
         MonoType* componentType = mono_reflection_type_get_type(type);
 
-        VANTA_CORE_ASSERT(s_EntityHasComponent.find(componentType) != s_EntityHasComponent.end(),
+        VANTA_CORE_ASSERT(s_EntityHasComponent.contains(componentType),
             "Component hasn't been registered with script engine!");
 
         return s_EntityHasComponent[componentType](entity);

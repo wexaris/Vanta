@@ -26,7 +26,7 @@ namespace Vanta {
     
     void ShaderLibrary::Add(const Ref<Shader>& shader) {
         auto& name = shader->GetName();
-        VANTA_ASSERT(m_Shaders.find(name) == m_Shaders.end(), "Shader already exists: {}", name);
+        VANTA_ASSERT(!m_Shaders.contains(name), "Shader already exists: {}", name);
         m_Shaders[name] = shader;
     }
 
@@ -48,7 +48,7 @@ namespace Vanta {
     }
 
     bool ShaderLibrary::Exists(const std::string& name) {
-        return m_Shaders.find(name) != m_Shaders.end();
+        return m_Shaders.contains(name);
     }
 
     uint Shader::DataType::ItemCount() const {
