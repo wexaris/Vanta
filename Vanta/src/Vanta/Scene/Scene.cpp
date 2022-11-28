@@ -70,6 +70,10 @@ namespace Vanta {
         VANTA_PROFILE_FUNCTION();
         InitPhysics();
         InitScripts();
+
+        // Equalize state buffers, so any initial changes
+        // made by scripts are propagated to all buffers.
+        m_Registry.SwapBuffersFwd();
     }
 
     void Scene::OnRuntimeEnd() {
