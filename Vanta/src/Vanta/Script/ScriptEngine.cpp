@@ -30,12 +30,12 @@ namespace Vanta {
             return assembly;
         }
 
-        static void PrintAssemblyTypes(MonoAssembly* assembly) {
+        static void PrintAssemblyClasses(MonoAssembly* assembly) {
             MonoImage* image = mono_assembly_get_image(assembly);
             const MonoTableInfo* typeDefs = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
-            int32 numTypes = mono_table_info_get_rows(typeDefs);
+            int32 numClasses = mono_table_info_get_rows(typeDefs);
 
-            for (int32 i = 0; i < numTypes; i++) {
+            for (int32 i = 0; i < numClasses; i++) {
                 uint32 cols[MONO_TYPEDEF_SIZE];
                 mono_metadata_decode_row(typeDefs, i, cols, MONO_TYPEDEF_SIZE);
 
@@ -91,6 +91,9 @@ namespace Vanta {
         MonoAssembly* AppAssembly = nullptr;
         MonoImage* AppAssemblyImage = nullptr;
 
+        Path CoreAssemblyFilepath;
+        Path AppAssemblyFilepath;
+
         ScriptClass EntityClass;
         std::unordered_map<std::string, Ref<ScriptClass>> EntityClasses;
 
@@ -106,13 +109,11 @@ namespace Vanta {
     void ScriptEngine::Init() {
         InitMono();
 
-        LoadCoreAssembly(Engine::Get().ScriptDirectory() / "Vanta-Script.dll");
-        s_Data.EntityClass = ScriptClass(s_Data.CoreAssemblyImage, "Vanta", "Entity");
-
-        LoadAppAssembly(Engine::Get().ScriptDirectory() / "Sandbox-Script.dll");
-        InspectAssemblyImage(s_Data.AppAssemblyImage);
-
         Interface::RegisterFunctions();
+
+        LoadCoreAssembly(Engine::Get().ScriptDirectory() / "Vanta-Script.dll");
+        LoadAppAssembly(Engine::Get().ScriptDirectory() / "Sandbox-Script.dll");
+        
         Interface::RegisterComponents();
     }
 
@@ -125,26 +126,47 @@ namespace Vanta {
 
         s_Data.RootDomain = mono_jit_init("VantaJIT");
         VANTA_CORE_ASSERT(s_Data.RootDomain, "Failed to initialize Mono JIT runtime!");
-
-        std::string domainName = "VantaScripts";
-        s_Data.AppDomain = mono_domain_create_appdomain(domainName.data(), nullptr);
-        mono_domain_set(s_Data.AppDomain, true);
     }
 
     void ScriptEngine::ShutdownMono() {
-        mono_jit_cleanup(s_Data.RootDomain);
+        mono_domain_set(mono_get_root_domain(), false);
+
+        mono_domain_unload(s_Data.AppDomain);
         s_Data.AppDomain = nullptr;
+
+        mono_jit_cleanup(s_Data.RootDomain);
         s_Data.RootDomain = nullptr;
     }
 
     void ScriptEngine::LoadCoreAssembly(const Path& filepath) {
+        std::string domainName = "VantaScripts";
+        s_Data.AppDomain = mono_domain_create_appdomain(domainName.data(), nullptr);
+        mono_domain_set(s_Data.AppDomain, true);
+
+        s_Data.CoreAssemblyFilepath = filepath;
         s_Data.CoreAssembly = detail::LoadMonoAssembly(filepath);
         s_Data.CoreAssemblyImage = mono_assembly_get_image(s_Data.CoreAssembly);
+
+        s_Data.EntityClass = ScriptClass(s_Data.CoreAssemblyImage, "Vanta", "Entity");
     }
 
     void ScriptEngine::LoadAppAssembly(const Path& filepath) {
+        s_Data.AppAssemblyFilepath = filepath;
         s_Data.AppAssembly = detail::LoadMonoAssembly(filepath);
         s_Data.AppAssemblyImage = mono_assembly_get_image(s_Data.AppAssembly);
+
+        InspectAssemblyImage(s_Data.AppAssemblyImage);
+    }
+
+    void ScriptEngine::ReloadAssembly() {
+        mono_domain_set(mono_get_root_domain(), false);
+        mono_domain_unload(s_Data.AppDomain);
+        s_Data.AppDomain = nullptr;
+
+        LoadCoreAssembly(s_Data.CoreAssemblyFilepath);
+        LoadAppAssembly(s_Data.AppAssemblyFilepath);
+
+        Interface::RegisterComponents();
     }
 
     void ScriptEngine::InspectAssemblyImage(MonoImage* image) {

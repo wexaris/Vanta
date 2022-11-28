@@ -1,6 +1,7 @@
 #include "Editor/EditorLayer.hpp"
 
 #include <Vanta/Scene/Serializer.hpp>
+#include <Vanta/Script/ScriptEngine.hpp>
 
 #include <imgui.h>
 #include <ImGuizmo.h>
@@ -229,6 +230,13 @@ namespace Vanta {
 
                     if (ImGui::MenuItem("Exit"))
                         Engine::Get().Stop();
+
+                    ImGui::EndMenu();
+                }
+
+                if (ImGui::BeginMenu("Scripts")) {
+                    if (ImGui::MenuItem("Reload Assembly"))
+                        ScriptEngine::ReloadAssembly();
 
                     ImGui::EndMenu();
                 }

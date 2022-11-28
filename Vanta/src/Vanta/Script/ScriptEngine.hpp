@@ -20,6 +20,8 @@ namespace Vanta {
         static void LoadCoreAssembly(const Path& filepath);
         static void LoadAppAssembly(const Path& filepath);
 
+        static void ReloadAssembly();
+
         static void RuntimeBegin(Scene* scene);
         static void RuntimeEnd();
 
