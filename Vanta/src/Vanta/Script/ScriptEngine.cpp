@@ -205,6 +205,7 @@ namespace Vanta {
 
         Ref<ScriptInstance> instance = NewRef<ScriptInstance>(s_Data.EntityClasses[fullName], entity);
 
+        // Set variables modified in editor
         UUID entityId = entity.GetUUID();
         for (auto& [name, field] : s_Data.EntityFieldInstances[entityId]) {
             instance->SetFieldValue_Impl(name, field->m_Buffer);

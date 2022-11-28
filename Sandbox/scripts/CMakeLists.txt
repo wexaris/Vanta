@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 project(Sandbox-Script VERSION 0.1.0 LANGUAGES CSharp)
 
 set(${PROJECT_NAME}_SOURCE
+    "Source/Camera.cs"
     "Source/Player.cs"
 )
 

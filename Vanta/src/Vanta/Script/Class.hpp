@@ -59,6 +59,8 @@ namespace Vanta {
             SetFieldValue_Impl(name, &value);
         }
 
+        MonoObject* GetRuntimeInstance() { return m_Instance; }
+
     private:
         friend class ScriptEngine;
 

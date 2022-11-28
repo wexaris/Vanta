@@ -314,6 +314,16 @@ namespace Vanta {
         return Entity();
     }
 
+    Entity Scene::GetEntityByName(std::string_view name) {
+        auto view = m_Registry.View<IDComponent>();
+        for (auto entity : view) {
+            const IDComponent& id = view.get<IDComponent>(entity);
+            if (id.Name == name)
+                return Entity(entity, this);
+        }
+        return Entity();
+    }
+
     void Scene::OnViewportResize(uint width, uint height) {
         VANTA_PROFILE_FUNCTION();
         m_ViewportSize.x = width;
@@ -333,7 +343,7 @@ namespace Vanta {
 
     Camera* Scene::GetActiveCamera() {
         if (!IsValid(m_ActiveCameraEntity))
-        return nullptr;
+            return nullptr;
 
         CameraComponent* cc = m_Registry.TryGetComponent<CameraComponent>(m_ActiveCameraEntity);
         if (!cc)

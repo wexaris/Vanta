@@ -5,16 +5,17 @@ using Vanta;
 namespace Sandbox {
 
     public class Player : Entity {
-        private TransformComponent m_Transform;
-        private Rigidbody2DComponent m_Rigidbody;
-
+        
         public float Speed = 5.0f;
+
+        private Camera Camera;
+        private Rigidbody2DComponent Rigidbody;
 
         void OnCreate() {
             Log.Info("Player.OnCreate");
 
-            m_Transform = GetComponent<TransformComponent>();
-            m_Rigidbody = GetComponent<Rigidbody2DComponent>();
+            Camera = GetEntityByName("Camera")?.As<Camera>();
+            Rigidbody = GetComponent<Rigidbody2DComponent>();
         }
 
         void OnUpdate(float delta) {
@@ -30,11 +31,14 @@ namespace Sandbox {
             if (Input.IsKeyDown(KeyCode.D))
                 velocity.X += Speed;
 
-            m_Rigidbody.ApplyLinearImpulse(velocity * delta);
+            if (Camera) {
+                if (Input.IsKeyDown(KeyCode.Q))
+                    Camera.DistanceZ += Speed * delta;
+                if (Input.IsKeyDown(KeyCode.E))
+                    Camera.DistanceZ -= Speed * delta;
+            }
 
-            //Vector3 position = Position;
-            //position += velocity * delta;
-            //Position = position;
+            Rigidbody.ApplyLinearImpulse(velocity * delta);
         }
     }
 }

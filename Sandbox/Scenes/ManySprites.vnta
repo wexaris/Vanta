@@ -8,7 +8,7 @@ Entities:
       Scale: [1, 1, 1]
     CameraComponent:
       Camera:
-        ProjectionType: 1
+        ProjectionType: 0
         PerspectiveFOV: 45
         PerspectiveNear: 0.100000001
         PerspectiveFar: 1000
@@ -16,6 +16,12 @@ Entities:
         OrthographicNear: -1
         OrthographicFar: 100
       FixedAspectRatio: false
+    ScriptComponent:
+      Class: Sandbox.Camera
+      Fields:
+        - Name: DistanceZ
+          Type: Float
+          Value: 20
   - Entity: [Player, 18271338724100718183]
     TransformComponent:
       Position: [0, 1.01455295, 0]

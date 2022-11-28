@@ -35,6 +35,7 @@ namespace Vanta {
         void DestroyEntity(entt::entity entity);
 
         Entity GetEntityByID(UUID uuid);
+        Entity GetEntityByName(std::string_view name);
 
         /// <summary>
         /// Iterate over all entities with some given components, executing a given function.

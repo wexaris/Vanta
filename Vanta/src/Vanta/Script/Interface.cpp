@@ -52,11 +52,43 @@ namespace Vanta {
         return Input::IsMouseButtonPressed(button);
     }
 
+    static uint64 Entity_GetEntityByName(MonoString* str) {
+        Scene* scene = ScriptEngine::GetContext();
+        VANTA_CORE_ASSERT(scene, "Script engine context not set!");
+
+        char* name = mono_string_to_utf8(str);
+        Entity entity = scene->GetEntityByName(name);
+        mono_free(name);
+
+        if (!entity)
+            return 0;
+
+        return entity.GetUUID();
+    }
+
+    static MonoObject* Entity_GetScriptInstance(UUID id) {
+        Scene* scene = ScriptEngine::GetContext();
+        VANTA_CORE_ASSERT(scene, "Script engine context not set!");
+        Entity entity = scene->GetEntityByID(id);
+        VANTA_ASSERT(entity, "Entity referenced in script doesn't exist!");
+
+        ScriptComponent* sc = entity.TryGetComponent<ScriptComponent>();
+        if (!sc) {
+            VANTA_ERROR("Entity doesn't have a script component!");
+            return nullptr;
+        }
+
+        MonoObject* instance = sc->Instance->GetRuntimeInstance();
+        VANTA_CORE_ASSERT(instance, "Script hasn't been instantiated!");
+
+        return instance;
+    }
+
     static bool Entity_HasComponent(UUID id, MonoReflectionType* type) {
         Scene* scene = ScriptEngine::GetContext();
-        VANTA_CORE_ASSERT(scene, "Script engine context missing!");
+        VANTA_CORE_ASSERT(scene, "Script engine context not set!");
         Entity entity = scene->GetEntityByID(id);
-        VANTA_CORE_ASSERT(entity, "Entity referenced in script doesn't exist!");
+        VANTA_ASSERT(entity, "Entity referenced in script doesn't exist!");
 
         MonoType* componentType = mono_reflection_type_get_type(type);
 
@@ -68,18 +100,18 @@ namespace Vanta {
 
     static void TransformComponent_GetPosition(UUID id, glm::vec3* pos) {
         Scene* scene = ScriptEngine::GetContext();
-        VANTA_CORE_ASSERT(scene, "Script engine context missing!");
+        VANTA_CORE_ASSERT(scene, "Script engine context not set!");
         Entity entity = scene->GetEntityByID(id);
-        VANTA_CORE_ASSERT(entity, "Entity referenced in script doesn't exist!");
+        VANTA_ASSERT(entity, "Entity referenced in script doesn't exist!");
 
         *pos = entity.GetComponent<TransformComponent>().Get().GetPosition();
     }
 
     static void TransformComponent_SetPosition(UUID id, glm::vec3* pos) {
         Scene* scene = ScriptEngine::GetContext();
-        VANTA_CORE_ASSERT(scene, "Script engine context missing!");
+        VANTA_CORE_ASSERT(scene, "Script engine context not set!");
         Entity entity = scene->GetEntityByID(id);
-        VANTA_CORE_ASSERT(entity, "Entity referenced in script doesn't exist!");
+        VANTA_ASSERT(entity, "Entity referenced in script doesn't exist!");
 
         TransformComponent& tr = entity.GetComponent<TransformComponent>().Set();
         tr.SetPosition(*pos);
@@ -87,9 +119,9 @@ namespace Vanta {
 
     static void Rigidbody2DComponent_ApplyLinearImpulseToCenter(UUID id, glm::vec2* impulse, bool wake) {
         Scene* scene = ScriptEngine::GetContext();
-        VANTA_CORE_ASSERT(scene, "Script engine context missing!");
+        VANTA_CORE_ASSERT(scene, "Script engine context not set!");
         Entity entity = scene->GetEntityByID(id);
-        VANTA_CORE_ASSERT(entity, "Entity referenced in script doesn't exist!");
+        VANTA_ASSERT(entity, "Entity referenced in script doesn't exist!");
 
         Rigidbody2DComponent& rb = entity.GetComponent<Rigidbody2DComponent>();
         b2Body* body = (b2Body*)rb.RuntimeBody;
@@ -106,6 +138,8 @@ namespace Vanta {
         VANTA_ADD_INTERNAL_CALL(Input_IsKeyDown);
         VANTA_ADD_INTERNAL_CALL(Input_IsMouseDown);
 
+        VANTA_ADD_INTERNAL_CALL(Entity_GetEntityByName);
+        VANTA_ADD_INTERNAL_CALL(Entity_GetScriptInstance);
         VANTA_ADD_INTERNAL_CALL(Entity_HasComponent);
 
         VANTA_ADD_INTERNAL_CALL(TransformComponent_GetPosition);

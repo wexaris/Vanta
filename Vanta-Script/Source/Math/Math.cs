@@ -59,6 +59,12 @@ namespace Vanta {
             Z = z;
         }
 
+        public Vector3(Vector2 vec, float z) {
+            X = vec.X;
+            Y = vec.Y;
+            Z = z;
+        }
+
         public static Vector3 operator +(Vector3 vec1, Vector3 vec2) {
             return new Vector3(vec1.X + vec2.X, vec1.Y + vec2.Y, vec1.Z + vec2.Z);
         }

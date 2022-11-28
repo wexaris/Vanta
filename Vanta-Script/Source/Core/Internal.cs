@@ -26,6 +26,12 @@ namespace Vanta {
         internal extern static bool Input_IsMouseDown(MouseButton button);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static UUID Entity_GetEntityByName(string name);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static object Entity_GetScriptInstance(UUID entityID);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static bool Entity_HasComponent(UUID entityID, Type type);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
