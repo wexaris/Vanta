@@ -328,10 +328,13 @@ namespace Vanta {
     }
 
     Camera* Scene::GetActiveCamera() {
-        if (IsValid(m_ActiveCameraEntity)) {
-            auto& cam = m_Registry.TryGetComponent<CameraComponent>(m_ActiveCameraEntity);
-            return &cam.Camera;
-        }
+        if (!IsValid(m_ActiveCameraEntity))
         return nullptr;
+
+        CameraComponent* cc = m_Registry.TryGetComponent<CameraComponent>(m_ActiveCameraEntity);
+        if (!cc)
+            return nullptr;
+
+        return &cc->Camera;
     }
 }

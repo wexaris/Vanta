@@ -46,6 +46,17 @@ namespace Vanta {
             return m_Scene->GetComponent<Component>(*this);
         }
 
+        /// Attempt to get a component of a certain type.
+        template<typename Component>
+        decltype(auto) TryGetComponent() {
+            return m_Scene->TryGetComponent<Component>(*this);
+        }
+
+        template<typename Component>
+        decltype(auto) TryGetComponent() const {
+            return m_Scene->TryGetComponent<Component>(*this);
+        }
+
         /// Check if entity has a component of a certain type.
         template<typename Component>
         bool HasComponent() const {

@@ -84,6 +84,14 @@ namespace Vanta {
         }
 
         /// <summary>
+        /// Attempt to get a given component from an entity.
+        /// </summary>
+        template<typename Component>
+        decltype(auto) TryGetComponent(entt::entity entity) {
+            return m_Registry.TryGetComponent<Component>(entity);
+        }
+
+        /// <summary>
         /// Check if an entity has a given component.
         /// </summary>
         template<typename Component>

@@ -142,6 +142,11 @@ namespace Vanta {
             Impl_View<Resolved_t<Components...>>::Exec(m_Registry, std::forward<Func>(func));
         }
 
+        template<typename... Components>
+        decltype(auto) View() {
+            return Impl_View<Resolved_t<Components...>>::Exec(m_Registry);
+        }
+
         /// <summary>
         /// Get an iterator over entities that have the given components.
         /// 
@@ -229,13 +234,21 @@ namespace Vanta {
         };
 
         template<typename... Components>
-        struct Impl_TryGet<ComponentList<Components...>> : public Impl_Get<Components...> {};
+        struct Impl_TryGet<ComponentList<Components...>> : public Impl_TryGet<Components...> {};
 
         /// <summary>
         /// View
         /// </summary>
         template<typename... Components>
         struct Impl_View {
+            static decltype(auto) Exec(entt::registry& registry) {
+                return registry.view<Components...>();
+            }
+
+            static decltype(auto) Exec(const entt::registry& registry) {
+                return registry.view<Components...>();
+            }
+
             template<typename Func>
             static void Exec(entt::registry& registry, Func&& func) {
                 auto view = registry.view<Components...>();
