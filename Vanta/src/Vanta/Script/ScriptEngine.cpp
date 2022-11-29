@@ -8,6 +8,8 @@
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/tabledefs.h>
 
+#include <filewatch/FileWatch.hpp>
+
 namespace Vanta {
 
     namespace detail {
@@ -91,17 +93,20 @@ namespace Vanta {
         MonoAssembly* AppAssembly = nullptr;
         MonoImage* AppAssemblyImage = nullptr;
 
-        Path CoreAssemblyFilepath;
-        Path AppAssemblyFilepath;
-
         ScriptClass EntityClass;
         std::unordered_map<std::string, Ref<ScriptClass>> EntityClasses;
 
-        // Editor
-        std::unordered_map<UUID, std::unordered_map<std::string, Box<ScriptFieldInstance>>> EntityFieldInstances;
-
         // Runtime
         Scene* SceneContext = nullptr;
+
+        // Editor
+        Path CoreAssemblyFilepath;
+        Path AppAssemblyFilepath;
+
+        Box<filewatch::FileWatch<std::string>> AppAssemblyFileWatcher;
+        bool AppAssemblyReloadPending = false;
+
+        std::unordered_map<UUID, std::unordered_map<std::string, Box<ScriptFieldInstance>>> EntityFieldInstances;
     };
 
     static ScriptData s_Data;
@@ -113,7 +118,7 @@ namespace Vanta {
 
         LoadCoreAssembly(Engine::Get().ScriptDirectory() / "Vanta-Script.dll");
         LoadAppAssembly(Engine::Get().ScriptDirectory() / "Sandbox-Script.dll");
-        
+
         Interface::RegisterComponents();
     }
 
@@ -139,33 +144,59 @@ namespace Vanta {
     }
 
     void ScriptEngine::LoadCoreAssembly(const Path& filepath) {
+        // Create new app domain
         std::string domainName = "VantaScripts";
         s_Data.AppDomain = mono_domain_create_appdomain(domainName.data(), nullptr);
         mono_domain_set(s_Data.AppDomain, true);
 
+        // Load assembly
         s_Data.CoreAssemblyFilepath = filepath;
         s_Data.CoreAssembly = detail::LoadMonoAssembly(filepath);
         s_Data.CoreAssemblyImage = mono_assembly_get_image(s_Data.CoreAssembly);
 
+        // Save entity class
         s_Data.EntityClass = ScriptClass(s_Data.CoreAssemblyImage, "Vanta", "Entity");
     }
 
+    static void OnAppAssemblyFileChange(const std::string& path, const filewatch::Event type) {
+        if (!s_Data.AppAssemblyReloadPending && type == filewatch::Event::modified) {
+            s_Data.AppAssemblyReloadPending = true;
+
+            // Queue app assembly reload with main thread
+            Engine::Get().SubmitToMainThread([]() {
+                ScriptEngine::ReloadAssembly();
+            });
+        }
+    }
+
     void ScriptEngine::LoadAppAssembly(const Path& filepath) {
+        // Remove file watcher
+        s_Data.AppAssemblyFileWatcher.reset();
+
+        // Load assembly
         s_Data.AppAssemblyFilepath = filepath;
         s_Data.AppAssembly = detail::LoadMonoAssembly(filepath);
         s_Data.AppAssemblyImage = mono_assembly_get_image(s_Data.AppAssembly);
 
+        // Get needed data from assembly
         InspectAssemblyImage(s_Data.AppAssemblyImage);
+
+        // Attach file watcher
+        s_Data.AppAssemblyFileWatcher = NewBox<filewatch::FileWatch<std::string>>(filepath.string(), OnAppAssemblyFileChange);
+        s_Data.AppAssemblyReloadPending = false;
     }
 
     void ScriptEngine::ReloadAssembly() {
+        // Unload current app domain
         mono_domain_set(mono_get_root_domain(), false);
         mono_domain_unload(s_Data.AppDomain);
         s_Data.AppDomain = nullptr;
 
+        // Load assemblies
         LoadCoreAssembly(s_Data.CoreAssemblyFilepath);
         LoadAppAssembly(s_Data.AppAssemblyFilepath);
 
+        // Re-register components in new domain
         Interface::RegisterComponents();
     }
 

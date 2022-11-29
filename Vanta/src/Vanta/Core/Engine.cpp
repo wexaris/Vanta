@@ -149,4 +149,18 @@ namespace Vanta {
             return path;
         return Engine::Get().AssetDirectory() / path;
     }
+
+    void Engine::SubmitToMainThread(const std::function<void()>& func) {
+        std::scoped_lock<std::mutex> lock(m_MainThreadQueueMutex);
+        m_MainThreadQueue.push_back(func);
+    }
+
+    void Engine::ExectuteMainThreadQueue() {
+        std::scoped_lock<std::mutex> lock(m_MainThreadQueueMutex);
+
+        for (auto& func : m_MainThreadQueue)
+            func();
+
+        m_MainThreadQueue.clear();
+    }
 }

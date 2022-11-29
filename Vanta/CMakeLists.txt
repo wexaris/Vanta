@@ -79,7 +79,7 @@ add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}-Script)
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 target_link_libraries(${PROJECT_NAME}
-    PUBLIC Boost::boost Boost::fiber Boost::thread EnTT::EnTT fmt::fmt glm::glm
+    PUBLIC Boost::boost Boost::fiber Boost::thread EnTT::EnTT filewatch fmt::fmt glm::glm
         imgui::imgui imguizmo::imguizmo spdlog::spdlog
     PRIVATE box2d::box2d glad::glad glfw mono spirv-cross-core spirv-cross-glsl
         Vulkan::Vulkan Vulkan::glslang Vulkan::shaderc_combined Vulkan::SPIRV-Tools yaml-cpp)

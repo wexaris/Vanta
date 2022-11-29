@@ -5,6 +5,8 @@ namespace Vanta {
     public struct UUID {
         internal UInt64 Value;
 
+        internal UUID(UInt64 value) { Value = value; }
+     
         public static implicit operator bool(UUID id) {
             return id.Value != 0;
         }
@@ -23,11 +25,8 @@ namespace Vanta {
             }
         }
 
-        protected Entity() { ID = new UUID { Value = 0 }; }
-
-        internal Entity(UUID id) {
-            ID = id;
-        }
+        protected Entity()       { ID = new UUID(0); }
+        internal Entity(UUID id) { ID = id; }
 
         public static implicit operator bool(Entity entity) {
             return !object.ReferenceEquals(entity, null) && entity.ID;

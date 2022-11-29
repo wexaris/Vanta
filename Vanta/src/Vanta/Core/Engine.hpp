@@ -58,19 +58,25 @@ namespace Vanta {
         Window& GetWindow()       { return *m_Window; }
         GUILayer* GetGUILayer()   { return m_GUILayer; }
 
-    protected:
-        static const Path s_RuntimeDirectory;
+        void SubmitToMainThread(const std::function<void()>& func);
+
+    private:
+        static Engine* s_Instance;
 
         Box<Window> m_Window;
         LayerStack m_LayerStack;
         GUILayer* m_GUILayer;
 
-        CommandLineArguments m_CommandLineArgs;
         Path m_WorkingDirectory;
+        CommandLineArguments m_CommandLineArgs;
+        static const Path s_RuntimeDirectory;
 
         double m_DeltaTime;
         bool m_Running = true;
         bool m_Minimized = false;
+
+        std::vector<std::function<void()>> m_MainThreadQueue;
+        std::mutex m_MainThreadQueueMutex;
 
         void OnEvent(Event& e);
         virtual bool OnWindowClose(WindowCloseEvent& e);
@@ -82,7 +88,6 @@ namespace Vanta {
         virtual bool OnWindowGainFocus(WindowGainFocusEvent& e);
         virtual bool OnWindowLoseFocus(WindowLoseFocusEvent& e);
 
-    private:
-        static Engine* s_Instance;
+        void ExectuteMainThreadQueue();
     };
 }
