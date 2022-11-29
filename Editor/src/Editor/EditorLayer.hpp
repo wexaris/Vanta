@@ -22,7 +22,7 @@ namespace Vanta {
             void OnGUIRender() override;
 
             void OnEvent(Event& e) override;
-            
+
         private:
             enum class State {
                 Edit,
@@ -31,6 +31,7 @@ namespace Vanta {
             };
 
             State m_State = State::Edit;
+            bool m_IsPaused = false;
 
             Ref<Scene> m_ActiveScene;
             Ref<Scene> m_EditorScene;
@@ -56,6 +57,8 @@ namespace Vanta {
 
             Ref<Texture2D> m_IconPlay;
             Ref<Texture2D> m_IconSimulate;
+            Ref<Texture2D> m_IconPause;
+            Ref<Texture2D> m_IconStep;
             Ref<Texture2D> m_IconStop;
 
             void RenderOverlay();
@@ -67,6 +70,7 @@ namespace Vanta {
 
             void OnPlay();
             void OnSimulate();
+            void OnPause();
             void OnStop();
 
             void OnDuplicateEntity();

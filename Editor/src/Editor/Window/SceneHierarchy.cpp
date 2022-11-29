@@ -291,7 +291,7 @@ namespace Vanta {
                 }
             });
 
-            DrawComponent<ScriptComponent>("Circle", entity, [entity](ScriptComponent& component) {
+            DrawComponent<ScriptComponent>("Script", entity, [entity](ScriptComponent& component) {
                 static char buffer[64];
                 strcpy_s(buffer, component.ClassName.c_str());
 

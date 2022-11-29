@@ -71,8 +71,8 @@ namespace Vanta {
         InitPhysics();
         InitScripts();
 
-        // Equalize state buffers, so any initial changes
-        // made by scripts are propagated to all buffers.
+        // Forward state, so any initial changes made by scripts
+        // are propagated to all buffers.
         m_Registry.SwapBuffersFwd();
     }
 
@@ -96,16 +96,24 @@ namespace Vanta {
         ScriptEngine::RuntimeBegin(this);
 
         // Instantiate native scripts
-        ParallelView<NativeScriptComponent>(m_Barrier, m_Registry,
-            [&](entt::entity e, NativeScriptComponent& script)
-        {
+        // Separate creation from OnCreate, because script might try to find another entity,
+        // which hasn't been initialized yet.
+        View<NativeScriptComponent>([&](entt::entity e, NativeScriptComponent& script) {
             script.Create(e, this);
+        });
+
+        View<NativeScriptComponent>([&](entt::entity, NativeScriptComponent& script) {
             script.Instance->OnCreate();
         });
 
         // Instantiate C# scripts
+        // Separate creation from OnCreate, because script might try to find another entity,
+        // which hasn't been initialized yet.
         View<ScriptComponent>([&](entt::entity e, ScriptComponent& script) {
             script.Create(e, this);
+        });
+
+        View<ScriptComponent>([&](entt::entity, ScriptComponent& script) {
             script.Instance->OnCreate();
         });
     }
@@ -193,17 +201,42 @@ namespace Vanta {
     void Scene::OnUpdateRuntime(double delta) {
         VANTA_PROFILE_FUNCTION();
         m_Barrier.Wait();
-        m_Registry.SwapBuffers();
-        OnScriptUpdate(delta);
-        OnPhysicsUpdate(delta);
+        
+        if (!m_IsPaused) {
+            m_Registry.SwapBuffers();
+            OnScriptUpdate(delta);
+            OnPhysicsUpdate(delta);
+        }
+        else if (m_StepFrames > 0) {
+            m_Registry.SwapBuffers();
+            OnScriptUpdate(delta);
+            OnPhysicsUpdate(delta);
+            m_StepFrames--;
+        }
+        else {
+            m_Registry.SwapBuffersFwd();
+        }
+
         OnRender(delta, GetActiveCameraEntity());
     }
 
     void Scene::OnUpdateSimulation(double delta, Camera* camera) {
         VANTA_PROFILE_FUNCTION();
         m_Barrier.Wait();
-        m_Registry.SwapBuffers();
-        OnPhysicsUpdate(delta);
+
+        if (!m_IsPaused) {
+            m_Registry.SwapBuffers();
+            OnPhysicsUpdate(delta);
+        }
+        else if (m_StepFrames > 0) {
+            m_Registry.SwapBuffers();
+            OnPhysicsUpdate(delta);
+            m_StepFrames--;
+        }
+        else {
+            m_Registry.SwapBuffersFwd();
+        }
+
         OnRender(delta, camera);
     }
 
@@ -241,12 +274,16 @@ namespace Vanta {
         const uint positionIterations = 2;
         m_PhysicsWorld->Step((float)delta, velocityIterations, positionIterations);
 
-        View<TransformComponent, Rigidbody2DComponent>([&](entt::entity, TransformComponent& tr, Rigidbody2DComponent& rb) {
+        View<TransformComponent, Rigidbody2DComponent>(
+            [&](entt::entity, Buffered<TransformComponent>& buffer, Rigidbody2DComponent& rb)
+        {
             b2Body* body = (b2Body*)rb.RuntimeBody;
             auto& position = body->GetPosition();
             float angle = body->GetAngle();
 
-            tr.SetTransformRad({position.x, position.y, tr.GetPosition().z}, {0.f, 0.f, angle}, tr.GetScale());
+            auto& get = buffer.Get();
+            auto& set = buffer.Set();
+            set.SetTransformRad({position.x, position.y, get.GetPosition().z}, {0.f, 0.f, angle}, get.GetScale());
         });
     }
 

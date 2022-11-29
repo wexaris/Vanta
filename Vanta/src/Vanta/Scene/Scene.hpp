@@ -100,6 +100,11 @@ namespace Vanta {
             return m_Registry.HasComponent<Component>(entity);
         }
 
+        bool IsPaused() const       { return m_IsPaused; }
+        void SetPaused(bool paused) { m_IsPaused = paused; }
+
+        void Step(uint frames = 1) { m_StepFrames = frames; }
+
         void OnViewportResize(uint width, uint height);
 
         void SetActiveCameraEntity(entt::entity camera);
@@ -115,6 +120,9 @@ namespace Vanta {
 
         glm::uvec2 m_ViewportSize;
         entt::entity m_ActiveCameraEntity;
+
+        bool m_IsPaused = false;
+        uint m_StepFrames = 0;
 
         std::unordered_map<UUID, entt::entity> m_EntityMap;
 

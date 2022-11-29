@@ -81,11 +81,13 @@ namespace Vanta {
 
         /// <summary>
         /// Swap buffers by copying the next one's data to the current one.
-        /// Slower than `SwapBuffers()` but not prone to state separation via editor interactions.
+        /// Slower than `SwapBuffers()` but not prone to jitter in editor interactions.
         /// </summary>
         void SwapBuffersFwd() {
             ((View<ToBuffer>([](auto, Buffered<ToBuffer>& buffer) {
-                buffer.Get() = buffer.Set();
+                auto& get = buffer.Get();
+                auto set = buffer.Set();
+                get = std::move(set);
             })), ...);
         }
 

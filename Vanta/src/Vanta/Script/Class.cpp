@@ -9,12 +9,14 @@ namespace Vanta {
     ScriptClass::ScriptClass(MonoImage* image, const std::string& namespaceName, const std::string& className)
         : m_NamespaceName(namespaceName), m_ClassName(className)
     {
+        VANTA_PROFILE_FUNCTION();
         m_Class = mono_class_from_name(image, namespaceName.c_str(), className.c_str());
         if (!m_Class)
             VANTA_CORE_CRITICAL("Failed to retrieve class from C# assembly: {}.{}", namespaceName, className);
     }
 
     MonoObject* ScriptClass::Instantiate() const {
+        VANTA_PROFILE_FUNCTION();
         MonoObject* object = ScriptEngine::CreateObject(m_Class);
         mono_runtime_object_init(object);
         return object;
@@ -33,6 +35,8 @@ namespace Vanta {
     ScriptInstance::ScriptInstance(Ref<ScriptClass> scriptClass, Entity entity)
         : m_ScriptClass(scriptClass)
     {
+        VANTA_PROFILE_FUNCTION();
+
         m_Instance = m_ScriptClass->Instantiate();
 
         m_Constructor = ScriptEngine::GetEntityClass().TryGetMethod(".ctor", 1);
@@ -68,6 +72,8 @@ namespace Vanta {
     }
 
     bool ScriptInstance::GetFieldValue_Impl(const std::string& name, void* buffer) {
+        VANTA_PROFILE_FUNCTION();
+
         const auto& fields = m_ScriptClass->GetFields();
         auto it = fields.find(name);
         if (it == fields.end()) {
@@ -81,6 +87,8 @@ namespace Vanta {
     }
 
     bool ScriptInstance::SetFieldValue_Impl(const std::string& name, const void* value) {
+        VANTA_PROFILE_FUNCTION();
+
         const auto& fields = m_ScriptClass->GetFields();
         auto it = fields.find(name);
         if (it == fields.end()) {

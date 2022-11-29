@@ -17,6 +17,8 @@ namespace Vanta {
 
             m_IconPlay = Texture2D::Create("Icons/PlayButton.png");
             m_IconSimulate = Texture2D::Create("Icons/SimulateButton.png");
+            m_IconPause = Texture2D::Create("Icons/PauseButton.png");
+            m_IconStep = Texture2D::Create("Icons/StepButton.png");
             m_IconStop = Texture2D::Create("Icons/StopButton.png");
 
             FramebufferParams fbParams;
@@ -393,31 +395,68 @@ namespace Vanta {
 
             auto windowSize = ImGui::GetContentRegionAvail();
             float size = std::min(windowSize.y, windowSize.x / 2);
-            {
-                Ref<Texture2D> icon = (m_State == State::Edit || m_State == State::Simulate) ? m_IconPlay : m_IconStop;
-                usize texID = icon->GetRendererID();
 
+            if (m_State == State::Edit) {
                 ImGui::SetCursorPosX((ImGui::GetContentRegionMax().x * 0.5f) - size - 8);
 
-                if (ImGui::ImageButton((ImTextureID)texID, ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tintColor) && toolbarEnabled) {
-                    if (m_State == State::Edit || m_State == State::Simulate)
-                        OnPlay();
-                    else if (m_State == State::Play)
-                        OnStop();
-                }
-            }
-            ImGui::SameLine(0.f, 16.f);
-            {
-                Ref<Texture2D> icon = (m_State == State::Edit || m_State == State::Play) ? m_IconSimulate : m_IconStop;		//ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
-                usize texID = icon->GetRendererID();
+                {
+                    auto& icon = m_IconPlay;
+                    usize texID = icon->GetRendererID();
 
-                if (ImGui::ImageButton((ImTextureID)texID, ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tintColor) && toolbarEnabled) {
-                    if (m_State == State::Edit || m_State == State::Play)
-                        OnSimulate();
-                    else if (m_State == State::Simulate)
-                        OnStop();
+                    if (ImGui::ImageButton((ImTextureID)texID, ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tintColor) && toolbarEnabled) {
+                        if (m_State == State::Edit || m_State == State::Simulate)
+                            OnPlay();
+                        else if (m_State == State::Play)
+                            OnStop();
+                    }
+                }
+                ImGui::SameLine(0.f, 16.f);
+                {
+                    auto& icon = m_IconSimulate;
+                    usize texID = icon->GetRendererID();
+
+                    if (ImGui::ImageButton((ImTextureID)texID, ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tintColor) && toolbarEnabled) {
+                        if (m_State == State::Edit || m_State == State::Play)
+                            OnSimulate();
+                        else if (m_State == State::Simulate)
+                            OnStop();
+                    }
                 }
             }
+            else {
+                ImGui::SetCursorPosX((ImGui::GetContentRegionMax().x * 0.5f) - (size * 1.5f) - 8);
+
+                {
+                    auto& icon = m_IconStop;
+                    usize texID = icon->GetRendererID();
+
+                    if (ImGui::ImageButton((ImTextureID)texID, ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tintColor) && toolbarEnabled) {
+                        OnStop();
+                    }
+                }
+                ImGui::SameLine(0.f, 16.f);
+                {
+                    bool isPaused = m_ActiveScene->IsPaused();
+
+                    auto& icon = isPaused ? m_IconPlay : m_IconPause;
+                    usize texID = icon->GetRendererID();
+
+                    if (ImGui::ImageButton((ImTextureID)texID, ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tintColor) && toolbarEnabled) {
+                        m_ActiveScene->SetPaused(!isPaused);
+                    }
+                }
+                ImGui::SameLine(0.f, 16.f);
+                {
+                    auto& icon = m_IconStep;
+                    usize texID = icon->GetRendererID();
+
+                    if (ImGui::ImageButton((ImTextureID)texID, ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tintColor) && toolbarEnabled) {
+                        m_ActiveScene->Step(1);
+                    }
+                }
+                
+            }
+            
 
             ImGui::PopStyleVar(2);
             ImGui::PopStyleColor(3);
@@ -548,6 +587,15 @@ namespace Vanta {
             m_ActiveScene->OnSimulationBegin();
 
             m_ScenePanel.SetContext(m_ActiveScene);
+        }
+
+        void EditorLayer::OnPause() {
+            VANTA_PROFILE_FUNCTION();
+
+            if (m_State == State::Edit)
+                return;
+
+            m_ActiveScene->SetPaused(true);
         }
 
         void EditorLayer::OnStop() {

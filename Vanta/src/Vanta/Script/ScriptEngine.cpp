@@ -112,6 +112,8 @@ namespace Vanta {
     static ScriptData s_Data;
 
     void ScriptEngine::Init() {
+        VANTA_PROFILE_FUNCTION();
+
         InitMono();
 
         Interface::RegisterFunctions();
@@ -123,10 +125,14 @@ namespace Vanta {
     }
 
     void ScriptEngine::Shutdown() {
+        VANTA_PROFILE_FUNCTION();
+
         ShutdownMono();
     }
 
     void ScriptEngine::InitMono() {
+        VANTA_PROFILE_FUNCTION();
+
         mono_set_assemblies_path("mono/4.5");
 
         s_Data.RootDomain = mono_jit_init("VantaJIT");
@@ -134,6 +140,8 @@ namespace Vanta {
     }
 
     void ScriptEngine::ShutdownMono() {
+        VANTA_PROFILE_FUNCTION();
+
         mono_domain_set(mono_get_root_domain(), false);
 
         mono_domain_unload(s_Data.AppDomain);
@@ -144,6 +152,8 @@ namespace Vanta {
     }
 
     void ScriptEngine::LoadCoreAssembly(const Path& filepath) {
+        VANTA_PROFILE_FUNCTION();
+
         // Create new app domain
         std::string domainName = "VantaScripts";
         s_Data.AppDomain = mono_domain_create_appdomain(domainName.data(), nullptr);
@@ -158,7 +168,7 @@ namespace Vanta {
         s_Data.EntityClass = ScriptClass(s_Data.CoreAssemblyImage, "Vanta", "Entity");
     }
 
-    static void OnAppAssemblyFileChange(const std::string& path, const filewatch::Event type) {
+    static void OnAppAssemblyFileChange(const std::string&, const filewatch::Event type) {
         if (!s_Data.AppAssemblyReloadPending && type == filewatch::Event::modified) {
             s_Data.AppAssemblyReloadPending = true;
 
@@ -170,6 +180,8 @@ namespace Vanta {
     }
 
     void ScriptEngine::LoadAppAssembly(const Path& filepath) {
+        VANTA_PROFILE_FUNCTION();
+
         // Remove file watcher
         s_Data.AppAssemblyFileWatcher.reset();
 
@@ -187,6 +199,8 @@ namespace Vanta {
     }
 
     void ScriptEngine::ReloadAssembly() {
+        VANTA_PROFILE_FUNCTION();
+
         // Unload current app domain
         mono_domain_set(mono_get_root_domain(), false);
         mono_domain_unload(s_Data.AppDomain);
@@ -201,6 +215,8 @@ namespace Vanta {
     }
 
     void ScriptEngine::InspectAssemblyImage(MonoImage* image) {
+        VANTA_PROFILE_FUNCTION();
+
         s_Data.EntityClasses.clear();
 
         const MonoTableInfo* typeDefs = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
@@ -245,14 +261,19 @@ namespace Vanta {
     }
 
     void ScriptEngine::RuntimeBegin(Scene* context) {
+        VANTA_PROFILE_FUNCTION();
+
         s_Data.SceneContext = context;
     }
 
     void ScriptEngine::RuntimeEnd() {
+        VANTA_PROFILE_FUNCTION();
+
         s_Data.SceneContext = nullptr;
     }
 
     Ref<ScriptInstance> ScriptEngine::Instantiate(std::string fullName, Entity entity) {
+        VANTA_PROFILE_FUNCTION();
         VANTA_CORE_ASSERT(ClassExists(fullName), "Invalid class!");
         VANTA_CORE_ASSERT(entity, "Invalid entity!");
 
