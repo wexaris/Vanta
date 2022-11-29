@@ -36,6 +36,7 @@ namespace Vanta {
         static MonoImage* GetCoreAssemblyImage();
 
         static std::unordered_map<std::string, Box<ScriptFieldInstance>>& GetFieldInstances(Entity entity);
+        static void ClearFieldInstances();
 
     private:
         friend class ScriptClass;

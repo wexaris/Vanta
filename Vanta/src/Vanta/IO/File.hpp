@@ -15,6 +15,9 @@ namespace Vanta {
             void Write(const std::string& data) const;
             void Write(const char* data, usize count) const;
 
+            void Append(const std::string& data) const;
+            void Append(const char* data, usize count) const;
+
             template<typename Buff, typename T = char>
             void ReadTo(Buff& buffer) const {
                 std::ifstream file(Filepath.c_str(), std::ios::in | std::ios::binary);

@@ -34,6 +34,19 @@ namespace Vanta {
             else VANTA_ERROR("Failed to open file: '{}'", Filepath);
         }
 
+        void File::Append(const std::string& data) const {
+            Append(data.c_str(), data.size());
+        }
+
+        void File::Append(const char* data, usize count) const {
+            std::ofstream file(Filepath.c_str(), std::ios::app);
+            if (file) {
+                file.write(data, count);
+                file.flush();
+            }
+            else VANTA_ERROR("Failed to open file: '{}'", Filepath);
+        }
+
         bool File::Exists() const {
             return std::filesystem::exists(Filepath);
         }

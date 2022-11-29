@@ -5,108 +5,10 @@
 
 #include <yaml-cpp/yaml.h>
 
-template<>
-struct YAML::convert<glm::vec2> {
-    static Node encode(const glm::vec2& val) {
-        Node node;
-        node.push_back(val.x);
-        node.push_back(val.y);
-        return node;
-    }
-
-    static bool decode(const Node& node, glm::vec2& val) {
-        if (!node.IsSequence() || node.size() != 2)
-            return false;
-
-        val.x = node[0].as<float>();
-        val.y = node[1].as<float>();
-        return true;
-    }
-};
-
-template<>
-struct YAML::convert<glm::vec3> {
-    static Node encode(const glm::vec3& val) {
-        Node node;
-        node.push_back(val.x);
-        node.push_back(val.y);
-        node.push_back(val.z);
-        return node;
-    }
-
-    static bool decode(const Node& node, glm::vec3& val) {
-        if (!node.IsSequence() || node.size() != 3)
-            return false;
-
-        val.x = node[0].as<float>();
-        val.y = node[1].as<float>();
-        val.z = node[2].as<float>();
-        return true;
-    }
-};
-
-template<>
-struct YAML::convert<glm::vec4> {
-    static Node encode(const glm::vec4& val) {
-        Node node;
-        node.push_back(val.x);
-        node.push_back(val.y);
-        node.push_back(val.z);
-        node.push_back(val.w);
-        return node;
-    }
-
-    static bool decode(const Node& node, glm::vec4& val) {
-        if (!node.IsSequence() || node.size() != 4)
-            return false;
-
-        val.x = node[0].as<float>();
-        val.y = node[1].as<float>();
-        val.z = node[2].as<float>();
-        val.w = node[3].as<float>();
-        return true;
-    }
-};
-
-template<>
-struct YAML::convert<Vanta::UUID> {
-    static Node encode(const Vanta::UUID& val) {
-        Node node;
-        node.push_back((Vanta::uint64)val);
-        return node;
-    }
-
-    static bool decode(const Node& node, Vanta::UUID& val) {
-        if (!node.IsSequence() || node.size() != 4)
-            return false;
-
-        val = (Vanta::UUID)node[0].as<Vanta::uint64>();
-        return true;
-    }
-};
-
 namespace Vanta {
 
-    static YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec2& val) {
-        out << YAML::Flow;
-        out << YAML::BeginSeq << val.x << val.y << YAML::EndSeq;
-        return out;
-    }
-
-    static YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec3& val) {
-        out << YAML::Flow;
-        out << YAML::BeginSeq << val.x << val.y << val.z << YAML::EndSeq;
-        return out;
-    }
-
-    static YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec4& val) {
-        out << YAML::Flow;
-        out << YAML::BeginSeq << val.x << val.y << val.z << val.w << YAML::EndSeq;
-        return out;
-    }
-
-    SceneSerializer::SceneSerializer(const Ref<Scene>& scene)
-        : m_Scene(scene) {}
+    SceneSerializer::SceneSerializer(const IO::File& file)
+        : m_File(file) {}
 
     template<typename Component, typename Func>
     static void SerializeComponent(Entity entity, Func&& func) {
@@ -272,20 +174,20 @@ namespace Vanta {
         out << YAML::EndMap;
     }
 
-    void SceneSerializer::Serialize(const IO::File& file) {
+    void SceneSerializer::Serialize(const Ref<Scene>& scene) {
         YAML::Emitter out;
         out << YAML::BeginMap;
         out << YAML::Key << "Scene" << YAML::Value << "Unnamed"; // TODO: Add names to scenes
 
         // Serialize active camera
-        if (auto activeCamera = m_Scene->GetActiveCameraEntity()) {
+        if (auto activeCamera = scene->GetActiveCameraEntity()) {
             out << YAML::Key << "ActiveCamera" << YAML::Value << activeCamera.GetUUID();
         }
 
         // Serialize entity list
         out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
-        m_Scene->GetRegistry().Each([&](auto entityID) {
-            Entity entity(entityID, m_Scene.get());
+        scene->GetRegistry().Each([&](auto entityID) {
+            Entity entity(entityID, scene.get());
             if (!entity)
                 return;
 
@@ -294,11 +196,11 @@ namespace Vanta {
         out << YAML::EndSeq;
 
         out << YAML::EndMap;
-        file.Write(out.c_str());
+        m_File.Write(out.c_str());
     }
 
-    bool SceneSerializer::Deserialize(const IO::File& file) {
-        std::string text = file.Read();
+    bool SceneSerializer::Deserialize(const Ref<Scene>& scene) {
+        std::string text = m_File.Read();
 
         YAML::Node data = YAML::Load(text);
         if (!data["Scene"])
@@ -319,7 +221,7 @@ namespace Vanta {
                 std::string name = entityNode[0].as<std::string>();
                 UUID uuid = entityNode[1].as<uint64>();
 
-                Entity entity = m_Scene->CreateEntity(name, uuid);
+                Entity entity = scene->CreateEntity(name, uuid);
 
                 VANTA_CORE_TRACE("Deserializing entity: {} [{}]", name, uuid);
                 
@@ -465,7 +367,7 @@ after_script_component:
 
                 // Check for active camera entity
                 if (uuid == activeCameraUUID) {
-                    m_Scene->SetActiveCameraEntity(entity);
+                    scene->SetActiveCameraEntity(entity);
                 }
             }
         }

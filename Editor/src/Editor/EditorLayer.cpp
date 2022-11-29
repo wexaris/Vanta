@@ -636,7 +636,6 @@ namespace Vanta {
             VANTA_PROFILE_FUNCTION();
 
             m_EditorScene = NewRef<Scene>();
-            //m_EditorScene->OnViewportResize((uint)m_ViewportSize.x, (uint)m_ViewportSize.y);
 
             m_ActiveScene = m_EditorScene;
             m_ScenePanel.SetContext(m_ActiveScene);
@@ -663,15 +662,29 @@ namespace Vanta {
                 return;
             }
 
+            // Remove previous script field data
+            ScriptEngine::ClearFieldInstances();
+
+            // Deserialize scene
             Ref<Scene> newScene = NewRef<Scene>();
-            SceneSerializer serializer(newScene);
-            if (!serializer.Deserialize(filepath)) {
+            SceneSerializer serializer(filepath);
+            if (!serializer.Deserialize(newScene)) {
                 VANTA_ERROR("Failed to parse scene: {}", filepath.filename());
                 return;
             }
 
+            auto viewportCameraPos = serializer.Get<glm::vec3>("ViewportCameraPosition");
+            if (viewportCameraPos) {
+                m_EditorCamera.SetPosition(viewportCameraPos.value());
+            }
+
+            auto viewportCameraRot = serializer.Get<glm::vec3>("ViewportCameraRotation");
+            if (viewportCameraRot) {
+                m_EditorCamera.SetRotationDeg(viewportCameraRot.value());
+            }
+
+            // Setup scene data
             m_EditorScene = newScene;
-            //m_EditorScene->OnViewportResize((uint)m_ViewportSize.x, (uint)m_ViewportSize.y);
 
             m_ActiveScene = m_EditorScene;
             m_ScenePanel.SetContext(m_ActiveScene);
@@ -683,8 +696,10 @@ namespace Vanta {
             VANTA_PROFILE_FUNCTION();
 
             if (!m_SceneFilepath.empty()) {
-                SceneSerializer serializer(m_EditorScene);
-                serializer.Serialize(m_SceneFilepath);
+                SceneSerializer serializer(m_SceneFilepath);
+                serializer.Serialize(m_EditorScene);
+                serializer.Append("ViewportCameraPosition", m_EditorCamera.GetPosition());
+                serializer.Append("ViewportCameraRotation", m_EditorCamera.GetRotationDeg());
             }
             else {
                 SaveSceneAs();
@@ -696,8 +711,10 @@ namespace Vanta {
 
             auto file = IO::FileDialog::SaveFile("Vanta Scene (*.vnta)\0*.vnta\0");
             if (file) {
-                SceneSerializer serializer(m_EditorScene);
-                serializer.Serialize(file.value());
+                SceneSerializer serializer(file.value());
+                serializer.Serialize(m_EditorScene);
+                serializer.Append("ViewportCameraPosition", m_EditorCamera.GetPosition());
+                serializer.Append("ViewportCameraRotation", m_EditorCamera.GetRotationDeg());
                 m_SceneFilepath = file->Filepath;
             }
         }

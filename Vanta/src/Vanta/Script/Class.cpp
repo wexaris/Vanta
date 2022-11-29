@@ -29,7 +29,9 @@ namespace Vanta {
     MonoObject* ScriptClass::InvokeMethod(MonoObject* instance, MonoMethod* method, void** params) const {
         VANTA_CORE_ASSERT(instance, "Invalid script class instance!");
         VANTA_CORE_ASSERT(method, "Invalid script class method!");
-        return mono_runtime_invoke(method, instance, params, nullptr);
+
+        MonoObject* exception = nullptr;
+        return mono_runtime_invoke(method, instance, params, &exception);
     }
 
     ScriptInstance::ScriptInstance(Ref<ScriptClass> scriptClass, Entity entity)

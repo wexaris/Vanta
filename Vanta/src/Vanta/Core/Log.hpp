@@ -23,6 +23,7 @@ namespace Vanta {
 
 #define FMT(...) (::fmt::format(__VA_ARGS__))
 
+#define VANTA_CORE_DEBUG(...) (::Vanta::Log::GetCoreLogger()->debug(__VA_ARGS__))
 #define VANTA_CORE_TRACE(...) (::Vanta::Log::GetCoreLogger()->trace(__VA_ARGS__))
 #define VANTA_CORE_INFO(...)  (::Vanta::Log::GetCoreLogger()->info(__VA_ARGS__))
 #define VANTA_CORE_WARN(...)  (::Vanta::Log::GetCoreLogger()->warn(__VA_ARGS__))

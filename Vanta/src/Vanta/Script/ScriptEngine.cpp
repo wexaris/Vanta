@@ -10,6 +10,10 @@
 
 #include <filewatch/FileWatch.hpp>
 
+#ifdef VANTA_DEBUG
+    #include <mono/metadata/mono-debug.h>
+#endif
+
 namespace Vanta {
 
     namespace detail {
@@ -27,6 +31,19 @@ namespace Vanta {
 
             std::string pathStr = filepath.string();
             MonoAssembly* assembly = mono_assembly_load_from_full(image, pathStr.c_str(), &status, 0);
+
+#ifdef VANTA_DEBUG // Load PDB
+            Path pdbFilepath = filepath;
+            pdbFilepath.replace_extension(".pdb");
+
+            IO::File pdbFile(pdbFilepath);
+            if (pdbFile.Exists()) {
+                auto pdbData = pdbFile.ReadBinary();
+                mono_debug_open_image_from_memory(image, (const mono_byte*)pdbData.data(), (int)pdbData.size());
+                VANTA_CORE_DEBUG("Loaded script PDB: {}", pdbFilepath);
+            }
+#endif
+
             mono_image_close(image);
 
             return assembly;
@@ -135,8 +152,22 @@ namespace Vanta {
 
         mono_set_assemblies_path("mono/4.5");
 
+#ifdef VANTA_DEBUG
+        const char* argv[] = {
+            "--debugger-agent=transport=dt_socket,address=127.0.0.1:2550,server=y,suspend=n,loglevel=3,logfile=MonoDebug.log",
+            "--soft-breakpoints"
+        };
+
+        mono_jit_parse_options(2, (char**)argv);
+        mono_debug_init(MONO_DEBUG_FORMAT_MONO);
+#endif
+
         s_Data.RootDomain = mono_jit_init("VantaJIT");
         VANTA_CORE_ASSERT(s_Data.RootDomain, "Failed to initialize Mono JIT runtime!");
+
+#ifdef VANTA_DEBUG
+        mono_debug_domain_create(s_Data.RootDomain);
+#endif
     }
 
     void ScriptEngine::ShutdownMono() {
@@ -316,6 +347,10 @@ namespace Vanta {
     std::unordered_map<std::string, Box<ScriptFieldInstance>>& ScriptEngine::GetFieldInstances(Entity entity) {
         VANTA_CORE_ASSERT(entity, "Invalid entity!");
         return s_Data.EntityFieldInstances[entity.GetUUID()];
+    }
+
+    void ScriptEngine::ClearFieldInstances() {
+        s_Data.EntityFieldInstances.clear();
     }
 
     MonoObject* ScriptEngine::CreateObject(MonoClass* klass) {
