@@ -32,5 +32,4 @@
 #include "Vanta/Debug/Instrumentor.hpp"
 
 // IO
-#include "Vanta/IO/File.hpp"
-#include "Vanta/IO/Image.hpp"
+#include "Vanta/IO/IO.hpp"

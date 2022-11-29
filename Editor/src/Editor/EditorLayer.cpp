@@ -15,11 +15,11 @@ namespace Vanta {
         void EditorLayer::OnAttach() {
             VANTA_PROFILE_FUNCTION();
 
-            m_IconPlay = Texture2D::Create("Icons/PlayButton.png");
-            m_IconSimulate = Texture2D::Create("Icons/SimulateButton.png");
-            m_IconPause = Texture2D::Create("Icons/PauseButton.png");
-            m_IconStep = Texture2D::Create("Icons/StepButton.png");
-            m_IconStop = Texture2D::Create("Icons/StopButton.png");
+            m_IconPlay = Texture2D::Create(Engine::RuntimeResourceDirectory() / "Icons/PlayButton.png");
+            m_IconSimulate = Texture2D::Create(Engine::RuntimeResourceDirectory() / "Icons/SimulateButton.png");
+            m_IconPause = Texture2D::Create(Engine::RuntimeResourceDirectory() / "Icons/PauseButton.png");
+            m_IconStep = Texture2D::Create(Engine::RuntimeResourceDirectory() / "Icons/StepButton.png");
+            m_IconStop = Texture2D::Create(Engine::RuntimeResourceDirectory() / "Icons/StopButton.png");
 
             FramebufferParams fbParams;
             fbParams.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
@@ -690,6 +690,9 @@ namespace Vanta {
             m_ScenePanel.SetContext(m_ActiveScene);
 
             m_SceneFilepath = filepath;
+
+            Engine::Get().SetWorkingDirectory(filepath / "../../..");
+            m_ContentPanel.OnWorkingDirectoryChange();
         }
 
         void EditorLayer::SaveScene() {

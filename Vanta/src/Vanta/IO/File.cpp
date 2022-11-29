@@ -10,15 +10,9 @@ namespace Vanta {
         {}
 
         std::string File::Read() const {
-            std::string content;
-            ReadTo(content);
-            return content;
-        }
-
-        std::vector<char> File::ReadBinary() const {
-            std::vector<char> buffer;
-            ReadTo(buffer);
-            return buffer;
+            ScopedBuffer buffer = ReadBytes();
+            std::string string(buffer.As<char>(), buffer.Size());
+            return string;
         }
 
         void File::Write(const std::string& data) const {
@@ -45,6 +39,29 @@ namespace Vanta {
                 file.flush();
             }
             else VANTA_ERROR("Failed to open file: '{}'", Filepath);
+        }
+
+        Buffer File::ReadBytes() const {
+            std::ifstream file(Filepath.c_str(), std::ios::binary | std::ios::ate);
+            if (!file) {
+                VANTA_ERROR("Failed to open file: '{}'", Filepath);
+                return Buffer();
+            }
+
+            auto end = file.tellg();
+            file.seekg(0, std::ios::beg);
+            auto size = end - file.tellg();
+
+            if (size == 0) {
+                // File empty
+                return Buffer();
+            }
+
+            Buffer buffer(size);
+            file.read(buffer.As<char>(), size);
+            file.close();
+
+            return buffer;
         }
 
         bool File::Exists() const {

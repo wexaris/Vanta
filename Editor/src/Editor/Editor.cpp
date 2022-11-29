@@ -26,7 +26,7 @@ namespace Vanta {
         params.Window.Width = 1600;
         params.Window.Height = 1000;
         params.Window.VerticalSync = false;
-        params.Window.IconPath = "Icons/Vanta.png";
+        params.Window.IconPath = Engine::RuntimeResourceDirectory() / "Icons/Vanta.png";
         return new Editor::Editor(params);
     }
 }

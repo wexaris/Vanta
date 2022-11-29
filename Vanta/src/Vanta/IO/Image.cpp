@@ -7,6 +7,7 @@
 
 namespace Vanta {
     namespace IO {
+
         Image::Image(const Path& path) {
             Path fixedPath = Engine::Get().CorrectFilepath(path);
 

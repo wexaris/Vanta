@@ -114,14 +114,16 @@ namespace Vanta {
         });
 
         View<ScriptComponent>([&](entt::entity, ScriptComponent& script) {
-            script.Instance->OnCreate();
+            if (script.Instance)
+                script.Instance->OnCreate();
         });
     }
 
     void Scene::DestroyScripts() {
         // Destroy C# scripts
         View<ScriptComponent>([&](entt::entity, ScriptComponent& script) {
-            script.Instance->OnDestroy();
+            if (script.Instance)
+                script.Instance->OnDestroy();
             script.Destroy();
         });
 
@@ -263,7 +265,8 @@ namespace Vanta {
         });
 
         View<ScriptComponent>([&](entt::entity, ScriptComponent& script) {
-            script.Instance->OnUpdate((float)delta);
+            if (script.Instance)
+                script.Instance->OnUpdate((float)delta);
         });
     }
 

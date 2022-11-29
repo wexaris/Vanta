@@ -17,8 +17,8 @@ namespace Vanta {
         static void Init();
         static void Shutdown();
 
-        static void LoadCoreAssembly(const Path& filepath);
-        static void LoadAppAssembly(const Path& filepath);
+        static bool LoadCoreAssembly(const Path& filepath);
+        static bool LoadAppAssembly(const Path& filepath);
 
         static void ReloadAssembly();
 
@@ -29,7 +29,6 @@ namespace Vanta {
 
         static bool ClassExists(const std::string& fullName);
         static Ref<ScriptClass> GetClass(const std::string& fullName);
-        static Ref<ScriptClass> TryGetClass(const std::string& fullName);
         static const ScriptClass& GetEntityClass();
 
         static Scene* GetContext();

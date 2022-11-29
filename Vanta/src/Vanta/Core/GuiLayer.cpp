@@ -38,9 +38,9 @@ namespace Vanta {
             VANTA_PROFILE_SCOPE("AddFontFromFileTTF()");
 
             auto opensans_bold_path =
-                (Engine::Get().AssetDirectory() / "Fonts/OpenSans/OpenSans-Bold.ttf").string();
+                (Engine::RuntimeResourceDirectory() / "Fonts/OpenSans/OpenSans-Bold.ttf").string();
             auto opensans_regular_path =
-                (Engine::Get().AssetDirectory() / "Fonts/OpenSans/OpenSans-Regular.ttf").string();
+                (Engine::RuntimeResourceDirectory() / "Fonts/OpenSans/OpenSans-Regular.ttf").string();
 
             float fontSize = 18.0f;// *2.0f;
             io.Fonts->AddFontFromFileTTF(opensans_bold_path.c_str(), fontSize);

@@ -63,6 +63,9 @@ namespace Vanta {
                 return;
 
             const auto& klass = ScriptEngine::GetClass(component.ClassName);
+            if (!klass)
+                return;
+
             const auto& fields = klass->GetFields();
 
             if (fields.size() > 0) {
@@ -263,12 +266,11 @@ namespace Vanta {
 
                     auto scriptFields = scriptComponent["Fields"];
                     if (scriptFields) {
-                        Ref<ScriptClass> klass = ScriptEngine::TryGetClass(sc.ClassName);
-                        if (!klass) {
+                        if (!ScriptEngine::ClassExists(sc.ClassName)) {
                             VANTA_CORE_WARN("Class no longer exists: {}", sc.ClassName);
                             goto after_script_component;
                         }
-                        const auto& fields = klass->GetFields();
+                        const auto& fields = ScriptEngine::GetClass(sc.ClassName)->GetFields();
 
                         auto& instances = ScriptEngine::GetFieldInstances(entity);
 

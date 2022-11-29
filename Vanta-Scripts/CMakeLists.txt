@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(Vanta-Script VERSION 0.1.0 LANGUAGES CSharp)
+project(Vanta-Scripts VERSION 0.1.0 LANGUAGES CSharp)
 
 set(VANTA_SCRIPT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/Resources/Scripts" CACHE INTERNAL "")
 

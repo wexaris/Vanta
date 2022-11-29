@@ -45,10 +45,14 @@ namespace Vanta {
 
         const CommandLineArguments& GetCommandLineArgs() const { return m_CommandLineArgs; }
 
-        static Path RuntimeDirectory() { return s_RuntimeDirectory; }
+        static Path RuntimeDirectory()         { return s_RuntimeDirectory; }
+        static Path RuntimeResourceDirectory() { return s_RuntimeDirectory / "Resources"; }
+
+        void SetWorkingDirectory(const Path& cwd) { m_WorkingDirectory = cwd; }
+
         Path WorkingDirectory() const  { return m_WorkingDirectory; }
-        Path AssetDirectory() const    { return m_WorkingDirectory / "Resources"; }
-        Path ScriptDirectory() const   { return m_WorkingDirectory / "Resources/Scripts"; }
+        Path AssetDirectory() const    { return m_WorkingDirectory / "Assets"; }
+        Path ScriptDirectory() const   { return m_WorkingDirectory / "Scripts"; }
         Path CacheDirectory() const    { return m_WorkingDirectory / "Cache"; }
         Path CorrectFilepath(const Path& path);
 

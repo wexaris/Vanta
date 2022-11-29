@@ -7,6 +7,9 @@
 namespace Vanta {
 
     void ScriptComponent::Create(entt::entity e, Scene* scene) {
+        if (!ScriptEngine::ClassExists(ClassName))
+            return;
+
         Entity entity(e, scene);
         Instance = ScriptEngine::Instantiate(ClassName, entity);
     }

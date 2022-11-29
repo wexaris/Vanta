@@ -8,8 +8,8 @@ namespace Vanta {
         ContentBrowser::ContentBrowser()
             : m_CurrentDirectory(Engine::Get().AssetDirectory())
         {
-            m_FileIcon = Texture2D::Create("Icons/ContentBrowser/File.png");
-            m_FolderIcon = Texture2D::Create("Icons/ContentBrowser/Folder.png");
+            m_FileIcon = Texture2D::Create(Engine::RuntimeResourceDirectory() / "Icons/ContentBrowser/File.png");
+            m_FolderIcon = Texture2D::Create(Engine::RuntimeResourceDirectory() / "Icons/ContentBrowser/Folder.png");
         }
 
         void ContentBrowser::OnGUIRender(bool allowInteraction) {
@@ -83,6 +83,10 @@ namespace Vanta {
 
         Ref<Texture2D> ContentBrowser::GetIcon(const std::filesystem::directory_entry& item) const {
             return item.is_directory() ? m_FolderIcon : m_FileIcon;
+        }
+
+        void ContentBrowser::OnWorkingDirectoryChange() {
+            m_CurrentDirectory = Engine::Get().AssetDirectory();
         }
     }
 }

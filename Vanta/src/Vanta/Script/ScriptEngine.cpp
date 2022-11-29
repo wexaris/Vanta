@@ -8,8 +8,6 @@
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/tabledefs.h>
 
-#include <filewatch/FileWatch.hpp>
-
 #ifdef VANTA_DEBUG
     #include <mono/metadata/mono-debug.h>
 #endif
@@ -18,14 +16,18 @@ namespace Vanta {
 
     namespace detail {
         static MonoAssembly* LoadMonoAssembly(const Path& filepath) {
-            auto data = IO::File(filepath).ReadBinary();
+            ScopedBuffer data = IO::File(filepath).ReadBytes();
+            if (!data) {
+                VANTA_CORE_CRITICAL("Failed to read C# assembly: {}", filepath);
+                return nullptr;
+            }
 
             MonoImageOpenStatus status;
-            MonoImage* image = mono_image_open_from_data_full(data.data(), (uint32)data.size(), 1, &status, 0);
+            MonoImage* image = mono_image_open_from_data_full(data.As<char>(), (uint32)data.Size(), 1, &status, 0);
 
             if (status != MONO_IMAGE_OK) {
                 const char* error = mono_image_strerror(status);
-                VANTA_CORE_CRITICAL("Failed to load C# assembly: {}", error);
+                VANTA_CORE_CRITICAL("Failed to load C# assembly image: {}", error);
                 return nullptr;
             }
 
@@ -38,9 +40,11 @@ namespace Vanta {
 
             IO::File pdbFile(pdbFilepath);
             if (pdbFile.Exists()) {
-                auto pdbData = pdbFile.ReadBinary();
-                mono_debug_open_image_from_memory(image, (const mono_byte*)pdbData.data(), (int)pdbData.size());
-                VANTA_CORE_DEBUG("Loaded script PDB: {}", pdbFilepath);
+                ScopedBuffer pdbData = pdbFile.ReadBytes();
+                if (pdbData) {
+                    mono_debug_open_image_from_memory(image, pdbData.As<const mono_byte>(), (int)pdbData.Size());
+                    VANTA_CORE_DEBUG("Loaded script PDB: {}", pdbFilepath);
+                }
             }
 #endif
 
@@ -120,7 +124,7 @@ namespace Vanta {
         Path CoreAssemblyFilepath;
         Path AppAssemblyFilepath;
 
-        Box<filewatch::FileWatch<std::string>> AppAssemblyFileWatcher;
+        Box<IO::FileWatcher> AppAssemblyFileWatcher;
         bool AppAssemblyReloadPending = false;
 
         std::unordered_map<UUID, std::unordered_map<std::string, Box<ScriptFieldInstance>>> EntityFieldInstances;
@@ -135,8 +139,14 @@ namespace Vanta {
 
         Interface::RegisterFunctions();
 
-        LoadCoreAssembly(Engine::Get().ScriptDirectory() / "Vanta-Script.dll");
-        LoadAppAssembly(Engine::Get().ScriptDirectory() / "Sandbox-Script.dll");
+        if (!LoadCoreAssembly(Engine::RuntimeResourceDirectory() / "Scripts" / "Vanta-Scripts.dll")) {
+            VANTA_CORE_CRITICAL("Failed to load script core assembly!");
+            return;
+        }
+        if (!LoadAppAssembly(Engine::RuntimeResourceDirectory() / "Scripts" / "Sandbox-Scripts-CSharp.dll")) {
+            VANTA_CORE_CRITICAL("Failed to load app script assembly!");
+            return;
+        }
 
         Interface::RegisterComponents();
     }
@@ -182,7 +192,7 @@ namespace Vanta {
         s_Data.RootDomain = nullptr;
     }
 
-    void ScriptEngine::LoadCoreAssembly(const Path& filepath) {
+    bool ScriptEngine::LoadCoreAssembly(const Path& filepath) {
         VANTA_PROFILE_FUNCTION();
 
         // Create new app domain
@@ -193,10 +203,15 @@ namespace Vanta {
         // Load assembly
         s_Data.CoreAssemblyFilepath = filepath;
         s_Data.CoreAssembly = detail::LoadMonoAssembly(filepath);
+        if (!s_Data.CoreAssembly)
+            return false;
+
         s_Data.CoreAssemblyImage = mono_assembly_get_image(s_Data.CoreAssembly);
 
         // Save entity class
         s_Data.EntityClass = ScriptClass(s_Data.CoreAssemblyImage, "Vanta", "Entity");
+
+        return true;
     }
 
     static void OnAppAssemblyFileChange(const std::string&, const filewatch::Event type) {
@@ -210,7 +225,7 @@ namespace Vanta {
         }
     }
 
-    void ScriptEngine::LoadAppAssembly(const Path& filepath) {
+    bool ScriptEngine::LoadAppAssembly(const Path& filepath) {
         VANTA_PROFILE_FUNCTION();
 
         // Remove file watcher
@@ -219,14 +234,19 @@ namespace Vanta {
         // Load assembly
         s_Data.AppAssemblyFilepath = filepath;
         s_Data.AppAssembly = detail::LoadMonoAssembly(filepath);
+        if (!s_Data.AppAssembly)
+            return false;
+
         s_Data.AppAssemblyImage = mono_assembly_get_image(s_Data.AppAssembly);
 
         // Get needed data from assembly
         InspectAssemblyImage(s_Data.AppAssemblyImage);
 
         // Attach file watcher
-        s_Data.AppAssemblyFileWatcher = NewBox<filewatch::FileWatch<std::string>>(filepath.string(), OnAppAssemblyFileChange);
+        s_Data.AppAssemblyFileWatcher = NewBox<IO::FileWatcher>(filepath.string(), OnAppAssemblyFileChange);
         s_Data.AppAssemblyReloadPending = false;
+
+        return true;
     }
 
     void ScriptEngine::ReloadAssembly() {
@@ -238,8 +258,14 @@ namespace Vanta {
         s_Data.AppDomain = nullptr;
 
         // Load assemblies
-        LoadCoreAssembly(s_Data.CoreAssemblyFilepath);
-        LoadAppAssembly(s_Data.AppAssemblyFilepath);
+        if (!LoadCoreAssembly(s_Data.CoreAssemblyFilepath)) {
+            VANTA_CORE_CRITICAL("Failed to reload script core assembly!");
+            return;
+        }
+        if (!LoadAppAssembly(s_Data.AppAssemblyFilepath)) {
+            VANTA_CORE_CRITICAL("Failed to reload app script assembly!");
+            return;
+        }
 
         // Re-register components in new domain
         Interface::RegisterComponents();
@@ -308,7 +334,7 @@ namespace Vanta {
         VANTA_CORE_ASSERT(ClassExists(fullName), "Invalid class!");
         VANTA_CORE_ASSERT(entity, "Invalid entity!");
 
-        Ref<ScriptInstance> instance = NewRef<ScriptInstance>(s_Data.EntityClasses[fullName], entity);
+        Ref<ScriptInstance> instance = NewRef<ScriptInstance>(GetClass(fullName), entity);
 
         // Set variables modified in editor
         UUID entityId = entity.GetUUID();
@@ -319,17 +345,18 @@ namespace Vanta {
         return instance;
     }
 
+    MonoObject* ScriptEngine::CreateObject(MonoClass* klass) {
+        VANTA_CORE_ASSERT(klass, "Invalid class!");
+        return mono_object_new(s_Data.AppDomain, klass);
+    }
+
     bool ScriptEngine::ClassExists(const std::string& fullName) {
         return s_Data.EntityClasses.contains(fullName);
     }
 
     Ref<ScriptClass> ScriptEngine::GetClass(const std::string& fullName) {
         VANTA_CORE_ASSERT(ClassExists(fullName), "Invalid class!");
-        return s_Data.EntityClasses[fullName];
-    }
-
-    Ref<ScriptClass> ScriptEngine::TryGetClass(const std::string& fullName) {
-        return s_Data.EntityClasses[fullName];
+        return s_Data.EntityClasses.at(fullName);
     }
 
     const ScriptClass& ScriptEngine::GetEntityClass() {
@@ -351,10 +378,5 @@ namespace Vanta {
 
     void ScriptEngine::ClearFieldInstances() {
         s_Data.EntityFieldInstances.clear();
-    }
-
-    MonoObject* ScriptEngine::CreateObject(MonoClass* klass) {
-        VANTA_CORE_ASSERT(klass, "Invalid class!");
-        return mono_object_new(s_Data.AppDomain, klass);
     }
 }

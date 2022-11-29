@@ -42,7 +42,7 @@ namespace Vanta {
         }
 
         static Path GetCacheDirectory() {
-            return Engine::Get().CacheDirectory() / "Shader" / "OpenGL";
+            return Engine::Get().CacheDirectory() / "Shaders" / "OpenGL";
         }
 
         static void CreateCacheDirectory() {
@@ -112,7 +112,7 @@ namespace Vanta {
 
         detail::CreateCacheDirectory();
 
-        auto source = IO::File(filepath).Read();
+        std::string source = IO::File(filepath).Read();
         auto sources = PreProcess(source);
 
         constexpr bool spirv = true;
@@ -195,7 +195,10 @@ namespace Vanta {
             auto cacheFile = IO::File(cachedPath);
 
             if (cacheFile.Exists()) {
-                cacheFile.ReadTo(m_VulkanSPIRV[type]);
+                ScopedBuffer buffer = cacheFile.ReadBytes();
+                uint32* beg = buffer.As<uint32>();
+                usize size = buffer.Size() / sizeof(uint32);
+                m_VulkanSPIRV[type] = std::vector<uint32>(beg, beg + size);
             }
             else {
                 shaderc::SpvCompilationResult module = compiler.CompileGlslToSpv(source, detail::ShaderTypeToShaderC(type), m_Filepath.string().c_str(), options);
@@ -236,7 +239,10 @@ namespace Vanta {
             auto cacheFile = IO::File(cachedPath);
 
             if (cacheFile.Exists()) {
-                cacheFile.ReadTo(m_OpenGLSPIRV[type]);
+                ScopedBuffer buffer = cacheFile.ReadBytes();
+                uint32* beg = buffer.As<uint32>();
+                usize size = buffer.Size() / sizeof(uint32);
+                m_OpenGLSPIRV[type] = std::vector<uint32>(beg, beg + size);
             }
             else {
                 spirv_cross::CompilerGLSL glslCompiler(spirv);

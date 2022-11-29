@@ -1,4 +1,5 @@
 #include "vantapch.hpp"
+#include "Vanta/Core/Engine.hpp"
 #include "Vanta/Render/RenderCommand.hpp"
 #include "Vanta/Render/Renderer2D.hpp"
 #include "Vanta/Render/UniformBuffer.hpp"
@@ -183,9 +184,9 @@ namespace Vanta {
         s_Data.LineVertexBuffer = new LineVertex[s_Data.MaxVerts];
 
         // Load shaders
-        s_Data.QuadShader = Shader::Create("Shaders/Renderer2D_Quad.glsl");
-        s_Data.CircleShader = Shader::Create("Shaders/Renderer2D_Circle.glsl");
-        s_Data.LineShader = Shader::Create("Shaders/Renderer2D_Line.glsl");
+        s_Data.QuadShader = Shader::Create(Engine::RuntimeResourceDirectory() / "Shaders/Renderer2D_Quad.glsl");
+        s_Data.CircleShader = Shader::Create(Engine::RuntimeResourceDirectory() / "Shaders/Renderer2D_Circle.glsl");
+        s_Data.LineShader = Shader::Create(Engine::RuntimeResourceDirectory() / "Shaders/Renderer2D_Line.glsl");
 
         // Setup white texture
         constexpr uint32 white = 0xffffffff;

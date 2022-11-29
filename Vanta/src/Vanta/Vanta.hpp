@@ -36,8 +36,7 @@
 #include <Vanta/Core/Window.hpp>
 
 // IO
-#include <Vanta/IO/File.hpp>
-#include <Vanta/IO/Image.hpp>
+#include "Vanta/IO/IO.hpp"
 
 // Render
 #include <Vanta/Render/Renderer.hpp>

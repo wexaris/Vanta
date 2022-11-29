@@ -74,7 +74,7 @@ set(${${PROJECT_NAME}_PCH} "${CMAKE_CURRENT_SOURCE_DIR}/src/vantapch.hpp")
 add_library(${PROJECT_NAME} STATIC ${${PROJECT_NAME}_SOURCE})
 target_precompile_headers(${PROJECT_NAME} PRIVATE ${${PROJECT_NAME}_PCH})
 
-add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}-Script)
+add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}-Scripts)
 
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
