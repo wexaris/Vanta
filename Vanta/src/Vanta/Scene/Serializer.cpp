@@ -60,12 +60,15 @@ namespace Vanta {
             out << YAML::BeginMap;
             out << YAML::Key << "Class" << YAML::Value << component.ClassName;
 
-            if (!ScriptEngine::ClassExists(component.ClassName))
+            if (!ScriptEngine::ClassExists(component.ClassName)) {
+                out << YAML::EndMap;
                 return;
+            }
 
-            const auto& klass = ScriptEngine::GetClass(component.ClassName);
-            if (!klass)
+            if (!klass) {
+                out << YAML::EndMap;
                 return;
+            }
 
             const auto& fields = klass->GetFields();
 
