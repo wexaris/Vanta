@@ -1,5 +1,6 @@
 #include "Editor/EditorLayer.hpp"
 
+#include <Vanta/Project/Project.hpp>
 #include <Vanta/Scene/Serializer.hpp>
 #include <Vanta/Script/ScriptEngine.hpp>
 
@@ -27,12 +28,13 @@ namespace Vanta {
             fbParams.Height = 720;
             m_Framebuffer = Framebuffer::Create(fbParams);
 
-            NewScene();
-
             auto& commandLineArgs = Engine::Get().GetCommandLineArgs();
             if (commandLineArgs.Count > 1) {
-                auto scenePath = commandLineArgs[1];
-                OpenScene(scenePath);
+                auto projectPath = commandLineArgs[1];
+                OpenProject(projectPath);
+            }
+            else {
+                OpenProject();
             }
         }
 
@@ -217,16 +219,13 @@ namespace Vanta {
                     // which we can't undo at the moment without finer window depth/z control.
                     //ImGui::MenuItem("Fullscreen", NULL, &isFullscreenPersistant);1
                     if (ImGui::MenuItem("New", "Ctrl+N"))
-                        NewScene();
-
-                    if (ImGui::MenuItem("Open...", "Ctrl+O"))
-                        OpenScene();
+                        NewProject();
 
                     if (ImGui::MenuItem("Save", "Ctrl+S"))
-                        SaveScene();
+                        SaveProject();
 
-                    if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
-                        SaveSceneAs();
+                    if (ImGui::MenuItem("Open...", "Ctrl+O"))
+                        OpenProject();
 
                     ImGui::Separator();
 
@@ -248,7 +247,8 @@ namespace Vanta {
 
             Console::Get().OnGUIRender(!m_ViewportActive);
             m_ScenePanel.OnGUIRender(!m_ViewportActive);
-            m_ContentPanel.OnGUIRender(!m_ViewportActive);
+            if (m_ContentPanel)
+                m_ContentPanel->OnGUIRender(!m_ViewportActive);
 
             {
                 ImGui::Begin("Stats");
@@ -506,23 +506,21 @@ namespace Vanta {
             case Key::N:
                 if (!m_EditorCamera.IsActive()) {
                     if (control)
-                        NewScene();
+                        NewProject();
                 }
                 break;
 
             case Key::O:
                 if (!m_EditorCamera.IsActive()) {
                     if (control)
-                        OpenScene();
+                        OpenProject();
                 }
                 break;
 
             case Key::S:
                 if (!m_EditorCamera.IsActive()) {
-                    if (control && shift)
-                        SaveSceneAs();
-                    else if (control)
-                        SaveScene();
+                    if (control)
+                        SaveProject();
                 }
                 break;
 
@@ -632,8 +630,67 @@ namespace Vanta {
                 m_EditorScene->DuplicateEntity(selectedEntity);
         }
 
+        void EditorLayer::NewProject() {
+            VANTA_PROFILE_FUNCTION();
+
+            if (m_State != State::Edit)
+                OnStop();
+
+            auto file = IO::FileDialog::OpenFile("Vanta Project (*.vproj)\0*.vproj\0");
+            if (!file) {
+                Engine::Get().Stop();
+                return;
+            }
+                
+            Ref<Project> project = Project::New(file.value());
+
+            OpenScene(project->GetConfig().InitialScenePath);
+
+            m_ContentPanel = NewBox<ContentBrowser>();
+        }
+
+        void EditorLayer::OpenProject() {
+            VANTA_PROFILE_FUNCTION();
+
+            // TODO: Prompt 
+            auto file = IO::FileDialog::OpenFile("Vanta Project (*.vproj)\0*.vproj\0");
+            if (file)
+                OpenProject(file->Filepath);
+        }
+
+        void EditorLayer::OpenProject(const Path& filepath) {
+            VANTA_PROFILE_FUNCTION();
+
+            if (m_State != State::Edit)
+                OnStop();
+
+            if (filepath.extension().string() != ".vproj") {
+                VANTA_ERROR("Could not load project: {}; incorrect file type", filepath.filename());
+                return;
+            }
+
+            Ref<Project> project = Project::Load(filepath);
+            if (!project) {
+                VANTA_ERROR("Failed to load project: {}", filepath);
+                return;
+            }
+
+            OpenScene(project->GetConfig().InitialScenePath);
+
+            m_ContentPanel = NewBox<ContentBrowser>();
+        }
+
+        void EditorLayer::SaveProject() {
+            VANTA_PROFILE_FUNCTION();
+            SaveScene();
+            Project::Save();
+        }
+
         void EditorLayer::NewScene() {
             VANTA_PROFILE_FUNCTION();
+
+            if (m_State != State::Edit)
+                OnStop();
 
             m_EditorScene = NewRef<Scene>();
 
@@ -643,33 +700,24 @@ namespace Vanta {
             m_SceneFilepath = Path();
         }
 
-        void EditorLayer::OpenScene() {
-            VANTA_PROFILE_FUNCTION();
-
-            auto file = IO::FileDialog::OpenFile("Vanta Scene (*.vnta)\0*.vnta\0");
-            if (file)
-                OpenScene(file->Filepath);
-        }
-
         void EditorLayer::OpenScene(const Path& filepath) {
             VANTA_PROFILE_FUNCTION();
+
+            Path fixedFilepath = Project::GetAssetPath(filepath);
 
             if (m_State != State::Edit)
                 OnStop();
 
-            if (filepath.extension().string() != ".vnta") {
+            if (fixedFilepath.extension().string() != ".vnta") {
                 VANTA_ERROR("Could not load {}; incorrect file type", filepath.filename());
                 return;
             }
 
-            // Remove previous script field data
-            ScriptEngine::ClearFieldInstances();
-
             // Deserialize scene
             Ref<Scene> newScene = NewRef<Scene>();
-            SceneSerializer serializer(filepath);
+            SceneSerializer serializer(fixedFilepath);
             if (!serializer.Deserialize(newScene)) {
-                VANTA_ERROR("Failed to parse scene: {}", filepath.filename());
+                VANTA_ERROR("Failed to parse scene file: {}", fixedFilepath.filename());
                 return;
             }
 
@@ -689,10 +737,7 @@ namespace Vanta {
             m_ActiveScene = m_EditorScene;
             m_ScenePanel.SetContext(m_ActiveScene);
 
-            m_SceneFilepath = filepath;
-
-            Engine::Get().SetWorkingDirectory(filepath / "../../..");
-            m_ContentPanel.OnWorkingDirectoryChange();
+            m_SceneFilepath = fixedFilepath;
         }
 
         void EditorLayer::SaveScene() {

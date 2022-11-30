@@ -1,4 +1,5 @@
 #include "vantapch.hpp"
+#include "Vanta/Project/Project.hpp"
 #include "Vanta/Scene/Entity.hpp"
 #include "Vanta/Scene/Serializer.hpp"
 #include "Vanta/Script/ScriptEngine.hpp"
@@ -126,8 +127,10 @@ namespace Vanta {
         SerializeComponent<SpriteComponent>(entity, [&out](SpriteComponent& component) {
             out << YAML::Key << "SpriteComponent";
             out << YAML::BeginMap;
-            if (component.Texture && !component.Texture->GetPath().empty())
-                out << YAML::Key << "Texture" << YAML::Value << component.Texture->GetPath().string();
+            if (component.Texture && !component.Texture->GetPath().empty()) {
+                Path relativePath = Project::GetAssetPathRelative(component.Texture->GetPath());
+                out << YAML::Key << "Texture" << YAML::Value << relativePath.string();
+            }
             out << YAML::Key << "TilingFactor" << YAML::Value << component.TilingFactor;
             out << YAML::Key << "Color" << YAML::Value << component.Color;
             out << YAML::EndMap;
@@ -180,36 +183,57 @@ namespace Vanta {
     void SceneSerializer::Serialize(const Ref<Scene>& scene) {
         YAML::Emitter out;
         out << YAML::BeginMap;
-        out << YAML::Key << "Scene" << YAML::Value << "Unnamed"; // TODO: Add names to scenes
 
-        // Serialize active camera
-        if (auto activeCamera = scene->GetActiveCameraEntity()) {
-            out << YAML::Key << "ActiveCamera" << YAML::Value << activeCamera.GetUUID();
+        out << YAML::Key << "Scene" << YAML::Value;
+        {
+            out << YAML::BeginMap;
+
+            // TODO: Add names to scenes
+            out << YAML::Key << "Name" << YAML::Value << "Untitled"; 
+
+            // Serialize active camera
+            if (auto activeCamera = scene->GetActiveCameraEntity()) {
+                out << YAML::Key << "ActiveCamera" << YAML::Value << activeCamera.GetUUID();
+            }
+
+            // Serialize entity list
+            out << YAML::Key << "Entities" << YAML::Value;
+            {
+                out << YAML::BeginSeq;
+                scene->GetRegistry().Each([&](auto entityID) {
+                    Entity entity(entityID, scene.get());
+                    if (!entity)
+                        return;
+
+                    SerializeEntity(out, entity);
+                });
+                out << YAML::EndSeq;
+            }
+
+            out << YAML::EndMap;
         }
-
-        // Serialize entity list
-        out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
-        scene->GetRegistry().Each([&](auto entityID) {
-            Entity entity(entityID, scene.get());
-            if (!entity)
-                return;
-
-            SerializeEntity(out, entity);
-        });
-        out << YAML::EndSeq;
 
         out << YAML::EndMap;
         m_File.Write(out.c_str());
     }
 
-    bool SceneSerializer::Deserialize(const Ref<Scene>& scene) {
+    bool SceneSerializer::Deserialize(Ref<Scene>& scene) {
         std::string text = m_File.Read();
 
-        YAML::Node data = YAML::Load(text);
-        if (!data["Scene"])
+        YAML::Node root;
+        try {
+            root = YAML::Load(text);
+        }
+        catch (YAML::ParserException e) {
+            VANTA_CORE_ERROR("Failed to parse scene file: {}; {}", m_File.Filepath, e.what());
+            return false;
+        }
+
+        auto data = root["Scene"];
+        if (!data)
             return false;
 
-        std::string sceneName = data["Scene"].as<std::string>();
+        std::string sceneName = data["Name"].as<std::string>();
         VANTA_CORE_TRACE("Deserializing scene: {}", sceneName);
 
         // UUID of active camera
@@ -218,73 +242,78 @@ namespace Vanta {
 
         // Entity list
         auto entities = data["Entities"];
-        if (entities) {
-            for (auto item : entities) {
-                auto entityNode = item["Entity"];
-                std::string name = entityNode[0].as<std::string>();
-                UUID uuid = entityNode[1].as<uint64>();
+        if (!entities)
+            return false;
 
-                Entity entity = scene->CreateEntity(name, uuid);
+        // Clear previous scene's script field instances
+        ScriptEngine::ClearFieldInstances();
 
-                VANTA_CORE_TRACE("Deserializing entity: {} [{}]", name, uuid);
-                
-                auto transformComponent = item["TransformComponent"];
-                if (transformComponent) {
-                    auto& tc = entity.GetComponent<TransformComponent>().Set();
-                    auto pos = transformComponent["Position"].as<glm::vec3>();
-                    auto rot = transformComponent["Rotation"].as<glm::vec3>();
-                    auto scale = transformComponent["Scale"].as<glm::vec3>();
-                    tc.SetTransformDeg(pos, rot, scale);
-                }
-                else {
-                    VANTA_CORE_ERROR("Entity missing TransformComponent!");
-                    return false;
-                }
+        for (auto item : entities) {
+            auto entityNode = item["Entity"];
+            std::string name = entityNode[0].as<std::string>();
+            UUID uuid = entityNode[1].as<uint64>();
 
-                auto cameraComponent = item["CameraComponent"];
-                if (cameraComponent) {
-                    auto& cc = entity.AddComponent<CameraComponent>();
+            Entity entity = scene->CreateEntity(name, uuid);
 
-                    auto camera = cameraComponent["Camera"];
-                    cc.Camera.SetProjectionType((SceneCamera::Projection)camera["ProjectionType"].as<int>());
+            VANTA_CORE_TRACE("Deserializing entity: {} [{}]", name, uuid);
 
-                    cc.Camera.SetPerspectiveFOV(camera["PerspectiveFOV"].as<float>());
-                    cc.Camera.SetPerspectiveNearClip(camera["PerspectiveNear"].as<float>());
-                    cc.Camera.SetPerspectiveFarClip(camera["PerspectiveFar"].as<float>());
+            auto transformComponent = item["TransformComponent"];
+            if (transformComponent) {
+                auto& tc = entity.GetComponent<TransformComponent>().Set();
+                auto pos = transformComponent["Position"].as<glm::vec3>();
+                auto rot = transformComponent["Rotation"].as<glm::vec3>();
+                auto scale = transformComponent["Scale"].as<glm::vec3>();
+                tc.SetTransformDeg(pos, rot, scale);
+            }
+            else {
+                VANTA_CORE_ERROR("Entity missing TransformComponent!");
+                return false;
+            }
 
-                    cc.Camera.SetOrthographicSize(camera["OrthographicSize"].as<float>());
-                    cc.Camera.SetOrthographicNearClip(camera["OrthographicNear"].as<float>());
-                    cc.Camera.SetOrthographicFarClip(camera["OrthographicFar"].as<float>());
+            auto cameraComponent = item["CameraComponent"];
+            if (cameraComponent) {
+                auto& cc = entity.AddComponent<CameraComponent>();
 
-                    cc.FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
-                }
+                auto camera = cameraComponent["Camera"];
+                cc.Camera.SetProjectionType((SceneCamera::Projection)camera["ProjectionType"].as<int>());
 
-                auto scriptComponent = item["ScriptComponent"];
-                if (scriptComponent) {
-                    auto& sc = entity.AddComponent<ScriptComponent>();
-                    sc.ClassName = scriptComponent["Class"].as<std::string>();
+                cc.Camera.SetPerspectiveFOV(camera["PerspectiveFOV"].as<float>());
+                cc.Camera.SetPerspectiveNearClip(camera["PerspectiveNear"].as<float>());
+                cc.Camera.SetPerspectiveFarClip(camera["PerspectiveFar"].as<float>());
 
-                    auto scriptFields = scriptComponent["Fields"];
-                    if (scriptFields) {
-                        if (!ScriptEngine::ClassExists(sc.ClassName)) {
-                            VANTA_CORE_WARN("Class no longer exists: {}", sc.ClassName);
-                            goto after_script_component;
+                cc.Camera.SetOrthographicSize(camera["OrthographicSize"].as<float>());
+                cc.Camera.SetOrthographicNearClip(camera["OrthographicNear"].as<float>());
+                cc.Camera.SetOrthographicFarClip(camera["OrthographicFar"].as<float>());
+
+                cc.FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
+            }
+
+            auto scriptComponent = item["ScriptComponent"];
+            if (scriptComponent) {
+                auto& sc = entity.AddComponent<ScriptComponent>();
+                sc.ClassName = scriptComponent["Class"].as<std::string>();
+
+                auto scriptFields = scriptComponent["Fields"];
+                if (scriptFields) {
+                    if (!ScriptEngine::ClassExists(sc.ClassName)) {
+                        VANTA_CORE_WARN("Class no longer exists: {}", sc.ClassName);
+                        goto after_script_component;
+                    }
+                    const auto& fields = ScriptEngine::GetClass(sc.ClassName)->GetFields();
+
+                    auto& instances = ScriptEngine::GetFieldInstances(entity);
+
+                    for (auto scriptField : scriptFields) {
+                        std::string fieldName = scriptField["Name"].as<std::string>();
+                        ScriptFieldType type(scriptField["Type"].as<std::string>());
+
+                        const auto& it = fields.find(fieldName);
+                        if (it == fields.end()) {
+                            VANTA_CORE_WARN("Field no longer exists: {}", fieldName);
+                            continue;
                         }
-                        const auto& fields = ScriptEngine::GetClass(sc.ClassName)->GetFields();
 
-                        auto& instances = ScriptEngine::GetFieldInstances(entity);
-
-                        for (auto scriptField : scriptFields) {
-                            std::string fieldName = scriptField["Name"].as<std::string>();
-                            ScriptFieldType type(scriptField["Type"].as<std::string>());
-
-                            const auto& it = fields.find(fieldName);
-                            if (it == fields.end()) {
-                                VANTA_CORE_WARN("Field no longer exists: {}", fieldName);
-                                continue;
-                            }
-
-                            const auto& field = it->second;
+                        const auto& field = it->second;
 
 #define READ_SCRIPT_FIELD(fieldType, type) \
     case ScriptFieldType::fieldType: { \
@@ -292,85 +321,86 @@ namespace Vanta {
         instances[fieldName] = NewBox<ScriptFieldBuffer<type>>(field, value); \
         break; \
     }
-                            switch (type) {
-                                READ_SCRIPT_FIELD(Bool, bool);
-                                READ_SCRIPT_FIELD(Char, char);
+                        switch (type) {
+                            READ_SCRIPT_FIELD(Bool, bool);
+                            READ_SCRIPT_FIELD(Char, char);
 
-                                READ_SCRIPT_FIELD(Int8, int8);
-                                READ_SCRIPT_FIELD(Int16, int16);
-                                READ_SCRIPT_FIELD(Int32, int32);
-                                READ_SCRIPT_FIELD(Int64, int64);
+                            READ_SCRIPT_FIELD(Int8, int8);
+                            READ_SCRIPT_FIELD(Int16, int16);
+                            READ_SCRIPT_FIELD(Int32, int32);
+                            READ_SCRIPT_FIELD(Int64, int64);
 
-                                READ_SCRIPT_FIELD(UInt8, uint8);
-                                READ_SCRIPT_FIELD(UInt16, uint16);
-                                READ_SCRIPT_FIELD(UInt32, uint32);
-                                READ_SCRIPT_FIELD(UInt64, uint64);
+                            READ_SCRIPT_FIELD(UInt8, uint8);
+                            READ_SCRIPT_FIELD(UInt16, uint16);
+                            READ_SCRIPT_FIELD(UInt32, uint32);
+                            READ_SCRIPT_FIELD(UInt64, uint64);
 
-                                READ_SCRIPT_FIELD(Float, float);
-                                READ_SCRIPT_FIELD(Double, double);
+                            READ_SCRIPT_FIELD(Float, float);
+                            READ_SCRIPT_FIELD(Double, double);
 
-                                READ_SCRIPT_FIELD(Vector2, glm::vec2);
-                                READ_SCRIPT_FIELD(Vector3, glm::vec3);
-                                READ_SCRIPT_FIELD(Vector4, glm::vec4);
+                            READ_SCRIPT_FIELD(Vector2, glm::vec2);
+                            READ_SCRIPT_FIELD(Vector3, glm::vec3);
+                            READ_SCRIPT_FIELD(Vector4, glm::vec4);
 
-                                READ_SCRIPT_FIELD(Entity, UUID);
-                            }
-#undef READ_SCRIPT_FIELD
+                            READ_SCRIPT_FIELD(Entity, UUID);
                         }
+#undef READ_SCRIPT_FIELD
                     }
                 }
+            }
 after_script_component:
 
-                auto spriteComponent = item["SpriteComponent"];
-                if (spriteComponent) {
-                    auto& sp = entity.AddComponent<SpriteComponent>();
-                    if (spriteComponent["Texture"])
-                        sp.Texture = Texture2D::Create(spriteComponent["Texture"].as<std::string>());
-                    sp.TilingFactor = spriteComponent["TilingFactor"].as<float>();
-                    sp.Color = spriteComponent["Color"].as<glm::vec4>();
+            auto spriteComponent = item["SpriteComponent"];
+            if (spriteComponent) {
+                auto& sp = entity.AddComponent<SpriteComponent>();
+                if (spriteComponent["Texture"]) {
+                    std::string texturePath = spriteComponent["Texture"].as<std::string>();
+                    sp.Texture = Texture2D::Create(Project::GetAssetPath(texturePath));
                 }
+                sp.TilingFactor = spriteComponent["TilingFactor"].as<float>();
+                sp.Color = spriteComponent["Color"].as<glm::vec4>();
+            }
 
-                auto circleRendererComponent = item["CircleRendererComponent"];
-                if (circleRendererComponent) {
-                    auto& cr = entity.AddComponent<CircleRendererComponent>();
-                    cr.Color = circleRendererComponent["Color"].as<glm::vec4>();
-                    cr.Thickness = circleRendererComponent["Thickness"].as<float>();
-                    cr.Fade = circleRendererComponent["Fade"].as<float>();
-                }
+            auto circleRendererComponent = item["CircleRendererComponent"];
+            if (circleRendererComponent) {
+                auto& cr = entity.AddComponent<CircleRendererComponent>();
+                cr.Color = circleRendererComponent["Color"].as<glm::vec4>();
+                cr.Thickness = circleRendererComponent["Thickness"].as<float>();
+                cr.Fade = circleRendererComponent["Fade"].as<float>();
+            }
 
-                auto rigidbody2DComponent = item["Rigidbody2DComponent"];
-                if (rigidbody2DComponent) {
-                    auto& rb = entity.AddComponent<Rigidbody2DComponent>();
-                    rb.Type = (Rigidbody2DComponent::BodyType)rigidbody2DComponent["BodyType"].as<int>();
-                    rb.FixedRotation = rigidbody2DComponent["FixedRotation"].as<bool>();
-                }
+            auto rigidbody2DComponent = item["Rigidbody2DComponent"];
+            if (rigidbody2DComponent) {
+                auto& rb = entity.AddComponent<Rigidbody2DComponent>();
+                rb.Type = (Rigidbody2DComponent::BodyType)rigidbody2DComponent["BodyType"].as<int>();
+                rb.FixedRotation = rigidbody2DComponent["FixedRotation"].as<bool>();
+            }
 
-                auto boxCollider2DComponent = item["BoxCollider2DComponent"];
-                if (boxCollider2DComponent) {
-                    auto& bc = entity.AddComponent<BoxCollider2DComponent>();
-                    bc.Size = boxCollider2DComponent["Size"].as<glm::vec2>();
-                    bc.Offset = boxCollider2DComponent["Offset"].as<glm::vec2>();
-                    bc.Density = boxCollider2DComponent["Density"].as<float>();
-                    bc.Friction = boxCollider2DComponent["Friction"].as<float>();
-                    bc.Restitution = boxCollider2DComponent["Restitution"].as<float>();
-                    bc.RestitutionThreshold = boxCollider2DComponent["RestitutionThreshold"].as<float>();
-                }
+            auto boxCollider2DComponent = item["BoxCollider2DComponent"];
+            if (boxCollider2DComponent) {
+                auto& bc = entity.AddComponent<BoxCollider2DComponent>();
+                bc.Size = boxCollider2DComponent["Size"].as<glm::vec2>();
+                bc.Offset = boxCollider2DComponent["Offset"].as<glm::vec2>();
+                bc.Density = boxCollider2DComponent["Density"].as<float>();
+                bc.Friction = boxCollider2DComponent["Friction"].as<float>();
+                bc.Restitution = boxCollider2DComponent["Restitution"].as<float>();
+                bc.RestitutionThreshold = boxCollider2DComponent["RestitutionThreshold"].as<float>();
+            }
 
-                auto circleCollider2DComponent = item["CircleCollider2DComponent"];
-                if (circleCollider2DComponent) {
-                    auto& cc = entity.AddComponent<CircleCollider2DComponent>();
-                    cc.Radius = circleCollider2DComponent["Radius"].as<float>();
-                    cc.Offset = circleCollider2DComponent["Offset"].as<glm::vec2>();
-                    cc.Density = circleCollider2DComponent["Density"].as<float>();
-                    cc.Friction = circleCollider2DComponent["Friction"].as<float>();
-                    cc.Restitution = circleCollider2DComponent["Restitution"].as<float>();
-                    cc.RestitutionThreshold = circleCollider2DComponent["RestitutionThreshold"].as<float>();
-                }
+            auto circleCollider2DComponent = item["CircleCollider2DComponent"];
+            if (circleCollider2DComponent) {
+                auto& cc = entity.AddComponent<CircleCollider2DComponent>();
+                cc.Radius = circleCollider2DComponent["Radius"].as<float>();
+                cc.Offset = circleCollider2DComponent["Offset"].as<glm::vec2>();
+                cc.Density = circleCollider2DComponent["Density"].as<float>();
+                cc.Friction = circleCollider2DComponent["Friction"].as<float>();
+                cc.Restitution = circleCollider2DComponent["Restitution"].as<float>();
+                cc.RestitutionThreshold = circleCollider2DComponent["RestitutionThreshold"].as<float>();
+            }
 
-                // Check for active camera entity
-                if (uuid == activeCameraUUID) {
-                    scene->SetActiveCameraEntity(entity);
-                }
+            // Check for active camera entity
+            if (uuid == activeCameraUUID) {
+                scene->SetActiveCameraEntity(entity);
             }
         }
 

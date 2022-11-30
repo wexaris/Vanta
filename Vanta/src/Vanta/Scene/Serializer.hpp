@@ -1,6 +1,6 @@
 #pragma once
 #include "Vanta/Scene/Scene.hpp"
-#include "Vanta/Scene/SerializerHelper.hpp"
+#include "Vanta/Util/SerializerUtils.hpp"
 
 namespace Vanta {
 
@@ -10,7 +10,7 @@ namespace Vanta {
         SceneSerializer(const IO::File& file);
 
         void Serialize(const Ref<Scene>& scene);
-        bool Deserialize(const Ref<Scene>& scene);
+        bool Deserialize(Ref<Scene>& scene);
 
         template<typename T>
         void Append(const std::string& name, const T& item) {

@@ -1,88 +1,90 @@
-Scene: Unnamed
-ActiveCamera: 15579620444860803001
-Entities:
-  - Entity: [Red, 6908040925817384224]
-    TransformComponent:
-      Position: [-3, 1, 0]
-      Rotation: [0, -0, -26.217247]
-      Scale: [1, 1, 1]
-    SpriteComponent:
-      TilingFactor: 1
-      Color: [0.868725896, 0.472935706, 0.472935706, 1]
-    Rigidbody2DComponent:
-      BodyType: 0
-      FixedRotation: false
-    BoxCollider2DComponent:
-      Size: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 1
-      Friction: 0.400000006
-      Restitution: 0.300000012
-      RestitutionThreshold: 0.5
-  - Entity: [Camera, 15579620444860803001]
-    TransformComponent:
-      Position: [0, 0, 10]
-      Rotation: [0, -0, 0]
-      Scale: [1, 1, 1]
-    CameraComponent:
-      Camera:
-        ProjectionType: 0
-        PerspectiveFOV: 45
-        PerspectiveNear: 0.100000001
-        PerspectiveFar: 1000
-        OrthographicSize: 10
-        OrthographicNear: -1
-        OrthographicFar: 100
-      FixedAspectRatio: false
-    ScriptComponent:
-      Class: Sandbox.Camera
-      Fields:
-        - Name: DistanceZ
-          Type: Float
-          Value: 20
-  - Entity: [Player, 11141874658374337179]
-    TransformComponent:
-      Position: [-1.49011612e-08, 0, 0]
-      Rotation: [0, -0, 0]
-      Scale: [0.5, 1, 1]
-    ScriptComponent:
-      Class: Sandbox.Player
-      Fields:
-        - Name: Speed
-          Type: Float
-          Value: 4
-    SpriteComponent:
-      TilingFactor: 1
-      Color: [0.513588071, 0.581396341, 0.764478743, 1]
-    Rigidbody2DComponent:
-      BodyType: 1
-      FixedRotation: false
-    BoxCollider2DComponent:
-      Size: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 1
-      Friction: 0.400000006
-      Restitution: 0.300000012
-      RestitutionThreshold: 0.5
-  - Entity: [Floor, 10128041847389027557]
-    TransformComponent:
-      Position: [0, -5.5, 0]
-      Rotation: [0, -0, -7.97882652]
-      Scale: [12.000001, 0.5, 1]
-    SpriteComponent:
-      TilingFactor: 1
-      Color: [0.918918908, 0.867549002, 0.386726499, 1]
-    Rigidbody2DComponent:
-      BodyType: 0
-      FixedRotation: false
-    BoxCollider2DComponent:
-      Size: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 1
-      Friction: 0.400000006
-      Restitution: 0.300000012
-      RestitutionThreshold: 0.5
+Scene:
+  Name: Untitled
+  ActiveCamera: 15579620444860803001
+  Entities:
+    - Entity: [Floor, 10128041847389027557]
+      TransformComponent:
+        Position: [0, -5.5, 0]
+        Rotation: [0, -0, -7.97882652]
+        Scale: [12.000001, 0.5, 1]
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [0.918918908, 0.867549002, 0.386726499, 1]
+      Rigidbody2DComponent:
+        BodyType: 0
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [Player, 11141874658374337179]
+      TransformComponent:
+        Position: [-1.49011612e-08, 0, 0]
+        Rotation: [0, -0, 0]
+        Scale: [0.5, 1, 1]
+      ScriptComponent:
+        Class: Sandbox.Player
+        Fields:
+          - Name: Speed
+            Type: Float
+            Value: 4
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [0.513588071, 0.581396341, 0.764478743, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [Camera, 15579620444860803001]
+      TransformComponent:
+        Position: [0, 0, 10]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      CameraComponent:
+        Camera:
+          ProjectionType: 0
+          PerspectiveFOV: 45
+          PerspectiveNear: 0.100000001
+          PerspectiveFar: 1000
+          OrthographicSize: 10
+          OrthographicNear: -1
+          OrthographicFar: 100
+        FixedAspectRatio: false
+      ScriptComponent:
+        Class: Sandbox.Camera
+        Fields:
+          - Name: DistanceZ
+            Type: Float
+            Value: 20
+    - Entity: [Red, 6908040925817384224]
+      TransformComponent:
+        Position: [-3, 1, 0]
+        Rotation: [0, -0, -26.217247]
+        Scale: [1, 1, 1]
+      SpriteComponent:
+        Texture: Textures\Vanta.png
+        TilingFactor: 1
+        Color: [0.868725896, 0.472935706, 0.472935706, 1]
+      Rigidbody2DComponent:
+        BodyType: 0
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
 
-ViewportCameraPosition: [2.36701345, 7.75852489, 13.948905]
+ViewportCameraPosition: [2.46916413, 7.29723215, 12.2609749]
 
-ViewportCameraRotation: [-32.7999878, 8.79994392, 0]
+ViewportCameraRotation: [-34.4001732, 11.1999292, 0]

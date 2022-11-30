@@ -18,5 +18,3 @@ set(CMAKE_CXX_STANDARD 20)
 add_subdirectory(Vanta-Scripts)
 add_subdirectory(Vanta)
 add_subdirectory(Editor)
-
-add_subdirectory(Sandbox)

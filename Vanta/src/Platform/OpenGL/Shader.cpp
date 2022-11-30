@@ -1,6 +1,7 @@
 #include "vantapch.hpp"
 #include "Platform/OpenGL/Shader.hpp"
 #include "Vanta/Core/Engine.hpp"
+#include "Vanta/Project/Project.hpp"
 
 #include <glad/glad.h>
 
@@ -42,7 +43,7 @@ namespace Vanta {
         }
 
         static Path GetCacheDirectory() {
-            return Engine::Get().CacheDirectory() / "Shaders" / "OpenGL";
+            return Engine::RuntimeCacheDirectory() / "Shaders" / "OpenGL";
         }
 
         static void CreateCacheDirectory() {

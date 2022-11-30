@@ -6,7 +6,7 @@
 namespace Vanta {
     namespace IO {
         File::File(const Path& path)
-            : Filepath(Engine::Get().CorrectFilepath(path))
+            : Filepath(path)
         {}
 
         std::string File::Read() const {

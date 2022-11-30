@@ -20,6 +20,7 @@
 // Base
 #include <Vanta/Core/Definitions.hpp>
 #include <Vanta/Core/Types.hpp>
+#include <Vanta/Core/Buffer.hpp>
 #include <Vanta/Core/Log.hpp>
 #include <Vanta/Core/Fibers.hpp>
 #include <Vanta/Core/UUID.hpp>
@@ -45,3 +46,7 @@
 // Entity
 #include <Vanta/Scene/Entity.hpp>
 #include <Vanta/Scene/Scene.hpp>
+
+// Scripts
+#include <Vanta/Script/ScriptEngine.hpp>
+#include <Vanta/Script/NativeScript.hpp>

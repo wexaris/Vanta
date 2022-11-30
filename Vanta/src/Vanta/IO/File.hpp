@@ -1,5 +1,4 @@
 #pragma once
-#include "Vanta/Core/Buffer.hpp"
 
 #include <filewatch/FileWatch.hpp>
 

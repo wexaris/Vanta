@@ -13,6 +13,7 @@ namespace Vanta {
         private:
             friend class EditorLayer;
 
+            Path m_RootDirectory;
             Path m_CurrentDirectory;
 
             Ref<Texture2D> m_FileIcon;
@@ -21,8 +22,6 @@ namespace Vanta {
             void OnClick(const std::filesystem::directory_entry& item);
 
             Ref<Texture2D> GetIcon(const std::filesystem::directory_entry& item) const;
-
-            void OnWorkingDirectoryChange();
         };
     }
 }

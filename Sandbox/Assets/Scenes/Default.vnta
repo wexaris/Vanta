@@ -1,0 +1,15 @@
+Scene:
+  Name: Untitled
+  Entities:
+    - Entity: [Entity, 13157127077842690230]
+      TransformComponent:
+        Position: [0, 0, 0]
+        Rotation: [0, 0, 0]
+        Scale: [1, 1, 1]
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+
+ViewportCameraPosition: [3.0147233, 1.13900506, 3.42259789]
+
+ViewportCameraRotation: [-19.399992, 31.4000092, 0]

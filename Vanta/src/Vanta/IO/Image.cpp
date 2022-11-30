@@ -9,11 +9,9 @@ namespace Vanta {
     namespace IO {
 
         Image::Image(const Path& path) {
-            Path fixedPath = Engine::Get().CorrectFilepath(path);
-
             int width, height, channels;
             stbi_set_flip_vertically_on_load(1);
-            Data = stbi_load(fixedPath.string().c_str(), &width, &height, &channels, 0);
+            Data = stbi_load(path.string().c_str(), &width, &height, &channels, 0);
             Width = Data ? width : 0;
             Height = Data ? height : 0;
             Channels = Data ? channels : 0;

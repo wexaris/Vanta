@@ -40,7 +40,7 @@ namespace Vanta {
             ViewportCameraController m_EditorCamera;
 
             SceneHierarchy m_ScenePanel;
-            ContentBrowser m_ContentPanel;
+            Box<ContentBrowser> m_ContentPanel;
 
             Ref<Framebuffer> m_Framebuffer;
             glm::vec2 m_ViewportSize = { 0.f, 0.f };
@@ -74,6 +74,11 @@ namespace Vanta {
             void OnStop();
 
             void OnDuplicateEntity();
+
+            void NewProject();
+            void OpenProject();
+            void OpenProject(const Path& path);
+            void SaveProject();
 
             void NewScene();
             void OpenScene();

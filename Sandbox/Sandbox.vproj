@@ -1,0 +1,6 @@
+Project:
+  Name: Sandbox
+  AssetDirectory: Assets
+  CacheDirectory: Cache
+  ScriptAssemblyPath: Scripts_CSharp/Binaries/Scripts_CSharp.dll
+  InitialScene: Scenes/Simple.vnta

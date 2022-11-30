@@ -1,12 +1,14 @@
 #include "Editor/Window/ContentBrowser.hpp"
 
+#include <Vanta/Project/Project.hpp>
+
 #include <imgui.h>
 
 namespace Vanta {
     namespace Editor {
 
         ContentBrowser::ContentBrowser()
-            : m_CurrentDirectory(Engine::Get().AssetDirectory())
+            : m_RootDirectory(Project::GetAssetDirectory()), m_CurrentDirectory(m_RootDirectory)
         {
             m_FileIcon = Texture2D::Create(Engine::RuntimeResourceDirectory() / "Icons/ContentBrowser/File.png");
             m_FolderIcon = Texture2D::Create(Engine::RuntimeResourceDirectory() / "Icons/ContentBrowser/Folder.png");
@@ -15,7 +17,7 @@ namespace Vanta {
         void ContentBrowser::OnGUIRender(bool allowInteraction) {
             ImGui::Begin("Content Browser");
             
-            if (m_CurrentDirectory != Engine::Get().AssetDirectory()) {
+            if (m_CurrentDirectory != m_RootDirectory) {
                 if (ImGui::ArrowButton("Up", ImGuiDir_Left)) {
                     m_CurrentDirectory = m_CurrentDirectory.parent_path();
                 }
@@ -33,7 +35,7 @@ namespace Vanta {
             ImGui::Columns(columnCount, 0, false);
 
 			for (auto& item : std::filesystem::directory_iterator(m_CurrentDirectory)) {
-				const auto& path = item.path();
+				const Path& path = item.path();
 				std::string filenameStr = path.filename().string();
 
                 Ref<Texture2D> icon = GetIcon(item);
@@ -44,8 +46,7 @@ namespace Vanta {
 				ImGui::ImageButton((ImTextureID)texID, { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
 				
                 if (ImGui::BeginDragDropSource()) {
-					auto relativePath = std::filesystem::relative(path, Engine::Get().AssetDirectory());
-					const wchar_t* itemPath = relativePath.c_str();
+					const wchar_t* itemPath = path.c_str();
 					ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", itemPath, (wcslen(itemPath) + 1) * sizeof(wchar_t));
 					ImGui::EndDragDropSource();
 				}
@@ -73,20 +74,11 @@ namespace Vanta {
         void ContentBrowser::OnClick(const std::filesystem::directory_entry& item) {
             if (item.is_directory()) {
                 m_CurrentDirectory /= item.path().filename();
-            }
-            else {
-                if (item.path().extension() == "vnta") {
-                    
-                }
-            }
+            } 
         }
 
         Ref<Texture2D> ContentBrowser::GetIcon(const std::filesystem::directory_entry& item) const {
             return item.is_directory() ? m_FolderIcon : m_FileIcon;
-        }
-
-        void ContentBrowser::OnWorkingDirectoryChange() {
-            m_CurrentDirectory = Engine::Get().AssetDirectory();
         }
     }
 }

@@ -144,12 +144,6 @@ namespace Vanta {
         return false;
     }
 
-    Path Engine::CorrectFilepath(const Path& path) {
-        if (path.is_absolute())
-            return path;
-        return Engine::Get().AssetDirectory() / path;
-    }
-
     void Engine::SubmitToMainThread(const std::function<void()>& func) {
         std::scoped_lock<std::mutex> lock(m_MainThreadQueueMutex);
         m_MainThreadQueue.push_back(func);

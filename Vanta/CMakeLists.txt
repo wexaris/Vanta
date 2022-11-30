@@ -32,6 +32,8 @@ set(${PROJECT_NAME}_SOURCE
     "src/Vanta/Input/Input.cpp"
     "src/Vanta/IO/File.cpp"
     "src/Vanta/IO/Image.cpp"
+    "src/Vanta/Project/Project.cpp"
+    "src/Vanta/Project/Serializer.cpp"
     "src/Vanta/Render/Buffer.cpp"
     "src/Vanta/Render/Camera.cpp"
     "src/Vanta/Render/Framebuffer.cpp"
