@@ -245,9 +245,6 @@ namespace Vanta {
         if (!entities)
             return false;
 
-        // Clear previous scene's script field instances
-        ScriptEngine::ClearFieldInstances();
-
         for (auto item : entities) {
             auto entityNode = item["Entity"];
             std::string name = entityNode[0].as<std::string>();

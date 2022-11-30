@@ -1,5 +1,6 @@
 #include "vantapch.hpp"
 #include "Vanta/Core/Engine.hpp"
+#include "Vanta/Project/Project.hpp"
 #include "Vanta/Scene/Scene.hpp"
 #include "Vanta/Script/Interface.hpp"
 #include "Vanta/Script/ScriptEngine.hpp"
@@ -122,7 +123,6 @@ namespace Vanta {
 
         // Editor
         Path CoreAssemblyFilepath;
-        Path AppAssemblyFilepath;
 
         Box<IO::FileWatcher> AppAssemblyFileWatcher;
         bool AppAssemblyReloadPending = false;
@@ -139,12 +139,9 @@ namespace Vanta {
 
         Interface::RegisterFunctions();
 
-        if (!LoadCoreAssembly(Engine::RuntimeResourceDirectory() / "Scripts" / "Vanta-Scripts.dll")) {
+        Path coreAssemblyPath = Engine::RuntimeResourceDirectory() / "Scripts" / "Vanta-Scripts.dll";
+        if (!LoadCoreAssembly(coreAssemblyPath)) {
             VANTA_CORE_CRITICAL("Failed to load script core assembly!");
-            return;
-        }
-        if (!LoadAppAssembly(Engine::RuntimeResourceDirectory() / "Scripts" / "Sandbox-Scripts-CSharp.dll")) {
-            VANTA_CORE_CRITICAL("Failed to load app script assembly!");
             return;
         }
 
@@ -232,7 +229,6 @@ namespace Vanta {
         s_Data.AppAssemblyFileWatcher.reset();
 
         // Load assembly
-        s_Data.AppAssemblyFilepath = filepath;
         s_Data.AppAssembly = detail::LoadMonoAssembly(filepath);
         if (!s_Data.AppAssembly)
             return false;
@@ -259,11 +255,12 @@ namespace Vanta {
 
         // Load assemblies
         if (!LoadCoreAssembly(s_Data.CoreAssemblyFilepath)) {
-            VANTA_CORE_CRITICAL("Failed to reload script core assembly!");
+            VANTA_CORE_CRITICAL("Failed to load script core assembly!");
             return;
         }
-        if (!LoadAppAssembly(s_Data.AppAssemblyFilepath)) {
-            VANTA_CORE_CRITICAL("Failed to reload app script assembly!");
+        Path appAssemblyPath = Project::GetRootDirectory() / Project::GetActive()->GetConfig().ScriptAssemblyPath;
+        if (!LoadAppAssembly(appAssemblyPath)) {
+            VANTA_CORE_CRITICAL("Failed to load app script assembly!");
             return;
         }
 

@@ -25,7 +25,7 @@ namespace Vanta {
                 file.write(data, count);
                 file.flush();
             }
-            else VANTA_ERROR("Failed to open file: '{}'", Filepath);
+            else VANTA_ERROR("Failed to open file: {}", Filepath);
         }
 
         void File::Append(const std::string& data) const {

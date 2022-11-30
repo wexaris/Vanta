@@ -457,7 +457,6 @@ namespace Vanta {
                 
             }
             
-
             ImGui::PopStyleVar(2);
             ImGui::PopStyleColor(3);
             ImGui::End();
@@ -644,6 +643,8 @@ namespace Vanta {
                 
             Ref<Project> project = Project::New(file.value());
 
+            ScriptEngine::ReloadAssembly();
+
             OpenScene(project->GetConfig().InitialScenePath);
 
             m_ContentPanel = NewBox<ContentBrowser>();
@@ -674,6 +675,8 @@ namespace Vanta {
                 VANTA_ERROR("Failed to load project: {}", filepath);
                 return;
             }
+
+            ScriptEngine::ReloadAssembly();
 
             OpenScene(project->GetConfig().InitialScenePath);
 
@@ -712,6 +715,9 @@ namespace Vanta {
                 VANTA_ERROR("Could not load {}; incorrect file type", filepath.filename());
                 return;
             }
+
+            // Clear previous scene's script field instances
+            ScriptEngine::ClearFieldInstances();
 
             // Deserialize scene
             Ref<Scene> newScene = NewRef<Scene>();
