@@ -12,7 +12,8 @@ namespace Vanta {
         auto& config = s_ActiveProject->m_Config;
         std::filesystem::create_directories(GetCacheDirectory());
         std::filesystem::create_directories(GetAssetDirectory());
-        std::filesystem::create_directories(s_ActiveProject->m_RootDirectory / config.ScriptAssemblyPath.parent_path());
+        std::filesystem::create_directories(s_ActiveProject->m_RootDirectory / config.CSharpScriptAssemblyPath.parent_path());
+        std::filesystem::create_directories(s_ActiveProject->m_RootDirectory / config.NativeScriptAssemblyPath.parent_path());
         std::filesystem::create_directories(s_ActiveProject->m_RootDirectory / config.InitialScenePath.parent_path());
 
         IO::File scene(GetAssetDirectory() / config.InitialScenePath);

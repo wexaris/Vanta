@@ -2,7 +2,7 @@
 #include "Vanta/Project/Project.hpp"
 #include "Vanta/Scene/Entity.hpp"
 #include "Vanta/Scene/Serializer.hpp"
-#include "Vanta/Script/ScriptEngine.hpp"
+#include "Vanta/Scripts/CSharp/ScriptEngine.hpp"
 
 #include <yaml-cpp/yaml.h>
 
@@ -60,11 +60,12 @@ namespace Vanta {
             out << YAML::BeginMap;
             out << YAML::Key << "Class" << YAML::Value << component.ClassName;
 
-            if (!ScriptEngine::ClassExists(component.ClassName)) {
+            if (!CSharp::ScriptEngine::ClassExists(component.ClassName)) {
                 out << YAML::EndMap;
                 return;
             }
 
+            const auto& klass = CSharp::ScriptEngine::GetClass(component.ClassName);
             if (!klass) {
                 out << YAML::EndMap;
                 return;
@@ -76,7 +77,7 @@ namespace Vanta {
                 out << YAML::Key << "Fields";
                 out << YAML::BeginSeq;
 
-                auto& instances = ScriptEngine::GetFieldInstances(entity);
+                auto& instances = CSharp::ScriptEngine::GetFieldInstances(entity);
                 for (const auto& [name, field] : fields) {
                     auto it = instances.find(name);
                     if (it == instances.end())
@@ -90,7 +91,7 @@ namespace Vanta {
                     out << YAML::Key << "Value" << YAML::Value;
 
 #define WRITE_SCRIPT_FIELD(fieldType, type) \
-    case ScriptFieldType::fieldType: { \
+    case CSharp::ScriptFieldType::fieldType: { \
         out << (type)instance->GetFieldValue<type>(); \
         break; \
     }
@@ -124,6 +125,16 @@ namespace Vanta {
                 }
                 out << YAML::EndSeq; // Field sequence
             }
+            out << YAML::EndMap;
+        });
+
+        SerializeComponent<NativeScriptComponent>(entity, [&out, entity](NativeScriptComponent& component) {
+            out << YAML::Key << "NativeScriptComponent";
+            out << YAML::BeginMap;
+            out << YAML::Key << "Class" << YAML::Value << component.ClassName;
+
+            // TODO: Fields
+
             out << YAML::EndMap;
         });
 
@@ -192,7 +203,7 @@ namespace Vanta {
             out << YAML::BeginMap;
 
             // TODO: Add names to scenes
-            out << YAML::Key << "Name" << YAML::Value << "Untitled"; 
+            out << YAML::Key << "Name" << YAML::Value << "Untitled";
 
             // Serialize active camera
             if (auto activeCamera = scene->GetActiveCameraEntity()) {
@@ -295,17 +306,17 @@ namespace Vanta {
 
                 auto scriptFields = scriptComponent["Fields"];
                 if (scriptFields) {
-                    if (!ScriptEngine::ClassExists(sc.ClassName)) {
+                    if (!CSharp::ScriptEngine::ClassExists(sc.ClassName)) {
                         VANTA_CORE_WARN("Class no longer exists: {}", sc.ClassName);
-                        goto after_script_component;
+                        goto after_csharp_script_component;
                     }
-                    const auto& fields = ScriptEngine::GetClass(sc.ClassName)->GetFields();
+                    const auto& fields = CSharp::ScriptEngine::GetClass(sc.ClassName)->GetFields();
 
-                    auto& instances = ScriptEngine::GetFieldInstances(entity);
+                    auto& instances = CSharp::ScriptEngine::GetFieldInstances(entity);
 
                     for (auto scriptField : scriptFields) {
                         std::string fieldName = scriptField["Name"].as<std::string>();
-                        ScriptFieldType type(scriptField["Type"].as<std::string>());
+                        CSharp::ScriptFieldType type(scriptField["Type"].as<std::string>());
 
                         const auto& it = fields.find(fieldName);
                         if (it == fields.end()) {
@@ -316,9 +327,9 @@ namespace Vanta {
                         const auto& field = it->second;
 
 #define READ_SCRIPT_FIELD(fieldType, type) \
-    case ScriptFieldType::fieldType: { \
+    case CSharp::ScriptFieldType::fieldType: { \
         type value = scriptField["Value"].as<type>(); \
-        instances[fieldName] = NewBox<ScriptFieldBuffer<type>>(field, value); \
+        instances[fieldName] = NewBox<CSharp::ScriptFieldBuffer<type>>(field, value); \
         break; \
     }
                         switch (type) {
@@ -348,7 +359,13 @@ namespace Vanta {
                     }
                 }
             }
-after_script_component:
+after_csharp_script_component:
+
+            auto nativeScriptComponent = item["NativeScriptComponent"];
+            if (nativeScriptComponent) {
+                auto& sc = entity.AddComponent<NativeScriptComponent>();
+                sc.ClassName = nativeScriptComponent["Class"].as<std::string>();
+            }
 
             auto spriteComponent = item["SpriteComponent"];
             if (spriteComponent) {

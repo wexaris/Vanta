@@ -3,6 +3,12 @@
 .vscode/
 build/
 
+Sandbox/Scripts_CSharp/Build
+Sandbox/Scripts_CSharp/Binaries
+
+Sandbox/Scripts_Native/Build
+Sandbox/Scripts_Native/Binaries
+
 # Files
 CMakeSettings.json
 *.idb

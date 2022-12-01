@@ -2,5 +2,6 @@ Project:
   Name: Untitled
   AssetDirectory: Assets
   CacheDirectory: Cache
-  ScriptAssemblyPath: Scripts_CSharp/Binaries/Scripts_CSharp.dll
+  CSharpScriptAssemblyPath: Scripts_CSharp/Binaries/Scripts_CSharp.dll
+  NativeScriptAssemblyPath: Scripts_Native/Binaries/Scripts_Native.dll
   InitialScene: Scenes/Default.vnta

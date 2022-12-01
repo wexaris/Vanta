@@ -2,7 +2,7 @@
 
 #include <Vanta/Project/Project.hpp>
 #include <Vanta/Scene/Serializer.hpp>
-#include <Vanta/Script/ScriptEngine.hpp>
+#include <Vanta/Scripts/ScriptEngine.hpp>
 
 #include <imgui.h>
 #include <ImGuizmo.h>
@@ -33,8 +33,8 @@ namespace Vanta {
                 auto projectPath = commandLineArgs[1];
                 OpenProject(projectPath);
             }
-            else {
-                OpenProject();
+            else if (!OpenProject()) {
+                Engine::Get().Stop();
             }
         }
 
@@ -629,17 +629,15 @@ namespace Vanta {
                 m_EditorScene->DuplicateEntity(selectedEntity);
         }
 
-        void EditorLayer::NewProject() {
+        bool EditorLayer::NewProject() {
             VANTA_PROFILE_FUNCTION();
 
             if (m_State != State::Edit)
                 OnStop();
 
             auto file = IO::FileDialog::OpenFile("Vanta Project (*.vproj)\0*.vproj\0");
-            if (!file) {
-                Engine::Get().Stop();
-                return;
-            }
+            if (!file)
+                return false;
                 
             Ref<Project> project = Project::New(file.value());
 
@@ -648,18 +646,22 @@ namespace Vanta {
             OpenScene(project->GetConfig().InitialScenePath);
 
             m_ContentPanel = NewBox<ContentBrowser>();
+
+            return true;
         }
 
-        void EditorLayer::OpenProject() {
+        bool EditorLayer::OpenProject() {
             VANTA_PROFILE_FUNCTION();
 
             // TODO: Prompt 
             auto file = IO::FileDialog::OpenFile("Vanta Project (*.vproj)\0*.vproj\0");
             if (file)
-                OpenProject(file->Filepath);
+                return OpenProject(file->Filepath);
+
+            return false;
         }
 
-        void EditorLayer::OpenProject(const Path& filepath) {
+        bool EditorLayer::OpenProject(const Path& filepath) {
             VANTA_PROFILE_FUNCTION();
 
             if (m_State != State::Edit)
@@ -667,13 +669,13 @@ namespace Vanta {
 
             if (filepath.extension().string() != ".vproj") {
                 VANTA_ERROR("Could not load project: {}; incorrect file type", filepath.filename());
-                return;
+                return false;
             }
 
             Ref<Project> project = Project::Load(filepath);
             if (!project) {
                 VANTA_ERROR("Failed to load project: {}", filepath);
-                return;
+                return false;
             }
 
             ScriptEngine::ReloadAssembly();
@@ -681,6 +683,8 @@ namespace Vanta {
             OpenScene(project->GetConfig().InitialScenePath);
 
             m_ContentPanel = NewBox<ContentBrowser>();
+
+            return true;
         }
 
         void EditorLayer::SaveProject() {

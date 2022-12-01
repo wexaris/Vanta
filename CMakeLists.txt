@@ -15,6 +15,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/lib)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_subdirectory(Vanta-Scripts)
 add_subdirectory(Vanta)
+add_subdirectory(Vanta-ScriptCore-CSharp)
 add_subdirectory(Editor)

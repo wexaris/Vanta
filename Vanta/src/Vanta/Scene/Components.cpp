@@ -1,17 +1,17 @@
 #include "vantapch.hpp"
 #include "Vanta/Scene/Components.hpp"
 #include "Vanta/Scene/Entity.hpp"
-#include "Vanta/Script/NativeScript.hpp"
-#include "Vanta/Script/ScriptEngine.hpp"
+#include "Vanta/Scripts/CSharp/ScriptEngine.hpp"
+#include "Vanta/Scripts/Native/ScriptEngine.hpp"
 
 namespace Vanta {
 
     void ScriptComponent::Create(entt::entity e, Scene* scene) {
-        if (!ScriptEngine::ClassExists(ClassName))
+        if (!CSharp::ScriptEngine::ClassExists(ClassName))
             return;
 
         Entity entity(e, scene);
-        Instance = ScriptEngine::Instantiate(ClassName, entity);
+        Instance = CSharp::ScriptEngine::Instantiate(ClassName, entity);
     }
 
     void ScriptComponent::Destroy() {
@@ -19,13 +19,14 @@ namespace Vanta {
     }
 
     void NativeScriptComponent::Create(entt::entity e, Scene* scene) {
+        if (!Native::ScriptEngine::ClassExists(ClassName))
+            return;
+
         Entity entity(e, scene);
-        Instance = CreateInstance();
-        Instance->m_Entity = entity;
+        Instance = Native::ScriptEngine::Instantiate(ClassName, entity);
     }
 
     void NativeScriptComponent::Destroy() {
-        DestroyInstance(Instance);
-        Instance = nullptr;
+        Instance.reset();
     }
 }

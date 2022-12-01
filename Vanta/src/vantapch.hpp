@@ -18,6 +18,7 @@
 #include <glm/ext.hpp>
 
 // Core
+#include "Vanta/Core/Config.hpp"
 #include "Vanta/Core/Definitions.hpp"
 #include "Vanta/Core/Types.hpp"
 #include "Vanta/Core/Buffer.hpp"

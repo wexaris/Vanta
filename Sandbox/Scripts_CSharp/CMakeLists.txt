@@ -1,18 +1,19 @@
 cmake_minimum_required(VERSION 3.20)
 project(Scripts_CSharp VERSION 0.1.0 LANGUAGES CSharp)
 
-set(${PROJECT_NAME}_SOURCE
-    "CSharp/Camera.cs"
-    "CSharp/Player.cs"
-)
+set(VANTA_CORE_LIB "" CACHE STRING "Path to Vanta-ScriptCore-CSharp.dll")
+
+set(OUTPUT_DIR "${CMAKE_BINARY_DIR}/../Binaries")
+
+file(GLOB_RECURSE ${PROJECT_NAME}_SOURCE "Source/*.cs")
 
 add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCE})
 
-target_link_libraries(${PROJECT_NAME} ${VANTA_CSHARP_LIB})
-
 set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DOTNET_TARGET_FRAMEWORK_VERSION "v4.6.1")
 
-set(OUTPUT_DIR "${CMAKE_BINARY_DIR}/Binary")
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    VS_DOTNET_REFERENCES "${VS_DOTNET_REFERENCES}"
+    VS_DOTNET_REFERENCE_Vanta-ScriptCore-CSharp "${VANTA_CORE_LIB}")
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIR}

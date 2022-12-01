@@ -1,5 +1,4 @@
 #pragma once
-#include "Vanta/Core/Config.hpp"
 
 /// ///////////////////// PLATFORM ////////////////////////
 /// VANTA_PLATFORM_WINDOWS
@@ -31,6 +30,21 @@
     #error "Linux is not supported!"
 #else
     #error Unknown platform!
+#endif
+
+
+/// 
+/// 
+/// VANTA_EXPORT - set externally
+
+#if defined(VANTA_PLATFORM_WINDOWS)
+    #if defined(VANTA_MODULE)
+        #define VANTA_EXPORT extern "C" __declspec(dllexport)
+    #else
+        #define VANTA_EXPORT extern "C" __declspec(dllimport)
+    #endif
+#elif defined(VANTA_PLATFORM_LINUX)
+    #define VANTA_EXPORT
 #endif
 
 

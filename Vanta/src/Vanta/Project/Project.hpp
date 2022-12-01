@@ -7,7 +7,9 @@ namespace Vanta {
 
         Path AssetDirectory = "Assets";
         Path CacheDirectory = "Cache";
-        Path ScriptAssemblyPath = "Scripts_CSharp/Binaries/Scripts_CSharp.dll";
+
+        Path CSharpScriptAssemblyPath = "Scripts_CSharp/Binaries/Scripts_CSharp.dll";
+        Path NativeScriptAssemblyPath = "Scripts_Native/Binaries/Scripts_Native.dll";
 
         Path InitialScenePath = "Scenes/Default.vnta";
     };

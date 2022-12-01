@@ -9,6 +9,19 @@
 
 namespace Vanta {
 
+    DynamicLibrary::DynamicLibrary(const Path& filepath) {
+        std::string path = filepath.string();
+        m_Library = LoadLibrary((LPCSTR)path.c_str());
+    }
+
+    DynamicLibrary::~DynamicLibrary() {
+        FreeLibrary((HMODULE)m_Library);
+    }
+
+    void* DynamicLibrary::GetFunction_Impl(const char* name) {
+        return GetProcAddress((HMODULE)m_Library, (LPCSTR)name);
+    }
+
     Path Platform::OpenFileDialog(const char* filter) {
         OPENFILENAMEA ofn;
         CHAR szFile[260] = { 0 };

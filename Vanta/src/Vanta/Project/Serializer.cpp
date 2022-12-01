@@ -20,7 +20,8 @@ namespace Vanta {
             out << YAML::Key << "Name" << YAML::Value << config.Name;
             out << YAML::Key << "AssetDirectory" << YAML::Value << config.AssetDirectory.string();
             out << YAML::Key << "CacheDirectory" << YAML::Value << config.CacheDirectory.string();
-            out << YAML::Key << "ScriptAssemblyPath" << YAML::Value << config.ScriptAssemblyPath.string();
+            out << YAML::Key << "NativeScriptAssemblyPath" << YAML::Value << config.NativeScriptAssemblyPath.string();
+            out << YAML::Key << "CSharpScriptAssemblyPath" << YAML::Value << config.CSharpScriptAssemblyPath.string();
             out << YAML::Key << "InitialScene" << YAML::Value << config.InitialScenePath.string();
             out << YAML::EndMap;
         }
@@ -52,7 +53,8 @@ namespace Vanta {
 
         config.AssetDirectory = data["AssetDirectory"].as<std::string>();
         config.CacheDirectory = data["CacheDirectory"].as<std::string>();
-        config.ScriptAssemblyPath = data["ScriptAssemblyPath"].as<std::string>();
+        config.NativeScriptAssemblyPath = data["NativeScriptAssemblyPath"].as<std::string>();
+        config.CSharpScriptAssemblyPath = data["CSharpScriptAssemblyPath"].as<std::string>();
         config.InitialScenePath = data["InitialScene"].as<std::string>();
 
         return true;

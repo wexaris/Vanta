@@ -2,40 +2,17 @@ Scene:
   Name: Untitled
   ActiveCamera: 15579620444860803001
   Entities:
-    - Entity: [Floor, 10128041847389027557]
+    - Entity: [Red, 6908040925817384224]
       TransformComponent:
-        Position: [0, -5.5, 0]
-        Rotation: [0, -0, -7.97882652]
-        Scale: [12.000001, 0.5, 1]
+        Position: [-3, 1, 0]
+        Rotation: [0, -0, -26.217247]
+        Scale: [1, 1, 1]
       SpriteComponent:
+        Texture: Textures\Vanta.png
         TilingFactor: 1
-        Color: [0.918918908, 0.867549002, 0.386726499, 1]
+        Color: [0.868725896, 0.472935706, 0.472935706, 1]
       Rigidbody2DComponent:
         BodyType: 0
-        FixedRotation: false
-      BoxCollider2DComponent:
-        Size: [0.5, 0.5]
-        Offset: [0, 0]
-        Density: 1
-        Friction: 0.400000006
-        Restitution: 0.300000012
-        RestitutionThreshold: 0.5
-    - Entity: [Player, 11141874658374337179]
-      TransformComponent:
-        Position: [-1.49011612e-08, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [0.5, 1, 1]
-      ScriptComponent:
-        Class: Sandbox.Player
-        Fields:
-          - Name: Speed
-            Type: Float
-            Value: 4
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [0.513588071, 0.581396341, 0.764478743, 1]
-      Rigidbody2DComponent:
-        BodyType: 1
         FixedRotation: false
       BoxCollider2DComponent:
         Size: [0.5, 0.5]
@@ -65,15 +42,40 @@ Scene:
           - Name: DistanceZ
             Type: Float
             Value: 20
-    - Entity: [Red, 6908040925817384224]
+      NativeScriptComponent:
+        Class: Camera
+    - Entity: [Player, 7154378457275276275]
       TransformComponent:
-        Position: [-3, 1, 0]
-        Rotation: [0, -0, -26.217247]
-        Scale: [1, 1, 1]
+        Position: [0, 1, 0]
+        Rotation: [0, -0, 0]
+        Scale: [0.5, 1, 1]
+      ScriptComponent:
+        Class: Sandbox.Player
+        Fields:
+          - Name: Speed
+            Type: Float
+            Value: 4
       SpriteComponent:
-        Texture: Textures\Vanta.png
         TilingFactor: 1
-        Color: [0.868725896, 0.472935706, 0.472935706, 1]
+        Color: [0.344538718, 0.70358628, 0.833976865, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [Foor, 14123905778971563486]
+      TransformComponent:
+        Position: [0, -3, 0]
+        Rotation: [0, -0, -9.92182541]
+        Scale: [12.0000019, 0.5, 1]
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [0.907335877, 0.806675553, 0.479942113, 1]
       Rigidbody2DComponent:
         BodyType: 0
         FixedRotation: false
@@ -85,6 +87,6 @@ Scene:
         Restitution: 0.300000012
         RestitutionThreshold: 0.5
 
-ViewportCameraPosition: [2.46916413, 7.29723215, 12.2609749]
+ViewportCameraPosition: [1.65952301, 6.50411272, 9.55466652]
 
-ViewportCameraRotation: [-34.4001732, 11.1999292, 0]
+ViewportCameraRotation: [-31.8999748, 11.75982, 0]

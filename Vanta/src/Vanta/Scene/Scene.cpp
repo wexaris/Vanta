@@ -3,8 +3,7 @@
 #include "Vanta/Render/Renderer2D.hpp"
 #include "Vanta/Scene/Entity.hpp"
 #include "Vanta/Scene/Scene.hpp"
-#include "Vanta/Script/ScriptEngine.hpp"
-#include "Vanta/Script/NativeScript.hpp"
+#include "Vanta/Scripts/ScriptEngine.hpp"
 
 #include <box2d/b2_body.h>
 #include <box2d/b2_world.h>
@@ -102,8 +101,8 @@ namespace Vanta {
             script.Create(e, this);
         });
 
-        View<NativeScriptComponent>([&](entt::entity, NativeScriptComponent& script) {
-            script.Instance->OnCreate();
+        View<NativeScriptComponent>([&](entt::entity e, NativeScriptComponent& script) {
+            script.Create(e, this);
         });
 
         // Instantiate C# scripts
@@ -131,7 +130,8 @@ namespace Vanta {
         ParallelView<NativeScriptComponent>(m_Barrier, m_Registry,
             [](entt::entity, NativeScriptComponent& script)
         {
-            script.Instance->OnDestroy();
+            if (script.Instance)
+                script.Instance->OnDestroy();
             script.Destroy();
         });
 
@@ -261,7 +261,8 @@ namespace Vanta {
         ParallelView<NativeScriptComponent>(m_Barrier, m_Registry,
             [=](entt::entity, NativeScriptComponent& script)
         {
-            script.Instance->OnUpdate(delta);
+            if (script.Instance)
+                script.Instance->OnUpdate((float)delta);
         });
 
         View<ScriptComponent>([&](entt::entity, ScriptComponent& script) {

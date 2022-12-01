@@ -3,7 +3,7 @@
 #include "Vanta/Input/Input.hpp"
 #include "Vanta/Render/Renderer.hpp"
 #include "Vanta/Scene/Scene.hpp"
-#include "Vanta/Script/ScriptEngine.hpp"
+#include "Vanta/Scripts/ScriptEngine.hpp"
 
 namespace Vanta {
 
@@ -49,6 +49,8 @@ namespace Vanta {
 
         while (m_Running) {
             VANTA_PROFILE_SCOPE("Game Loop");
+
+            ExectuteMainThreadQueue();
 
             Input::PollInputs();
 

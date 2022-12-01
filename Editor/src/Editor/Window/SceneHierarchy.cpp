@@ -1,6 +1,6 @@
 #include "Editor/Window/SceneHierarchy.hpp"
 
-#include <Vanta/Script/ScriptEngine.hpp>
+#include <Vanta/Scripts/ScriptEngine.hpp>
 
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -207,6 +207,7 @@ namespace Vanta {
             if (ImGui::BeginPopup("AddComponent")) {
                 DrawAddComponentMenu<CameraComponent>("Camera");
                 DrawAddComponentMenu<ScriptComponent>("Script");
+                DrawAddComponentMenu<NativeScriptComponent>("Native Script");
                 DrawAddComponentMenu<SpriteComponent>("Sprite Renderer");
                 DrawAddComponentMenu<CircleRendererComponent>("Circle Renderer");
                 DrawAddComponentMenu<Rigidbody2DComponent>("Rigidbody 2D"); 
@@ -295,7 +296,7 @@ namespace Vanta {
                 static char buffer[64];
                 strcpy_s(buffer, component.ClassName.c_str());
 
-                bool classExists = ScriptEngine::ClassExists(component.ClassName);
+                bool classExists = CSharp::ScriptEngine::ClassExists(component.ClassName);
 
                 if (!classExists)
                     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.9f, 0.2f, 0.3f, 1.0f));
@@ -311,7 +312,7 @@ namespace Vanta {
                     const auto& fields = component.Instance->GetClass()->GetFields();
                     for (const auto& [name, field] : fields) {
                         switch (field.Type) {
-                        case ScriptFieldType::Float: {
+                        case CSharp::ScriptFieldType::Float: {
                             float data = component.Instance->GetFieldValue<float>(name);
                             if (ImGui::DragFloat(name.c_str(), &data)) {
                                 component.Instance->SetFieldValue(name, data);
@@ -323,8 +324,8 @@ namespace Vanta {
                 }
                 // Editor field data
                 else if (classExists) {
-                    Ref<ScriptClass> klass = ScriptEngine::GetClass(component.ClassName);
-                    auto& instances = ScriptEngine::GetFieldInstances(entity);
+                    Ref<CSharp::ScriptClass> klass = CSharp::ScriptEngine::GetClass(component.ClassName);
+                    auto& instances = CSharp::ScriptEngine::GetFieldInstances(entity);
                     
                     // Loop though every class field and check
                     // if an instance has already been created.
@@ -336,7 +337,7 @@ namespace Vanta {
                             auto& instance = it->second;
 
                             switch (field.Type) {
-                            case ScriptFieldType::Float: {
+                            case CSharp::ScriptFieldType::Float: {
                                 float data = instance->GetFieldValue<float>();
                                 if (ImGui::DragFloat(name.c_str(), &data)) {
                                     instance->SetFieldValue(data);
@@ -348,10 +349,10 @@ namespace Vanta {
                         // Create new field instance
                         else {
                             switch (field.Type) {
-                            case ScriptFieldType::Float: {
+                            case CSharp::ScriptFieldType::Float: {
                                 float data = 0.0f;
                                 if (ImGui::DragFloat(name.c_str(), &data)) {
-                                    instances[name] = NewBox<ScriptFieldBuffer<float>>(field, data);
+                                    instances[name] = NewBox<CSharp::ScriptFieldBuffer<float>>(field, data);
                                 }
                             }
                             default:;
@@ -359,6 +360,22 @@ namespace Vanta {
                         }
                     }
                 }
+            });
+
+            DrawComponent<NativeScriptComponent>("Native Script", entity, [entity](NativeScriptComponent& component) {
+                static char buffer[64];
+                strcpy_s(buffer, component.ClassName.c_str());
+
+                bool classExists = Native::ScriptEngine::ClassExists(component.ClassName);
+
+                if (!classExists)
+                    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.9f, 0.2f, 0.3f, 1.0f));
+
+                if (ImGui::InputText("Class", buffer, sizeof(buffer)))
+                    component.ClassName = buffer;
+
+                if (!classExists)
+                    ImGui::PopStyleColor();
             });
 
             DrawComponent<SpriteComponent>("Sprite", entity, [](SpriteComponent& component) {

@@ -52,10 +52,11 @@ set(${PROJECT_NAME}_SOURCE
     "src/Vanta/Scene/Scene.cpp"
     "src/Vanta/Scene/SceneCamera.cpp"
     "src/Vanta/Scene/Serializer.cpp"
-    "src/Vanta/Script/Class.cpp"
-    "src/Vanta/Script/Field.cpp"
-    "src/Vanta/Script/Interface.cpp"
-    "src/Vanta/Script/ScriptEngine.cpp"
+    "src/Vanta/Scripts/CSharp/Class.cpp"
+    "src/Vanta/Scripts/CSharp/Field.cpp"
+    "src/Vanta/Scripts/CSharp/Interface.cpp"
+    "src/Vanta/Scripts/CSharp/ScriptEngine.cpp"
+    "src/Vanta/Scripts/Native/ScriptEngine.cpp"
     "src/Vanta/Util/Math.cpp"
     "src/Vanta/Util/Time.cpp"
     "src/Platform/OpenGL/Buffer.cpp"
@@ -69,14 +70,14 @@ set(${PROJECT_NAME}_SOURCE
     "src/Platform/Windows/Input.cpp"
     "src/Platform/Windows/PlatformUtils.cpp"
     "src/Platform/Windows/Window.cpp"
-)
+ "src/Vanta/Scripts/Native/Assembly.cpp" "src/Vanta/Scripts/Native/Class.cpp")
 
 set(${${PROJECT_NAME}_PCH} "${CMAKE_CURRENT_SOURCE_DIR}/src/vantapch.hpp")
 
 add_library(${PROJECT_NAME} STATIC ${${PROJECT_NAME}_SOURCE})
 target_precompile_headers(${PROJECT_NAME} PRIVATE ${${PROJECT_NAME}_PCH})
 
-add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}-Scripts)
+add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}-ScriptCore-CSharp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
 

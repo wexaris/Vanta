@@ -75,9 +75,9 @@ namespace Vanta {
 
             void OnDuplicateEntity();
 
-            void NewProject();
-            void OpenProject();
-            void OpenProject(const Path& path);
+            bool NewProject();
+            bool OpenProject();
+            bool OpenProject(const Path& path);
             void SaveProject();
 
             void NewScene();

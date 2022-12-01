@@ -18,6 +18,7 @@
 #include <glm/ext.hpp>
 
 // Base
+#include <Vanta/Core/Config.hpp>
 #include <Vanta/Core/Definitions.hpp>
 #include <Vanta/Core/Types.hpp>
 #include <Vanta/Core/Buffer.hpp>
@@ -48,5 +49,5 @@
 #include <Vanta/Scene/Scene.hpp>
 
 // Scripts
-#include <Vanta/Script/ScriptEngine.hpp>
-#include <Vanta/Script/NativeScript.hpp>
+#include <Vanta/Scripts/CSharp/ScriptEngine.hpp>
+#include <Vanta/Scripts/Native/ScriptEngine.hpp>

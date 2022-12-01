@@ -199,13 +199,15 @@ namespace Vanta {
         float Fade = 0.01f;
     };
 
-    class ScriptInstance; // Forward declare
+    namespace CSharp {
+        class ScriptInstance; // Forward declare
+    }
 
     struct ScriptComponent {
         std::string ClassName;
 
         // Script runtime instance
-        Ref<ScriptInstance> Instance = nullptr;
+        Ref<CSharp::ScriptInstance> Instance = nullptr;
 
         void Create(entt::entity e, Scene* scene);
         void Destroy();
@@ -214,26 +216,21 @@ namespace Vanta {
         ScriptComponent(const ScriptComponent&) = default;
     };
 
-    class NativeScript; // Forward declare
+    namespace Native {
+        class ScriptInstance; // Forward declare
+    }
 
     struct NativeScriptComponent {
+        std::string ClassName;
+
         // Script runtime instance
-        NativeScript* Instance;
-
-        NativeScript* (*CreateInstance)();
-        void (*DestroyInstance)(NativeScript*);
-
-        NativeScriptComponent() = default;
-        NativeScriptComponent(const NativeScriptComponent&) = default;
+        Ref<Native::ScriptInstance> Instance = nullptr;
 
         void Create(entt::entity e, Scene* scene);
         void Destroy();
 
-        template<typename T> requires IsBase_v<NativeScript, T>
-        void Bind() {
-            CreateInstance = []() { return static_cast<NativeScript*>(new T()); };
-            DestroyInstance = [](NativeScript* instance) { delete instance; };
-        }
+        NativeScriptComponent() = default;
+        NativeScriptComponent(const NativeScriptComponent&) = default;
     };
 
     using AllComponents = ComponentList<TransformComponent, CameraComponent,
