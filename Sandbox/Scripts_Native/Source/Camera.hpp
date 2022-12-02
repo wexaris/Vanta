@@ -1,9 +1,9 @@
 #pragma once
-#include <Vanta/Scripts/Native/External/NativeScript.hpp>
+#include <Vanta/Scripts/Native/Module/Vanta.hpp>
 
 namespace Sandbox {
 
-    class Camera : public Vanta::EntityScript {
+    class Camera : public Vanta::Entity {
         REGISTER_SCRIPT(Camera);
 
     public:

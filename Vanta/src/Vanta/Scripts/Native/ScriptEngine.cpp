@@ -1,6 +1,7 @@
 #include "vantapch.hpp"
 #include "Vanta/Core/Engine.hpp"
 #include "Vanta/Project/Project.hpp"
+#include "Vanta/Scripts/Native/Interface.hpp"
 #include "Vanta/Scripts/Native/ScriptEngine.hpp"
 #include "Vanta/Util/PlatformUtils.hpp"
 
@@ -99,6 +100,8 @@ namespace Vanta {
                 VANTA_CORE_CRITICAL("Failed to load app script assembly!");
                 return;
             }
+
+            Interface::RegisterFunctions();
         }
 
         void ScriptEngine::InspectAssembly(ScriptAssembly* assembly) {
@@ -143,6 +146,10 @@ namespace Vanta {
 
         Scene* ScriptEngine::GetContext() {
             return s_Data.SceneContext;
+        }
+
+        ScriptAssembly* ScriptEngine::GetAppAssembly() {
+            return s_Data.AppAssembly.get();
         }
     }
 }

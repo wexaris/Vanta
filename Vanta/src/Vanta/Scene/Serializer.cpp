@@ -42,13 +42,13 @@ namespace Vanta {
             out << YAML::BeginMap;
 
             out << YAML::Key << "Camera" << YAML::Value << YAML::BeginMap;
-            out << YAML::Key << "ProjectionType" << YAML::Value << (int)component.Camera.GetProjectionType();
-            out << YAML::Key << "PerspectiveFOV" << YAML::Value << component.Camera.GetPerspectiveFOV();
-            out << YAML::Key << "PerspectiveNear" << YAML::Value << component.Camera.GetPerspectiveNearClip();
-            out << YAML::Key << "PerspectiveFar" << YAML::Value << component.Camera.GetPerspectiveFarClip();
-            out << YAML::Key << "OrthographicSize" << YAML::Value << component.Camera.GetOrthographicSize();
-            out << YAML::Key << "OrthographicNear" << YAML::Value << component.Camera.GetOrthographicNearClip();
-            out << YAML::Key << "OrthographicFar" << YAML::Value << component.Camera.GetOrthographicFarClip();
+            out << YAML::Key << "ProjectionType" << YAML::Value << (int)component.Camera->GetProjectionType();
+            out << YAML::Key << "PerspectiveFOV" << YAML::Value << component.Camera->GetPerspectiveFOV();
+            out << YAML::Key << "PerspectiveNear" << YAML::Value << component.Camera->GetPerspectiveNearClip();
+            out << YAML::Key << "PerspectiveFar" << YAML::Value << component.Camera->GetPerspectiveFarClip();
+            out << YAML::Key << "OrthographicSize" << YAML::Value << component.Camera->GetOrthographicSize();
+            out << YAML::Key << "OrthographicNear" << YAML::Value << component.Camera->GetOrthographicNearClip();
+            out << YAML::Key << "OrthographicFar" << YAML::Value << component.Camera->GetOrthographicFarClip();
             out << YAML::EndMap;
 
             out << YAML::Key << "FixedAspectRatio" << YAML::Value << component.FixedAspectRatio;
@@ -286,15 +286,15 @@ namespace Vanta {
                 auto& cc = entity.AddComponent<CameraComponent>();
 
                 auto camera = cameraComponent["Camera"];
-                cc.Camera.SetProjectionType((SceneCamera::Projection)camera["ProjectionType"].as<int>());
+                cc.Camera->SetProjectionType((SceneCamera::Projection)camera["ProjectionType"].as<int>());
 
-                cc.Camera.SetPerspectiveFOV(camera["PerspectiveFOV"].as<float>());
-                cc.Camera.SetPerspectiveNearClip(camera["PerspectiveNear"].as<float>());
-                cc.Camera.SetPerspectiveFarClip(camera["PerspectiveFar"].as<float>());
+                cc.Camera->SetPerspectiveFOV(camera["PerspectiveFOV"].as<float>());
+                cc.Camera->SetPerspectiveNearClip(camera["PerspectiveNear"].as<float>());
+                cc.Camera->SetPerspectiveFarClip(camera["PerspectiveFar"].as<float>());
 
-                cc.Camera.SetOrthographicSize(camera["OrthographicSize"].as<float>());
-                cc.Camera.SetOrthographicNearClip(camera["OrthographicNear"].as<float>());
-                cc.Camera.SetOrthographicFarClip(camera["OrthographicFar"].as<float>());
+                cc.Camera->SetOrthographicSize(camera["OrthographicSize"].as<float>());
+                cc.Camera->SetOrthographicNearClip(camera["OrthographicNear"].as<float>());
+                cc.Camera->SetOrthographicFarClip(camera["OrthographicFar"].as<float>());
 
                 cc.FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
             }

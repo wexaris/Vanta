@@ -1,7 +1,7 @@
 #pragma once
-#include "Vanta/Event/WindowEvent.hpp"
 #include "Vanta/Scene/BufferedRegistry.hpp"
 #include "Vanta/Scene/Dispatch.hpp"
+#include "Vanta/Scene/SceneCamera.hpp"
 #include "Vanta/Render/Camera.hpp"
 
 class b2World;
@@ -147,7 +147,7 @@ namespace Vanta {
                 m_ActiveCameraEntity = entity;
             }
 
-            component.Camera.Resize(m_ViewportSize.x, m_ViewportSize.y);
+            component.Camera->Resize(m_ViewportSize.x, m_ViewportSize.y);
         }
     };
 }

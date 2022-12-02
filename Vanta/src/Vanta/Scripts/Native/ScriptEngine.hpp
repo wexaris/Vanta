@@ -23,8 +23,11 @@ namespace Vanta {
             static Ref<ScriptClass> GetClass(const std::string& className);
 
             static Scene* GetContext();
+            static ScriptAssembly* GetAppAssembly();
 
         private:
+            friend struct Interface;
+
             ScriptEngine() = delete;
 
             static void InspectAssembly(ScriptAssembly* assembly);

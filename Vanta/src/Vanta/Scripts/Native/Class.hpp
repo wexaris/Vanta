@@ -12,10 +12,10 @@ namespace Vanta {
             ScriptClass() = default;
             ScriptClass(ScriptAssembly* assembly, const std::string& className);
 
-            EntityScript* Instantiate(Entity entity) const;
-            void InvokeOnCreate(EntityScript* instance) const;
-            void InvokeOnUpdate(EntityScript* instance, double delta) const;
-            void InvokeOnDestroy(EntityScript* instance) const;
+            ScriptObject* Instantiate(Entity entity) const;
+            void InvokeOnCreate(ScriptObject* instance) const;
+            void InvokeOnUpdate(ScriptObject* instance, double delta) const;
+            void InvokeOnDestroy(ScriptObject* instance) const;
 
             //const std::unordered_map<std::string, ScriptField>& GetFields() const { return m_Fields; }
 
@@ -56,7 +56,7 @@ namespace Vanta {
 
             Ref<ScriptClass> m_ScriptClass;
 
-            EntityScript* m_Instance = nullptr;
+            ScriptObject* m_Instance = nullptr;
 
             //bool GetFieldValue_Impl(const std::string& name, void* buffer);
             //bool SetFieldValue_Impl(const std::string& name, const void* data);

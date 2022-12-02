@@ -3,6 +3,7 @@
 #include "Vanta/Render/Renderer2D.hpp"
 #include "Vanta/Scene/Entity.hpp"
 #include "Vanta/Scene/Scene.hpp"
+#include "Vanta/Scene/SceneCamera.hpp"
 #include "Vanta/Scripts/ScriptEngine.hpp"
 
 #include <box2d/b2_body.h>
@@ -50,7 +51,6 @@ namespace Vanta {
 
     Ref<Scene> Scene::Copy(const Ref<Scene>& other) {
         Ref<Scene> scene = NewRef<Scene>();
-
         scene->m_ViewportSize = other->m_ViewportSize;
 
         other->m_Registry.View<IDComponent>([&](entt::entity entity, IDComponent& id) {
@@ -101,15 +101,16 @@ namespace Vanta {
             script.Create(e, this);
         });
 
-        View<NativeScriptComponent>([&](entt::entity e, NativeScriptComponent& script) {
-            script.Create(e, this);
-        });
-
         // Instantiate C# scripts
         // Separate creation from OnCreate, because script might try to find another entity,
         // which hasn't been initialized yet.
         View<ScriptComponent>([&](entt::entity e, ScriptComponent& script) {
             script.Create(e, this);
+        });
+
+        View<NativeScriptComponent>([&](entt::entity e, NativeScriptComponent& script) {
+            if (script.Instance)
+            script.Instance->OnCreate();
         });
 
         View<ScriptComponent>([&](entt::entity, ScriptComponent& script) {
@@ -119,19 +120,27 @@ namespace Vanta {
     }
 
     void Scene::DestroyScripts() {
-        // Destroy C# scripts
-        View<ScriptComponent>([&](entt::entity, ScriptComponent& script) {
-            if (script.Instance)
-                script.Instance->OnDestroy();
-            script.Destroy();
-        });
-
         // Destroy native scripts
         ParallelView<NativeScriptComponent>(m_Barrier, m_Registry,
             [](entt::entity, NativeScriptComponent& script)
         {
             if (script.Instance)
                 script.Instance->OnDestroy();
+        });
+
+        // Destroy C# scripts
+        View<ScriptComponent>([&](entt::entity, ScriptComponent& script) {
+            if (script.Instance)
+                script.Instance->OnDestroy();
+        });
+
+        ParallelView<NativeScriptComponent>(m_Barrier, m_Registry,
+            [](entt::entity, NativeScriptComponent& script)
+        {
+            script.Destroy();
+        });
+
+        View<ScriptComponent>([&](entt::entity, ScriptComponent& script) {
             script.Destroy();
         });
 
@@ -296,8 +305,8 @@ namespace Vanta {
         if (IsValid(camera)) {
             auto& tr = GetComponent<TransformComponent>(camera).Get();
             auto& cc = GetComponent<CameraComponent>(camera);
-            cc.Camera.SetView(glm::inverse(tr.GetTransform()));
-            OnRender(delta, &cc.Camera);
+            cc.Camera->SetView(glm::inverse(tr.GetTransform()));
+            OnRender(delta, cc.Camera.get());
         }
     }
 
@@ -390,6 +399,6 @@ namespace Vanta {
         if (!cc)
             return nullptr;
 
-        return &cc->Camera;
+        return cc->Camera.get();
     }
 }

@@ -1,9 +1,11 @@
 #include "Camera.hpp"
 
+using namespace Vanta;
+
 namespace Sandbox {
 
     void Camera::OnCreate() {
-        //VANTA_INFO("Camera::OnCreate");
+        Log::Info("Camera::OnCreate");
     }
 }
 

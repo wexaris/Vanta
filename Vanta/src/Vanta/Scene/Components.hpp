@@ -1,6 +1,5 @@
 #pragma once
 #include "Vanta/Render/Texture.hpp"
-#include "Vanta/Scene/SceneCamera.hpp"
 
 #include <entt/entt.hpp>
 
@@ -125,14 +124,15 @@ namespace Vanta {
         }
     };
 
+    class SceneCamera;
+
     struct CameraComponent {
-        SceneCamera Camera = SceneCamera::Perspective();
+        Ref<SceneCamera> Camera = nullptr;
         bool FixedAspectRatio = false;
 
-        CameraComponent() = default;
+        CameraComponent();
         CameraComponent(const CameraComponent&) = default;
-        CameraComponent(const SceneCamera& camera, bool fixedAspectRatio = false)
-            : Camera(camera), FixedAspectRatio(fixedAspectRatio) {}
+        CameraComponent(Ref<SceneCamera> camera, bool fixedAspectRatio = false);
     };
 
     struct Rigidbody2DComponent {

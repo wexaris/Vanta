@@ -1,5 +1,5 @@
 #pragma once
-#include "Vanta/Scripts/Native/External/Interop.hpp"
+#include "Vanta/Scripts/Native/Module/Shared.hpp"
 #include "Vanta/Util/PlatformUtils.hpp"
 
 namespace Vanta {
@@ -9,17 +9,24 @@ namespace Vanta {
         public:
             ScriptAssembly(const Path& filepath);
 
-            std::pair<const char* const*, usize> GetClassList() const;
+            void RegisterEngineFunctions(const EngineFunctions& functions) const;
 
+            std::pair<const char* const*, usize> GetClassList() const;
             ClassFunctions* GetClassFunctions(const char* className) const;
+
+            std::pair<const char* const*, usize> GetComponentList() const;
+            usize GetComponentHash(const char* componentName) const;
 
             bool IsLoaded() const { return (bool)m_Library; }
 
         private:
             DynamicLibrary m_Library;
 
+            RegisterEngineFunctions_Fn RegisterEngineFunctions_Impl = nullptr;
             GetClassList_Fn GetClassList_Impl = nullptr;
             GetClassFunctions_Fn GetClassFunctions_Impl = nullptr;
+            GetComponentList_Fn GetComponentList_Impl = nullptr;
+            GetComponentHash_Fn GetComponentHash_Impl = nullptr;
             Destroy_Fn Destroy_Impl = nullptr;
         };
     }

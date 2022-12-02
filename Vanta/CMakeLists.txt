@@ -70,7 +70,7 @@ set(${PROJECT_NAME}_SOURCE
     "src/Platform/Windows/Input.cpp"
     "src/Platform/Windows/PlatformUtils.cpp"
     "src/Platform/Windows/Window.cpp"
- "src/Vanta/Scripts/Native/Assembly.cpp" "src/Vanta/Scripts/Native/Class.cpp")
+ "src/Vanta/Scripts/Native/Assembly.cpp" "src/Vanta/Scripts/Native/Class.cpp" "src/Vanta/Scripts/Native/Interface.cpp")
 
 set(${${PROJECT_NAME}_PCH} "${CMAKE_CURRENT_SOURCE_DIR}/src/vantapch.hpp")
 

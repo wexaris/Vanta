@@ -1,6 +1,5 @@
 #include "vantapch.hpp"
 #include "Vanta/Scene/Entity.hpp"
-#include "Vanta/Scene/Scene.hpp"
 
 namespace Vanta {
 

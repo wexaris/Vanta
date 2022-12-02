@@ -11,20 +11,20 @@ namespace Vanta {
             m_Functions = *assembly->GetClassFunctions(className.c_str());
         }
 
-        EntityScript* ScriptClass::Instantiate(Entity entity) const {
+        ScriptObject* ScriptClass::Instantiate(Entity entity) const {
             VANTA_PROFILE_FUNCTION();
             return m_Functions.Constructor(entity.GetUUID());
         }
 
-        void ScriptClass::InvokeOnCreate(EntityScript* instance) const {
+        void ScriptClass::InvokeOnCreate(ScriptObject* instance) const {
             m_Functions.OnCreate(instance);
         }
 
-        void ScriptClass::InvokeOnUpdate(EntityScript* instance, double delta) const {
+        void ScriptClass::InvokeOnUpdate(ScriptObject* instance, double delta) const {
             m_Functions.OnUpdate(instance, delta);
         }
 
-        void ScriptClass::InvokeOnDestroy(EntityScript* instance) const {
+        void ScriptClass::InvokeOnDestroy(ScriptObject* instance) const {
             m_Functions.OnDestroy(instance);
         }
 
