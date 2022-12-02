@@ -1,7 +1,7 @@
 #pragma once
 #include "../Scene/Components.hpp"
 
-#define REGISTER_SCRIPT(name) \
+#define VANTA_SCRIPT(name) \
     public: \
         static ::Vanta::Entity* InvokeConstructor(::Vanta::UUID entityID) { return new name(entityID); } \
         static void InvokeOnCreate(::Vanta::Entity* instance) { ((name*)instance)->OnCreate(); } \
@@ -19,15 +19,30 @@ namespace Vanta {
         Entity(UUID id) : m_ID(id) {}
         virtual ~Entity() = default;
 
+        operator bool() const { return m_ID != 0; }
+
     protected:
         virtual void OnCreate() {}
         virtual void OnUpdate(double) {}
         virtual void OnDestroy() {}
 
-        //template<typename T>
-        //T& GetComponent() {
-        //    return m_ID.GetComponent<T>();
-        //}
+        Entity GetEntityByName(const char* name) {
+            return Internal.Entity_GetEntityByName(name);
+        }
+
+        template<typename T>
+        T GetComponent() {
+            if (!HasComponent<T>()) {
+                Log::Warn("Entity doesn't have the requested component!");
+                return 0;
+            }
+            return T(m_ID);
+        }
+
+        template<typename T>
+        bool HasComponent() {
+            return Internal.Entity_HasComponent(m_ID, typeid(T).hash_code());
+        }
 
     private:
         UUID m_ID;

@@ -95,22 +95,20 @@ namespace Vanta {
         ScriptEngine::RuntimeBegin(this);
 
         // Instantiate native scripts
-        // Separate creation from OnCreate, because script might try to find another entity,
-        // which hasn't been initialized yet.
         View<NativeScriptComponent>([&](entt::entity e, NativeScriptComponent& script) {
             script.Create(e, this);
         });
 
         // Instantiate C# scripts
-        // Separate creation from OnCreate, because script might try to find another entity,
-        // which hasn't been initialized yet.
         View<ScriptComponent>([&](entt::entity e, ScriptComponent& script) {
             script.Create(e, this);
         });
 
-        View<NativeScriptComponent>([&](entt::entity e, NativeScriptComponent& script) {
+        // Separate creation from OnCreate, because script might try to find another script,
+        // which hasn't been initialized yet.
+        View<NativeScriptComponent>([&](entt::entity, NativeScriptComponent& script) {
             if (script.Instance)
-            script.Instance->OnCreate();
+                script.Instance->OnCreate();
         });
 
         View<ScriptComponent>([&](entt::entity, ScriptComponent& script) {

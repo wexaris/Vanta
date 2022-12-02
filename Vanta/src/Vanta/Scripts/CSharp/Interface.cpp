@@ -71,7 +71,7 @@ namespace Vanta {
             Scene* scene = ScriptEngine::GetContext();
             VANTA_CORE_ASSERT(scene, "Script engine context not set!");
             Entity entity = scene->GetEntityByID(id);
-            VANTA_ASSERT(entity, "Entity referenced in script doesn't exist!");
+            VANTA_CORE_ASSERT(entity, "Entity referenced in script doesn't exist!");
 
             ScriptComponent* sc = entity.TryGetComponent<ScriptComponent>();
             if (!sc) {
@@ -89,7 +89,7 @@ namespace Vanta {
             Scene* scene = ScriptEngine::GetContext();
             VANTA_CORE_ASSERT(scene, "Script engine context not set!");
             Entity entity = scene->GetEntityByID(id);
-            VANTA_ASSERT(entity, "Entity referenced in script doesn't exist!");
+            VANTA_CORE_ASSERT(entity, "Entity referenced in script doesn't exist!");
 
             MonoType* componentType = mono_reflection_type_get_type(type);
 
@@ -112,8 +112,9 @@ namespace Vanta {
             Scene* scene = ScriptEngine::GetContext();
             VANTA_CORE_ASSERT(scene, "Script engine context not set!");
             Entity entity = scene->GetEntityByID(id);
-            VANTA_ASSERT(entity, "Entity referenced in script doesn't exist!");
+            VANTA_CORE_ASSERT(entity, "Entity referenced in script doesn't exist!");
 
+            VANTA_CORE_ASSERT(entity.HasComponent<TransformComponent>(), "");
             TransformComponent& tr = entity.GetComponent<TransformComponent>().Set();
             tr.SetPosition(*pos);
         }

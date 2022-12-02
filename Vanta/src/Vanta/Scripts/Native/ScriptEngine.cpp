@@ -102,6 +102,7 @@ namespace Vanta {
             }
 
             Interface::RegisterFunctions();
+            Interface::RegisterComponents();
         }
 
         void ScriptEngine::InspectAssembly(ScriptAssembly* assembly) {

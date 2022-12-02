@@ -4,17 +4,10 @@
 namespace Sandbox {
 
     class Camera : public Vanta::Entity {
-        REGISTER_SCRIPT(Camera);
+        VANTA_SCRIPT(Camera);
 
     public:
         void OnCreate() override;
-
-        void OnUpdate(double) override {
-
-        }
-
-        void OnDestroy() override {
-
-        }
+        void OnUpdate(double) override;
     };
 }

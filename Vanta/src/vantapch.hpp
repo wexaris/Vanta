@@ -35,3 +35,6 @@
 
 // IO
 #include "Vanta/IO/IO.hpp"
+
+// Input
+#include "Vanta/Input/Input.hpp"
