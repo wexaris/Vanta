@@ -1,17 +1,19 @@
 @echo off
 
-set "BUILD_TYPE=Debug"
-
 set "CORE_LIB_DEBUG=E:\Code\engine\Vanta\build\x64-Debug-MSVC\lib\Vanta-ScriptCore-CSharp.dll"
 set "CORE_LIB_RELEASE=E:\Code\engine\Vanta\build\x64-Debug-MSVC\lib\Vanta-ScriptCore-CSharp.dll"
 
-if "%BUILD_TYPE%"=="Debug" (
-    set "CORE_LIB=%CORE_LIB_DEBUG%"
+if "%~1"=="" (
+	set "BUILD_TYPE=Debug"
 ) else (
-    set "CORE_LIB=%CORE_LIB_RELEASE%"
+	set "BUILD_TYPE=%1"
+)
+
+if "%BUILD_TYPE%"=="Release" (
+	set "CORE_LIB=%CORE_LIB_RELEASE%"
+) else (
+    set "CORE_LIB=%CORE_LIB_DEBUG%"
 )
 
 cmake -S . -B Build -DVANTA_CORE_LIB:STRING=%CORE_LIB%
 cmake --build Build --config %BUILD_TYPE%
-
-pause

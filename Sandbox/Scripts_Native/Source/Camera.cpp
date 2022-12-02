@@ -13,7 +13,7 @@ namespace Sandbox {
 
         if (tr) {
             const auto& pos = tr.GetPosition();
-            Log::Debug("Here");
+            Log::Info("Here");
         }
 
         if (Input::IsMouseDown(Mouse::ButtonLeft))

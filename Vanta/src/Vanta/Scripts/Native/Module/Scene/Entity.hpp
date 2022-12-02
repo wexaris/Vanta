@@ -33,7 +33,7 @@ namespace Vanta {
         template<typename T>
         T GetComponent() {
             if (!HasComponent<T>()) {
-                Log::Warn("Entity doesn't have the requested component!");
+                Log::Error("Entity doesn't have the requested component!");
                 return 0;
             }
             return T(m_ID);

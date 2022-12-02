@@ -2,9 +2,10 @@ cmake_minimum_required(VERSION 3.20)
 project(Editor)
 
 set(${PROJECT_NAME}_SOURCE
+    "src/Editor/CameraController.cpp"
     "src/Editor/Editor.cpp"
     "src/Editor/EditorLayer.cpp"
-    "src/Editor/CameraController.cpp"
+    "src/Editor/Utils.cpp"
     "src/Editor/Window/Console.cpp"
     "src/Editor/Window/ContentBrowser.cpp"
     "src/Editor/Window/SceneHierarchy.cpp"

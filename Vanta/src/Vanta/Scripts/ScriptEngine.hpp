@@ -15,7 +15,7 @@ namespace Vanta {
             Native::ScriptEngine::Shutdown();
         }
 
-        static void ReloadAssembly() {
+        static void ReloadAssemblies() {
             CSharp::ScriptEngine::ReloadAssembly();
             Native::ScriptEngine::ReloadAssembly();
         }

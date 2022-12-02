@@ -1,4 +1,5 @@
 #include "Editor/EditorLayer.hpp"
+#include "Editor/Utils.hpp"
 
 #include <Vanta/Project/Project.hpp>
 #include <Vanta/Scene/Serializer.hpp>
@@ -238,8 +239,16 @@ namespace Vanta {
                 }
 
                 if (ImGui::BeginMenu("Scripts")) {
-                    if (ImGui::MenuItem("Reload Assembly"))
-                        ScriptEngine::ReloadAssembly();
+                    if (ImGui::MenuItem("Rebuild C# Scripts"))
+                        Scripts::RebuildCSharp();
+
+                    if (ImGui::MenuItem("Rebuild Native Scripts"))
+                        Scripts::RebuildNative();
+
+                    ImGui::Separator();
+
+                    if (ImGui::MenuItem("Reload Assemblies"))
+                        ScriptEngine::ReloadAssemblies();
 
                     ImGui::EndMenu();
                 }
@@ -643,7 +652,7 @@ namespace Vanta {
                 
             Ref<Project> project = Project::New(file.value());
 
-            ScriptEngine::ReloadAssembly();
+            ScriptEngine::ReloadAssemblies();
 
             OpenScene(project->GetConfig().InitialScenePath);
 
@@ -680,7 +689,7 @@ namespace Vanta {
                 return false;
             }
 
-            ScriptEngine::ReloadAssembly();
+            ScriptEngine::ReloadAssemblies();
 
             OpenScene(project->GetConfig().InitialScenePath);
 

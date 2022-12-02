@@ -13,8 +13,8 @@ namespace Vanta {
 
 #define VANTA_REGISTER_FUNCTION(name) ForceAssign(functions.name, name);
 
-        static void Log_Debug(const char* message) {
-            VANTA_DEBUG(message);
+        static void Log_Trace(const char* message) {
+            VANTA_TRACE(message);
         }
 
         static void Log_Info(const char* message) {
@@ -86,7 +86,7 @@ namespace Vanta {
             ScriptAssembly* assembly = ScriptEngine::GetAppAssembly();
 
             EngineFunctions functions;
-            VANTA_REGISTER_FUNCTION(Log_Debug);
+            VANTA_REGISTER_FUNCTION(Log_Trace);
             VANTA_REGISTER_FUNCTION(Log_Info);
             VANTA_REGISTER_FUNCTION(Log_Warn);
             VANTA_REGISTER_FUNCTION(Log_Error);

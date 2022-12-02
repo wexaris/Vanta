@@ -3,8 +3,8 @@
 namespace Vanta {
     
     struct Log {
-        static void Debug(const char* message) {
-            Internal.Log_Debug(message);
+        static void Trace(const char* message) {
+            Internal.Log_Trace(message);
         }
 
         static void Info(const char* message) {

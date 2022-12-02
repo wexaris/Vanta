@@ -7,7 +7,7 @@ namespace Vanta {
         typedef void ScriptObject;
 
         struct EngineFunctions {
-            void (*Log_Debug) (const char*);
+            void (*Log_Trace) (const char*);
             void (*Log_Info) (const char*);
             void (*Log_Warn) (const char*);
             void (*Log_Error) (const char*);
