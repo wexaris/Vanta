@@ -124,7 +124,7 @@ namespace Vanta {
         }
     };
 
-    class SceneCamera;
+    class SceneCamera; // Forward declare
 
     struct CameraComponent {
         Ref<SceneCamera> Camera = nullptr;
@@ -170,7 +170,7 @@ namespace Vanta {
 
         float Density = 1.0f;
         float Friction = 0.4f;
-        float Restitution = 0.2f;           // bounciness
+        float Restitution = 0.3f;           // bounciness
         float RestitutionThreshold = 0.5f;
 
         // Physics runtime instance

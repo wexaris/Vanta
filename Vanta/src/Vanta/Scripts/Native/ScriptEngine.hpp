@@ -11,7 +11,6 @@ namespace Vanta {
             static void Init();
             static void Shutdown();
 
-            static bool LoadAppAssembly(const Path& filepath);
             static void ReloadAssembly();
 
             static void RuntimeBegin(Scene* scene);
@@ -29,6 +28,8 @@ namespace Vanta {
             friend struct Interface;
 
             ScriptEngine() = delete;
+
+            static bool LoadAppAssembly(const Path& filepath);
 
             static void InspectAssembly(ScriptAssembly* assembly);
         };

@@ -4,6 +4,14 @@
 namespace Vanta {
 
     namespace Math {
+        /// <summary>
+        /// Get the position, rotation, and scale from a transformation matrix.
+        /// </summary>
+        /// <param name="transform">Decomposable transform</param>
+        /// <param name="position">Vector to save position</param>
+        /// <param name="rotation">Vector to save rotation</param>
+        /// <param name="scale">Vector to save scale</param>
+        /// <returns></returns>
         bool Decompose(const glm::mat4& transform, glm::vec3& position, glm::vec3& rotation, glm::vec3& scale);
         bool Decompose(const glm::mat4& transform, glm::vec3& position, glm::vec3& rotation);
     }

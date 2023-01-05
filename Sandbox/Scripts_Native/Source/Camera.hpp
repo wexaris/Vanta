@@ -7,7 +7,12 @@ namespace Sandbox {
         VANTA_SCRIPT(Camera);
 
     public:
+        float DistanceZ = 20.f;
+
         void OnCreate() override;
         void OnUpdate(double) override;
+
+    private:
+        Vanta::Entity m_Player;
     };
 }

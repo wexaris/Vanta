@@ -19,8 +19,6 @@ namespace Vanta {
             static void Init();
             static void Shutdown();
 
-            static bool LoadCoreAssembly(const Path& filepath);
-            static bool LoadAppAssembly(const Path& filepath);
             static void ReloadAssembly();
 
             static void RuntimeBegin(Scene* scene);
@@ -50,6 +48,9 @@ namespace Vanta {
 
             static void CreateAppDomain();
             static void DestroyAppDomain();
+
+            static bool LoadCoreAssembly(const Path& filepath);
+            static bool LoadAppAssembly(const Path& filepath);
 
             static void InspectAssemblyImage(MonoImage* image);
 

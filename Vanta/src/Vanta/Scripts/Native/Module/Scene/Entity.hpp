@@ -16,15 +16,10 @@ namespace Vanta {
 
     class Entity {
     public:
-        Entity(UUID id) : m_ID(id) {}
+        Entity(UUID id = 0) : m_ID(id) {}
         virtual ~Entity() = default;
 
         operator bool() const { return m_ID != 0; }
-
-    protected:
-        virtual void OnCreate() {}
-        virtual void OnUpdate(double) {}
-        virtual void OnDestroy() {}
 
         Entity GetEntityByName(const char* name) {
             return Internal.Entity_GetEntityByName(name);
@@ -44,6 +39,12 @@ namespace Vanta {
             return Internal.Entity_HasComponent(m_ID, typeid(T).hash_code());
         }
 
+    protected:
+        virtual void OnCreate() {}
+        virtual void OnUpdate(double) {}
+        virtual void OnDestroy() {}
+
+        
     private:
         UUID m_ID;
     };

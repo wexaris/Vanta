@@ -232,6 +232,11 @@ namespace Vanta {
 
                     ImGui::Separator();
 
+                    if (ImGui::MenuItem("New Scene"))
+                        NewScene();
+
+                    ImGui::Separator();
+
                     if (ImGui::MenuItem("Exit"))
                         Engine::Get().Stop();
 
@@ -690,8 +695,14 @@ namespace Vanta {
             }
 
             ScriptEngine::ReloadAssemblies();
-
-            OpenScene(project->GetConfig().InitialScenePath);
+             
+            if (IO::File(project->GetAssetDirectory() / project->GetConfig().InitialScenePath).Exists()) {
+                OpenScene(project->GetConfig().InitialScenePath);
+            }
+            else {
+                VANTA_ERROR("Default scene not found!");
+                NewScene();
+            }
 
             m_ContentPanel = NewBox<ContentBrowser>();
 

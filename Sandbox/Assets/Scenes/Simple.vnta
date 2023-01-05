@@ -2,62 +2,14 @@ Scene:
   Name: Untitled
   ActiveCamera: 15579620444860803001
   Entities:
-    - Entity: [Red, 6908040925817384224]
+    - Entity: [Red, 4639143949621759840]
       TransformComponent:
-        Position: [-3, 1, 0]
-        Rotation: [0, -0, -26.217247]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        Texture: Textures\Vanta.png
-        TilingFactor: 1
-        Color: [0.868725896, 0.472935706, 0.472935706, 1]
-      Rigidbody2DComponent:
-        BodyType: 0
-        FixedRotation: false
-      BoxCollider2DComponent:
-        Size: [0.5, 0.5]
-        Offset: [0, 0]
-        Density: 1
-        Friction: 0.400000006
-        Restitution: 0.300000012
-        RestitutionThreshold: 0.5
-    - Entity: [Camera, 15579620444860803001]
-      TransformComponent:
-        Position: [0, 0, 10]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      CameraComponent:
-        Camera:
-          ProjectionType: 0
-          PerspectiveFOV: 45
-          PerspectiveNear: 0.100000001
-          PerspectiveFar: 1000
-          OrthographicSize: 10
-          OrthographicNear: -1
-          OrthographicFar: 100
-        FixedAspectRatio: false
-      ScriptComponent:
-        Class: Sandbox.Camera
-        Fields:
-          - Name: DistanceZ
-            Type: Float
-            Value: 20
-      NativeScriptComponent:
-        Class: Camera
-    - Entity: [Player, 7154378457275276275]
-      TransformComponent:
-        Position: [0, 1, 0]
-        Rotation: [0, -0, 0]
-        Scale: [0.5, 1, 1]
-      ScriptComponent:
-        Class: Sandbox.Player
-        Fields:
-          - Name: Speed
-            Type: Float
-            Value: 4
+        Position: [2.42580962, 0.535613179, 0]
+        Rotation: [0, -0, 63.2588234]
+        Scale: [1.00000012, 1.00000012, 1]
       SpriteComponent:
         TilingFactor: 1
-        Color: [0.344538718, 0.70358628, 0.833976865, 1]
+        Color: [0.888030887, 0.397728115, 0.397728115, 1]
       Rigidbody2DComponent:
         BodyType: 1
         FixedRotation: false
@@ -86,7 +38,67 @@ Scene:
         Friction: 0.400000006
         Restitution: 0.300000012
         RestitutionThreshold: 0.5
+    - Entity: [Player, 7154378457275276275]
+      TransformComponent:
+        Position: [0, 1, 0]
+        Rotation: [0, -0, 0]
+        Scale: [0.5, 1, 1]
+      ScriptComponent:
+        Class: Sandbox.Player
+        Fields:
+          - Name: Speed
+            Type: Float
+            Value: 4
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [0.344538718, 0.70358628, 0.833976865, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [Camera, 15579620444860803001]
+      TransformComponent:
+        Position: [0, 0, 10]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      CameraComponent:
+        Camera:
+          ProjectionType: 0
+          PerspectiveFOV: 34
+          PerspectiveNear: 3.0999999
+          PerspectiveFar: 1000
+          OrthographicSize: 10
+          OrthographicNear: -1
+          OrthographicFar: 100
+        FixedAspectRatio: false
+      NativeScriptComponent:
+        Class: Camera
+    - Entity: [Ball, 6908040925817384224]
+      TransformComponent:
+        Position: [-3, 1, 0]
+        Rotation: [0, -0, -26.217247]
+        Scale: [1, 1, 1]
+      SpriteComponent:
+        Texture: Textures\Circle.png
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 0
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
 
-ViewportCameraPosition: [1.65952301, 6.50411272, 9.55466652]
+ViewportCameraPosition: [0.00117572385, 8.12314606, 17.6404057]
 
-ViewportCameraRotation: [-31.8999748, 11.75982, 0]
+ViewportCameraRotation: [-26.9000492, -0.840175092, 0]

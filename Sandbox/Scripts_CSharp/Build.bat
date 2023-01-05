@@ -17,3 +17,5 @@ if "%BUILD_TYPE%"=="Release" (
 
 cmake -S . -B Build -DVANTA_CORE_LIB:STRING=%CORE_LIB%
 cmake --build Build --config %BUILD_TYPE%
+
+pause

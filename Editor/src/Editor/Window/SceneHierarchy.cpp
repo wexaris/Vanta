@@ -244,7 +244,7 @@ namespace Vanta {
                     m_Context->SetActiveCameraEntity(entity);
                 }
 
-                const char* projectionTypeStrings[] = {"Perspective", "Orthographic"};
+                const char* projectionTypeStrings[] = { "Perspective", "Orthographic" };
                 const char* currentProjectionTypeString = projectionTypeStrings[(int)camera->GetProjectionType()];
                 if (ImGui::BeginCombo("Projection", currentProjectionTypeString)) {
                     for (int i = 0; i < 2; i++) {
@@ -288,7 +288,7 @@ namespace Vanta {
                     if (ImGui::DragFloat("Far", &orthoFar))
                         camera->SetOrthographicFarClip(orthoFar);
 
-                    ImGui::Checkbox("Fixed Aspect Ratio", &component.FixedAspectRatio);
+                    //ImGui::Checkbox("Fixed Aspect Ratio", &component.FixedAspectRatio);
                 }
             });
 
@@ -420,11 +420,11 @@ namespace Vanta {
             });
 
             DrawComponent<Rigidbody2DComponent>("Rigidbody 2D", entity, [](auto& component) {
-                const char* optionStrings[] = { "Static", "Dynamic", "Kinematic" };
+                const char* optionStrings[] = { "Static", "Dynamic", /*"Kinematic"*/ };
                 const char* currentOptionString = optionStrings[(int)component.Type];
 
                 if (ImGui::BeginCombo("Type", currentOptionString)) {
-                    for (int i = 0; i < 3; i++) {
+                    for (int i = 0; i < 2; i++) {
                         bool isSelected = currentOptionString == optionStrings[i];
                         if (ImGui::Selectable(optionStrings[i], isSelected)) {
                             currentOptionString = optionStrings[i];

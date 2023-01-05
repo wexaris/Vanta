@@ -37,6 +37,7 @@ namespace Vanta {
 
         /// <summary>
         /// Wait function for synchronizer thread.
+        /// Waits for all jobs to be complete.
         /// </summary>
         void Wait() {
             if (m_Barrier != nullptr) {
@@ -49,6 +50,7 @@ namespace Vanta {
 
         /// <summary>
         /// Wait function for a fiber instance.
+        /// Waits for all jobs to be complete.
         /// </summary>
         void WaitFiber() {
             if (m_Barrier != nullptr)
@@ -82,7 +84,7 @@ namespace Vanta {
                         for (usize i = 0; i < CHUNK_SIZE && beg != end; ++i, ++beg) {
                             std::apply(func, *beg);
                         }
-                    barrier->WaitFiber();
+                        barrier->WaitFiber();
                     }, &barrier, beg, end);
 
                     for (usize j = 0; j < CHUNK_SIZE && beg != end; ++j)
@@ -115,7 +117,7 @@ namespace Vanta {
                         for (usize i = 0; i < CHUNK_SIZE && beg != end; ++i, ++beg) {
                             std::apply(func, *beg);
                         }
-                    barrier->WaitFiber();
+                        barrier->WaitFiber();
                     }, &barrier, beg, end);
 
                     for (usize j = 0; j < CHUNK_SIZE && beg != end; ++j)

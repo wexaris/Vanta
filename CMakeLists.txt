@@ -17,4 +17,5 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory(Vanta)
 add_subdirectory(Vanta-ScriptCore-CSharp)
+add_subdirectory(Vanta-Tests)
 add_subdirectory(Editor)
