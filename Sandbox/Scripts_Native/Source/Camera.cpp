@@ -12,6 +12,9 @@ namespace Sandbox {
     }
 
     void Camera::OnUpdate(double) {
+        if (!m_Player)
+            return;
+
         auto tr = GetComponent<TransformComponent>();
         auto& playerPos = m_Player.GetComponent<TransformComponent>().GetPosition();
 

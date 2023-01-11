@@ -1,7 +1,3191 @@
 Scene:
-  Name: Unnamed
+  Name: Untitled
   ActiveCamera: 16495614365407630898
   Entities:
+    - Entity: [NPC, 584416372288135099]
+      TransformComponent:
+        Position: [19.9651546, -26.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 17800568934396915865]
+      TransformComponent:
+        Position: [17.4651546, -26.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 3863769944091434710]
+      TransformComponent:
+        Position: [14.9651546, -26.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 17900310237932462180]
+      TransformComponent:
+        Position: [12.4651546, -26.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 13563843388040007714]
+      TransformComponent:
+        Position: [9.96515465, -26.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 1234066588428956774]
+      TransformComponent:
+        Position: [7.46515465, -26.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 18431023421026509375]
+      TransformComponent:
+        Position: [4.96515465, -26.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 1766606131357558851]
+      TransformComponent:
+        Position: [2.46515465, -26.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 4695804416723780856]
+      TransformComponent:
+        Position: [-0.0348453224, -26.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 10863982393973991325]
+      TransformComponent:
+        Position: [-20.0348454, -26.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 8018003680970970188]
+      TransformComponent:
+        Position: [-17.5348454, -26.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 9745999678479067758]
+      TransformComponent:
+        Position: [-15.0348454, -26.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 11688154424424961557]
+      TransformComponent:
+        Position: [-12.5348454, -26.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 12193613948035394238]
+      TransformComponent:
+        Position: [-10.0348454, -26.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 1594683923466711867]
+      TransformComponent:
+        Position: [-7.53484535, -26.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 15527012461041672501]
+      TransformComponent:
+        Position: [-5.03484535, -26.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 17415904955789325415]
+      TransformComponent:
+        Position: [-2.53484535, -26.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 16962485537966415259]
+      TransformComponent:
+        Position: [22.4651546, -26.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 6309140860260653428]
+      TransformComponent:
+        Position: [-0.0348453373, -23.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [Floor, 11385317065048856411]
+      TransformComponent:
+        Position: [4.76837158e-07, -24, 0]
+        Rotation: [0, -0, 0]
+        Scale: [49.999958, 0.5, 1]
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [0.891891897, 0.889990568, 0.399457365, 1]
+      Rigidbody2DComponent:
+        BodyType: 0
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 4243563964811826255]
+      TransformComponent:
+        Position: [19.9651546, -23.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 16415239588786441678]
+      TransformComponent:
+        Position: [17.4651546, -23.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 18162098259455671202]
+      TransformComponent:
+        Position: [14.9651546, -23.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 6723254177380692737]
+      TransformComponent:
+        Position: [12.4651546, -23.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 739164995304554495]
+      TransformComponent:
+        Position: [9.96515465, -23.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 16037162756681947607]
+      TransformComponent:
+        Position: [7.46515465, -23.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 1048922106572409814]
+      TransformComponent:
+        Position: [4.96515465, -23.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 9272756137226026114]
+      TransformComponent:
+        Position: [2.46515465, -23.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 6962599046155170627]
+      TransformComponent:
+        Position: [-22.5348454, -26.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 12530525435507321450]
+      TransformComponent:
+        Position: [-20.0348454, -23.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 8484394445555831322]
+      TransformComponent:
+        Position: [-17.5348454, -23.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 17839751197378430596]
+      TransformComponent:
+        Position: [-15.0348454, -23.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 86693339232269974]
+      TransformComponent:
+        Position: [-12.5348454, -23.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 8731383765954244254]
+      TransformComponent:
+        Position: [-10.0348454, -23.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 7132887211172031057]
+      TransformComponent:
+        Position: [-7.53484535, -23.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 12946641740583582346]
+      TransformComponent:
+        Position: [-5.03484535, -23.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 15033195846204434006]
+      TransformComponent:
+        Position: [-2.53484535, -23.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 449775369802179437]
+      TransformComponent:
+        Position: [22.4651546, -23.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 4550020313005339161]
+      TransformComponent:
+        Position: [-0.0348453447, -20.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [Floor, 8072672220776732216]
+      TransformComponent:
+        Position: [4.76837158e-07, -21, 0]
+        Rotation: [0, -0, 0]
+        Scale: [49.999958, 0.5, 1]
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [0.891891897, 0.889990568, 0.399457365, 1]
+      Rigidbody2DComponent:
+        BodyType: 0
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 9766509238409959491]
+      TransformComponent:
+        Position: [19.9651546, -20.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 725307370719693089]
+      TransformComponent:
+        Position: [17.4651546, -20.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 12722674828466583906]
+      TransformComponent:
+        Position: [14.9651546, -20.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 875486834291704609]
+      TransformComponent:
+        Position: [12.4651546, -20.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 12763606201025130091]
+      TransformComponent:
+        Position: [9.96515465, -20.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 15049978455455805788]
+      TransformComponent:
+        Position: [7.46515465, -20.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 7502317818529681723]
+      TransformComponent:
+        Position: [4.96515465, -20.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 1643807746548401793]
+      TransformComponent:
+        Position: [2.46515465, -20.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 10375207114501550708]
+      TransformComponent:
+        Position: [-22.5348454, -23.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 4713188688583278264]
+      TransformComponent:
+        Position: [-20.0348454, -20.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 11886644830570033478]
+      TransformComponent:
+        Position: [-17.5348454, -20.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 2292201895870759810]
+      TransformComponent:
+        Position: [-15.0348454, -20.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 8990040169684711217]
+      TransformComponent:
+        Position: [-12.5348454, -20.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 10241035006886399265]
+      TransformComponent:
+        Position: [-10.0348454, -20.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 10808855786100581093]
+      TransformComponent:
+        Position: [-7.53484535, -20.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 16397611237075540759]
+      TransformComponent:
+        Position: [-5.03484535, -20.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 13076318350444667336]
+      TransformComponent:
+        Position: [-2.53484535, -20.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 3827960026315273439]
+      TransformComponent:
+        Position: [22.4651546, -20.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 5423306390545995331]
+      TransformComponent:
+        Position: [-0.0348453373, -17.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [Floor, 3692965509051830945]
+      TransformComponent:
+        Position: [4.76837158e-07, -18, 0]
+        Rotation: [0, -0, 0]
+        Scale: [49.999958, 0.5, 1]
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [0.891891897, 0.889990568, 0.399457365, 1]
+      Rigidbody2DComponent:
+        BodyType: 0
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 14233136812077417586]
+      TransformComponent:
+        Position: [19.9651546, -17.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 17123938081668491349]
+      TransformComponent:
+        Position: [17.4651546, -17.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 1740251440883218439]
+      TransformComponent:
+        Position: [14.9651546, -17.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 13467952431805392961]
+      TransformComponent:
+        Position: [12.4651546, -17.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 13718297832470052723]
+      TransformComponent:
+        Position: [9.96515465, -17.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 9293380377232351190]
+      TransformComponent:
+        Position: [7.46515465, -17.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 1760375911769464686]
+      TransformComponent:
+        Position: [4.96515465, -17.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 9396096299265233484]
+      TransformComponent:
+        Position: [2.46515465, -17.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 15954767016177206622]
+      TransformComponent:
+        Position: [-22.5348454, -20.086298, 0.00250244886]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 15759360353492183116]
+      TransformComponent:
+        Position: [-20.0348454, -17.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 1433664217474184361]
+      TransformComponent:
+        Position: [-17.5348454, -17.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 11413001878664290766]
+      TransformComponent:
+        Position: [-15.0348454, -17.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 9514765874462863411]
+      TransformComponent:
+        Position: [-12.5348454, -17.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 15633601049442568231]
+      TransformComponent:
+        Position: [-10.0348454, -17.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 13059061167916511580]
+      TransformComponent:
+        Position: [-7.53484535, -17.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 6872339210059649383]
+      TransformComponent:
+        Position: [-5.03484535, -17.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 16225419615015030106]
+      TransformComponent:
+        Position: [-2.53484535, -17.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 15872343928765520247]
+      TransformComponent:
+        Position: [22.4651546, -17.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 12805053948926429560]
+      TransformComponent:
+        Position: [-0.0348453522, -14.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [Floor, 13048080675816548802]
+      TransformComponent:
+        Position: [4.76837158e-07, -15, 0]
+        Rotation: [0, -0, 0]
+        Scale: [49.999958, 0.5, 1]
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [0.891891897, 0.889990568, 0.399457365, 1]
+      Rigidbody2DComponent:
+        BodyType: 0
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 8869943742763650056]
+      TransformComponent:
+        Position: [19.9651546, -14.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 15613444421819888666]
+      TransformComponent:
+        Position: [17.4651546, -14.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 10857519787282435707]
+      TransformComponent:
+        Position: [14.9651546, -14.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 8512215230716089545]
+      TransformComponent:
+        Position: [12.4651546, -14.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 483428805565938555]
+      TransformComponent:
+        Position: [9.96515465, -14.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 10975298662056958744]
+      TransformComponent:
+        Position: [7.46515465, -14.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 5121329965150986146]
+      TransformComponent:
+        Position: [4.96515465, -14.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 5369923560425720265]
+      TransformComponent:
+        Position: [2.46515465, -14.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 14215856984818140397]
+      TransformComponent:
+        Position: [-22.5348454, -17.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 2152597044312593458]
+      TransformComponent:
+        Position: [-2.53484535, -14.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 6588308772336540250]
+      TransformComponent:
+        Position: [-5.03484535, -14.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 14976134235873161196]
+      TransformComponent:
+        Position: [-7.53484535, -14.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 803351564293706043]
+      TransformComponent:
+        Position: [-10.0348454, -14.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 5767092685718732189]
+      TransformComponent:
+        Position: [-12.5348454, -14.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 12330265664360927751]
+      TransformComponent:
+        Position: [-15.0348454, -14.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 6734985297284575668]
+      TransformComponent:
+        Position: [-17.5348454, -14.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 18254566060807371866]
+      TransformComponent:
+        Position: [-20.0348454, -14.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 13313598154852688864]
+      TransformComponent:
+        Position: [-22.5348454, -14.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 7845271691660099329]
+      TransformComponent:
+        Position: [22.4651546, -14.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [Floor, 11899534799766970572]
+      TransformComponent:
+        Position: [4.76837158e-07, -12, 0]
+        Rotation: [0, -0, 0]
+        Scale: [49.999958, 0.5, 1]
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [0.891891897, 0.889990568, 0.399457365, 1]
+      Rigidbody2DComponent:
+        BodyType: 0
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 6256248267879281650]
+      TransformComponent:
+        Position: [-22.5348454, -11.086298, 0.00250245817]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 15957413044285094227]
+      TransformComponent:
+        Position: [-17.5093212, -11.0906181, 0.00250246003]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 10871763071590141880]
+      TransformComponent:
+        Position: [-15.0093212, -11.0906181, 0.00250246003]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 10473238903901354088]
+      TransformComponent:
+        Position: [-12.5, -11, 0.00250246003]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 5103597029831947540]
+      TransformComponent:
+        Position: [-10, -11, 0.00250246003]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 18250229897645821249]
+      TransformComponent:
+        Position: [-7.5, -11, 0.00250246003]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 13786654023481613921]
+      TransformComponent:
+        Position: [-5, -11, 0.00250246003]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 2476342234380677929]
+      TransformComponent:
+        Position: [-2.5, -11, 0.00250246003]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 8648349746918462280]
+      TransformComponent:
+        Position: [0, -11, 0.00250246003]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 11445477345184473648]
+      TransformComponent:
+        Position: [2.5, -11, 0.00250246003]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 11449260088287672897]
+      TransformComponent:
+        Position: [5, -11, 0.00250246003]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 3578227647809552528]
+      TransformComponent:
+        Position: [7.5, -11, 0.00250246003]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 12472143339989838793]
+      TransformComponent:
+        Position: [10, -11, 0.00250246003]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 15766053371882912976]
+      TransformComponent:
+        Position: [20, -11, 0.00250246376]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 2199546908687852211]
+      TransformComponent:
+        Position: [17.5, -11, 0.00250246376]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 12971886052187838241]
+      TransformComponent:
+        Position: [15, -11, 0.00250246376]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 4226144909065954432]
+      TransformComponent:
+        Position: [12.5, -11, 0.00250246376]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 13802782841844517621]
+      TransformComponent:
+        Position: [-20.0348454, -11.086298, 0.00250245631]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 8725493690014941732]
+      TransformComponent:
+        Position: [10, -8, 0.00250246376]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [Floor, 1633595631222307192]
+      TransformComponent:
+        Position: [4.76837158e-07, -9, 0]
+        Rotation: [0, -0, 0]
+        Scale: [49.999958, 0.5, 1]
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [0.891891897, 0.889990568, 0.399457365, 1]
+      Rigidbody2DComponent:
+        BodyType: 0
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 16057287537460294872]
+      TransformComponent:
+        Position: [20, -8, 0.00250247121]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 17452403682611517029]
+      TransformComponent:
+        Position: [17.5, -8, 0.00250247121]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 17241385282678125107]
+      TransformComponent:
+        Position: [15, -8, 0.00250247121]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 12719905240307109293]
+      TransformComponent:
+        Position: [12.5, -8, 0.00250247121]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 12008475796874061304]
+      TransformComponent:
+        Position: [22.5, -8, 0.00250247121]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 8448918971687523828]
+      TransformComponent:
+        Position: [7.5, -8, 0.00250246376]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 12317030521446881250]
+      TransformComponent:
+        Position: [5, -8, 0.00250246376]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 837293246133162275]
+      TransformComponent:
+        Position: [2.5, -8, 0.00250246376]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 1144970274467747875]
+      TransformComponent:
+        Position: [0, -8, 0.00250246376]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 14008990928997422220]
+      TransformComponent:
+        Position: [-20, -8, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 12410164808398037334]
+      TransformComponent:
+        Position: [-17.5, -8, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 4125281893529606854]
+      TransformComponent:
+        Position: [-15, -8, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 9791686995620752832]
+      TransformComponent:
+        Position: [-12.5, -8, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 5488847398241713419]
+      TransformComponent:
+        Position: [-10, -8, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 863319852679876199]
+      TransformComponent:
+        Position: [-7.5, -8, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 2903975161945031977]
+      TransformComponent:
+        Position: [-5, -8, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 13666031574729129291]
+      TransformComponent:
+        Position: [-2.5, -8, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 12445519345757447157]
+      TransformComponent:
+        Position: [-22.5, -8, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 6801105978763356039]
+      TransformComponent:
+        Position: [22.5, -11, 0.00250246376]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [Floor, 846732514228160464]
+      TransformComponent:
+        Position: [4.76837158e-07, -6, 0]
+        Rotation: [0, -0, 0]
+        Scale: [49.999958, 0.5, 1]
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [0.891891897, 0.889990568, 0.399457365, 1]
+      Rigidbody2DComponent:
+        BodyType: 0
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 6479962946458152985]
+      TransformComponent:
+        Position: [-20, -5, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 14580334423403375916]
+      TransformComponent:
+        Position: [-17.5, -5, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 4586275630038161720]
+      TransformComponent:
+        Position: [-15, -5, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 5357912859321078128]
+      TransformComponent:
+        Position: [-12.5, -5, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 11313030261759673704]
+      TransformComponent:
+        Position: [-10, -5, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 2485315474675909525]
+      TransformComponent:
+        Position: [-7.5, -5, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 6394102777112354789]
+      TransformComponent:
+        Position: [-5, -5, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 15193258683736626274]
+      TransformComponent:
+        Position: [-2.5, -5, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 926695555375634401]
+      TransformComponent:
+        Position: [0, -5, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 14102780832523303448]
+      TransformComponent:
+        Position: [20, -5, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 16016354086224360130]
+      TransformComponent:
+        Position: [17.5, -5, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 2351297158265653196]
+      TransformComponent:
+        Position: [15, -5, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 8245027909639960833]
+      TransformComponent:
+        Position: [12.5, -5, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 14950157044786804259]
+      TransformComponent:
+        Position: [10, -5, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 17556799749978452770]
+      TransformComponent:
+        Position: [7.5, -5, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 537529845916451132]
+      TransformComponent:
+        Position: [5, -5, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 6939715175100804693]
+      TransformComponent:
+        Position: [2.5, -5, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 12209812498792703546]
+      TransformComponent:
+        Position: [22.5, -5, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 9238995436141478911]
+      TransformComponent:
+        Position: [0, 0, -2.98023224e-08]
+        Rotation: [0, -0, 0]
+        Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [Floor, 17919877394363721841]
+      TransformComponent:
+        Position: [4.76837158e-07, -3, 0]
+        Rotation: [0, -0, 0]
+        Scale: [49.999958, 0.5, 1]
+      SpriteComponent:
+        TilingFactor: 1
+        Color: [0.891891897, 0.889990568, 0.399457365, 1]
+      Rigidbody2DComponent:
+        BodyType: 0
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
     - Entity: [Camera, 16495614365407630898]
       TransformComponent:
         Position: [0, 0, 10]
@@ -33,7 +3217,7 @@ Scene:
         Fields:
           - Name: Speed
             Type: Float
-            Value: 6
+            Value: 3
       SpriteComponent:
         TilingFactor: 1
         Color: [0.731384456, 0.809073091, 0.857142866, 1]
@@ -49,9 +3233,9 @@ Scene:
         RestitutionThreshold: 0.5
     - Entity: [Floor, 12724003432013002180]
       TransformComponent:
-        Position: [0, -3, 0]
-        Rotation: [0, -0, -4.07020998]
-        Scale: [9.99999142, 0.5, 1]
+        Position: [4.76837158e-07, -27, 0]
+        Rotation: [0, -0, 0]
+        Scale: [49.999958, 0.5, 1]
       SpriteComponent:
         TilingFactor: 1
         Color: [0.891891897, 0.889990568, 0.399457365, 1]
@@ -65,1411 +3249,387 @@ Scene:
         Friction: 0.400000006
         Restitution: 0.300000012
         RestitutionThreshold: 0.5
-    - Entity: [Entity, 12586793383901508534]
+    - Entity: [NPC, 17592954635858048500]
       TransformComponent:
-        Position: [0, 0, 0]
+        Position: [22.5, 0, -2.98023224e-08]
         Rotation: [0, -0, 0]
         Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
       SpriteComponent:
         TilingFactor: 1
         Color: [1, 1, 1, 1]
-    - Entity: [Entity, 4950862792069491187]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 14665482134406970151]
       TransformComponent:
-        Position: [0, 0, 0]
+        Position: [-22.5, -5, -2.98023224e-08]
         Rotation: [0, -0, 0]
         Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
       SpriteComponent:
         TilingFactor: 1
         Color: [1, 1, 1, 1]
-    - Entity: [Entity, 17864683137122968930]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 6960681445690289454]
       TransformComponent:
-        Position: [0, 0, 0]
+        Position: [-22.5003052, 0.0279539339, -0.0145873558]
         Rotation: [0, -0, 0]
         Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
       SpriteComponent:
         TilingFactor: 1
         Color: [1, 1, 1, 1]
-    - Entity: [Entity, 11919230984580477157]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 15290279694019893942]
       TransformComponent:
-        Position: [0, 0, 0]
+        Position: [2.5, 0, -2.98023224e-08]
         Rotation: [0, -0, 0]
         Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
       SpriteComponent:
         TilingFactor: 1
         Color: [1, 1, 1, 1]
-    - Entity: [Entity, 16330620119768259663]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 15778565663046753597]
       TransformComponent:
-        Position: [0, 0, 0]
+        Position: [5, 0, -2.98023224e-08]
         Rotation: [0, -0, 0]
         Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
       SpriteComponent:
         TilingFactor: 1
         Color: [1, 1, 1, 1]
-    - Entity: [Entity, 16807056559973324883]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 12622536333399738754]
       TransformComponent:
-        Position: [0, 0, 0]
+        Position: [-2.5, 1.49011612e-08, -2.98023224e-08]
         Rotation: [0, -0, 0]
         Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
       SpriteComponent:
         TilingFactor: 1
         Color: [1, 1, 1, 1]
-    - Entity: [Entity, 12401822137244690508]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 92757858481580213]
       TransformComponent:
-        Position: [0, 0, 0]
+        Position: [-5, 1.49011612e-08, -2.98023224e-08]
         Rotation: [0, -0, 0]
         Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
       SpriteComponent:
         TilingFactor: 1
         Color: [1, 1, 1, 1]
-    - Entity: [Entity, 6116636274343247631]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 10966035360377118147]
       TransformComponent:
-        Position: [0, 0, 0]
+        Position: [7.5, 0, -2.98023224e-08]
         Rotation: [0, -0, 0]
         Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
       SpriteComponent:
         TilingFactor: 1
         Color: [1, 1, 1, 1]
-    - Entity: [Entity, 8679092471604918877]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 8404079202740564041]
       TransformComponent:
-        Position: [0, 0, 0]
+        Position: [10, 0, -2.98023224e-08]
         Rotation: [0, -0, 0]
         Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
       SpriteComponent:
         TilingFactor: 1
         Color: [1, 1, 1, 1]
-    - Entity: [Entity, 12404252070705540417]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 14320901826421837713]
       TransformComponent:
-        Position: [0, 0, 0]
+        Position: [12.5, 0, -2.98023224e-08]
         Rotation: [0, -0, 0]
         Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
       SpriteComponent:
         TilingFactor: 1
         Color: [1, 1, 1, 1]
-    - Entity: [Entity, 17507962805815172833]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 13816132222260504246]
       TransformComponent:
-        Position: [0, 0, 0]
+        Position: [15, 0, -2.98023224e-08]
         Rotation: [0, -0, 0]
         Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
       SpriteComponent:
         TilingFactor: 1
         Color: [1, 1, 1, 1]
-    - Entity: [Entity, 14763324066914857502]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 7749458094198755109]
       TransformComponent:
-        Position: [0, 0, 0]
+        Position: [17.5, 0, -2.98023224e-08]
         Rotation: [0, -0, 0]
         Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
       SpriteComponent:
         TilingFactor: 1
         Color: [1, 1, 1, 1]
-    - Entity: [Entity, 17940124085026363031]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 17469660844637578544]
       TransformComponent:
-        Position: [0, 0, 0]
+        Position: [20, 0, -2.98023224e-08]
         Rotation: [0, -0, 0]
         Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
       SpriteComponent:
         TilingFactor: 1
         Color: [1, 1, 1, 1]
-    - Entity: [Entity, 16409143032549295191]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 16548596239508388556]
       TransformComponent:
-        Position: [0, 0, 0]
+        Position: [-7.50030422, 0.0279539339, -0.0145873558]
         Rotation: [0, -0, 0]
         Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
       SpriteComponent:
         TilingFactor: 1
         Color: [1, 1, 1, 1]
-    - Entity: [Entity, 2354552776288468700]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 2102963374885405978]
       TransformComponent:
-        Position: [0, 0, 0]
+        Position: [-10.0003042, 0.0279539339, -0.0145873558]
         Rotation: [0, -0, 0]
         Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
       SpriteComponent:
         TilingFactor: 1
         Color: [1, 1, 1, 1]
-    - Entity: [Entity, 16824653310179346770]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 13698526001964563007]
       TransformComponent:
-        Position: [0, 0, 0]
+        Position: [-12.5003042, 0.0279539339, -0.0145873558]
         Rotation: [0, -0, 0]
         Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
       SpriteComponent:
         TilingFactor: 1
         Color: [1, 1, 1, 1]
-    - Entity: [Entity, 3747709709609935667]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 6960301656579828299]
       TransformComponent:
-        Position: [0, 0, 0]
+        Position: [-15.0003042, 0.0279539339, -0.0145873558]
         Rotation: [0, -0, 0]
         Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
       SpriteComponent:
         TilingFactor: 1
         Color: [1, 1, 1, 1]
-    - Entity: [Entity, 17256629185642307710]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 7214436298898730]
       TransformComponent:
-        Position: [0, 0, 0]
+        Position: [-17.5003052, 0.0279539339, -0.0145873558]
         Rotation: [0, -0, 0]
         Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
       SpriteComponent:
         TilingFactor: 1
         Color: [1, 1, 1, 1]
-    - Entity: [Entity, 3379962331640756987]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+    - Entity: [NPC, 10335631230980982810]
       TransformComponent:
-        Position: [0, 0, 0]
+        Position: [-20.0003052, 0.0279539339, -0.0145873558]
         Rotation: [0, -0, 0]
         Scale: [1, 1, 1]
+      NativeScriptComponent:
+        Class: JumpingEntity
       SpriteComponent:
         TilingFactor: 1
         Color: [1, 1, 1, 1]
-    - Entity: [Entity, 2474919440463718460]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 3747265544113222128]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 18330521976301815042]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 2106712657874478841]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 11417226396045849624]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 8557796234048262908]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 8166778732124042620]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 14331840820660776844]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 8210789187114128654]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 12942256775235012924]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 10786835580471949858]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 3502720914594103133]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 4190077959263408343]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 14402260015613935026]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 7017157362934069611]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 4041602471524272904]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 5192128433538340125]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 8635335534566137720]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 18047441754592285690]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 6710411947369961385]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 14288785697242633674]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 8648429079663376281]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 16083390611369604780]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 1843490815111754806]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 5546089118305707101]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 398570787479143132]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 5536160419798612882]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 265357149466531255]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 9400300820497535790]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 11390184856611237267]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 13035657287670515537]
-      TransformComponent:
-        Position: [0, 0, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 16863426017364983939]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 8814771541007387838]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 3281002986962343299]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 8470208353045305628]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 13381487809602283137]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 6339619293285853551]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 5424048863003859163]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 17620771719645695901]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 4826711385344948148]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 12075773626570236512]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 14597113897408367068]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 15729191927629982981]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 5828296572330847314]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 355905461367560594]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 3604201582909211114]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 16287097896607998552]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 16871163813400888357]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 4584395312165214728]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 1543469386163048136]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 4487536979690970300]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 17392564708290280257]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 3009038013179661704]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 3668595885940883194]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 1604788787624635318]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 9480339811056615074]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 6445730844407933799]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 6910259877768446083]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 14545884491894942946]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 5793031895210166273]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 1100303693321929418]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 17204967158942871555]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 13025717611486157265]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 8531558246104993876]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 13059092394475932788]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 1048726344137901452]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 8899772170898717437]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 8348580108629269403]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 16189295798872816123]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 7029614394474663241]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 5324751980724349252]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 18398199833655199875]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 218411903020295302]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 11283934286081903832]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 9945063493608482302]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 4405266687884068237]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 11087229943246841790]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 2350785807350393924]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 14532478299451476848]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 17053528017013861287]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 5504438464825840674]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 12444960785722432207]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 10216733759526199191]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 10359341850735787906]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 15245710812169444777]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 15079928656553669066]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 12182004220508710415]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 10330332408356427141]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 4654903047179973589]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 6947980775794543215]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 15721050108937688370]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 15727255424993093705]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 98256043070416912]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 13831026665521705469]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 3470346948066278349]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 1977117864857032283]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 4690126558244436733]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 14630350242045807310]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 6394969266615317550]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 16784994664532527296]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 14685283211822645301]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 4863739971298078439]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 13811901775178827627]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 11673477003581927400]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 10277282301779253309]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 12208329982125369710]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 17890350694670378078]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 4722171932046999859]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 16106908247245925324]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 1211732778596623906]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 9666016541631595932]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 17986240215071126458]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 3911533403385309213]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 17966583984235757015]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 17054456747507262615]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 12073643534945220624]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 4445870147738375408]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 4238475473820797029]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 14100122952526142401]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 9813599755237431007]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 17113473577336374020]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 7294746251313731765]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 1128055289305420677]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 5815285717482963450]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 5109511061120883178]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 12060690338768098606]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 5285380863510392817]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 16805400027810194240]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 12725796371898646374]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 11584890285056462546]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 10834723714047503056]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 14590569149405579355]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 6105134304448160666]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 10175475524428128211]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 7916464872288351110]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 14296417396107125918]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 1482722768554780434]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 17250608925729612108]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 7555520695727682977]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 14280575986349761299]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 8188228551804675139]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 1179376004165438478]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 4346537295562368400]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 13708406537733029320]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 9018575064584011884]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 10730906414043192095]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 13213087785064737335]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 17468791008826011924]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 11800241984450380517]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 5450497581152476468]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 16401792628999683963]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 8576563504893645691]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 11800145394445136602]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 2385228720898006177]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 1565627956607078633]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 14923625296858008334]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
-    - Entity: [Entity, 12039311572982205243]
-      TransformComponent:
-        Position: [-1.49011612e-08, -3.7252903e-09, 0]
-        Rotation: [0, -0, 0]
-        Scale: [1, 1, 1]
-      SpriteComponent:
-        TilingFactor: 1
-        Color: [1, 1, 1, 1]
+      Rigidbody2DComponent:
+        BodyType: 1
+        FixedRotation: false
+      BoxCollider2DComponent:
+        Size: [0.5, 0.5]
+        Offset: [0, 0]
+        Density: 1
+        Friction: 0.400000006
+        Restitution: 0.300000012
+        RestitutionThreshold: 0.5
+
+ViewportCameraPosition: [-2.91012478, 0.512296617, 41.6256943]
+
+ViewportCameraRotation: [-1.69965661, -2.64022493, 0]

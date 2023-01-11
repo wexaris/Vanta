@@ -29,7 +29,7 @@ namespace Vanta {
         T GetComponent() {
             if (!HasComponent<T>()) {
                 Log::Error("Entity doesn't have the requested component!");
-                return 0;
+                return T(0);
             }
             return T(m_ID);
         }
