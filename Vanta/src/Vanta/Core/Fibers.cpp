@@ -23,13 +23,13 @@ namespace Vanta {
         // Spawn worker threads (start at 1 because the caller will be one of the workers)
         for (uint i = 1; i < THREAD_COUNT; i++) {
             s_Workers.create_thread([&]() {
-                fibers::use_scheduling_algorithm<fibers::algo::shared_work>(/*THREAD_COUNT, true*/);
+                fibers::use_scheduling_algorithm<fibers::algo::work_stealing>(THREAD_COUNT, true);
                 WorkerRun();
             });
         }
         
         // Set scheduling for the calling thread as well
-        fibers::use_scheduling_algorithm<fibers::algo::shared_work>(/*THREAD_COUNT, true*/);
+        fibers::use_scheduling_algorithm<fibers::algo::work_stealing>(THREAD_COUNT, true);
     }
 
     void Fibers::Shutdown() {

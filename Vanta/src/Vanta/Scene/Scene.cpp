@@ -77,6 +77,7 @@ namespace Vanta {
 
     void Scene::OnRuntimeEnd() {
         VANTA_PROFILE_FUNCTION();
+        m_Barrier.Wait();
         DestroyScripts();
         DestroyPhysics();
     }
@@ -104,14 +105,14 @@ namespace Vanta {
             script.Create(e, this);
         });
 
-        // Separate creation from OnCreate, because script might try to find another script,
-        // which hasn't been initialized yet.
-        View<NativeScriptComponent>([&](entt::entity, NativeScriptComponent& script) {
+        // Separate script creation from call to OnCreate, because scripts might try to find other scripts,
+        // which haven't been initialized yet.
+        View<NativeScriptComponent>([](entt::entity, NativeScriptComponent& script) {
             if (script.Instance)
                 script.Instance->OnCreate();
         });
 
-        View<ScriptComponent>([&](entt::entity, ScriptComponent& script) {
+        View<ScriptComponent>([](entt::entity, ScriptComponent& script) {
             if (script.Instance)
                 script.Instance->OnCreate();
         });
@@ -119,26 +120,24 @@ namespace Vanta {
 
     void Scene::DestroyScripts() {
         // Destroy native scripts
-        ParallelView<NativeScriptComponent>(m_Barrier, m_Registry,
-            [](entt::entity, NativeScriptComponent& script)
+        View<NativeScriptComponent>([](entt::entity, NativeScriptComponent& script)
         {
             if (script.Instance)
                 script.Instance->OnDestroy();
         });
 
         // Destroy C# scripts
-        View<ScriptComponent>([&](entt::entity, ScriptComponent& script) {
+        View<ScriptComponent>([](entt::entity, ScriptComponent& script) {
             if (script.Instance)
                 script.Instance->OnDestroy();
         });
 
-        ParallelView<NativeScriptComponent>(m_Barrier, m_Registry,
-            [](entt::entity, NativeScriptComponent& script)
+        View<NativeScriptComponent>([](entt::entity, NativeScriptComponent& script)
         {
             script.Destroy();
         });
 
-        View<ScriptComponent>([&](entt::entity, ScriptComponent& script) {
+        View<ScriptComponent>([](entt::entity, ScriptComponent& script) {
             script.Destroy();
         });
 

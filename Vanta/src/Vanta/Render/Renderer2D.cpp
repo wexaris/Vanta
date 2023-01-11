@@ -238,6 +238,7 @@ namespace Vanta {
     }
 
     void Renderer2D::BatchFlush() {
+        // Draw quads
         if (s_Data.QuadIndexCount != 0) {
             usize dataSize = (usize)((uintptr_t)s_Data.QuadVertexBufferPtr - (uintptr_t)s_Data.QuadVertexBuffer);
             s_Data.QuadVBO->SetData(s_Data.QuadVertexBuffer, dataSize);
@@ -252,6 +253,7 @@ namespace Vanta {
             s_Data.Stats.DrawCalls++; 
         }
 
+        // Draw circles
         if (s_Data.CircleIndexCount != 0) {
             usize dataSize = (usize)((uintptr_t)s_Data.CircleVertexBufferPtr - (uintptr_t)s_Data.CircleVertexBuffer);
             s_Data.CircleVBO->SetData(s_Data.CircleVertexBuffer, dataSize);
@@ -263,6 +265,7 @@ namespace Vanta {
             s_Data.Stats.DrawCalls++;
         }
 
+        // Draw lines
         if (s_Data.LineVertexCount != 0) {
             usize dataSize = (usize)((uintptr_t)s_Data.LineVertexBufferPtr - (uintptr_t)s_Data.LineVertexBuffer);
             s_Data.LineVBO->SetData(s_Data.LineVertexBuffer, dataSize);
