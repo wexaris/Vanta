@@ -16,7 +16,7 @@ namespace Vanta {
 
     class Project {
     public:
-        static Ref<Project> New(const IO::File& file);
+        static Ref<Project> New(const Path& root_dir);
         static Ref<Project> Load(const IO::File& file);
         static void Save();
 

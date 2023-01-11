@@ -651,11 +651,11 @@ namespace Vanta {
             if (m_State != State::Edit)
                 OnStop();
 
-            auto file = IO::FileDialog::OpenFile("Vanta Project (*.vproj)\0*.vproj\0");
-            if (!file)
+            auto project_dir = IO::FileDialog::OpenDirectory();
+            if (!project_dir)
                 return false;
                 
-            Ref<Project> project = Project::New(file.value());
+            Ref<Project> project = Project::New(project_dir.value());
 
             ScriptEngine::ReloadAssemblies();
 

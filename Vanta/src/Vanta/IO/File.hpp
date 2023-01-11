@@ -28,6 +28,7 @@ namespace Vanta {
 
         class FileDialog {
         public:
+            static Opt<Path> OpenDirectory();
             static Opt<File> OpenFile(const char* filter);
             static Opt<File> SaveFile(const char* filter);
         };

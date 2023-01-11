@@ -68,6 +68,13 @@ namespace Vanta {
             return std::filesystem::exists(Filepath);
         }
 
+        Opt<Path> FileDialog::OpenDirectory() {
+            Path path = Platform::OpenDirectoryDialog();
+            if (path.empty())
+                return None;
+            return path;
+        }
+
         Opt<File> FileDialog::OpenFile(const char* filter) {
             Path path = Platform::OpenFileDialog(filter);
             if (path.empty())
