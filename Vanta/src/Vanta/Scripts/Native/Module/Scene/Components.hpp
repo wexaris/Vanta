@@ -38,6 +38,19 @@ namespace Vanta {
         }
     };
 
-    VANTA_COMPONENT_REGISTER(TransformComponent)
-    
+    struct SpriteComponent : public Component {
+        VANTA_COMPONENT_DEFINE(SpriteComponent);
+
+        void SetColor(const Vector4& value) {
+            return Internal.SpriteComponent_SetColor(m_EntityID, value);
+        }
+    };
+
+    struct Rigidbody2DComponent : public Component {
+        VANTA_COMPONENT_DEFINE(Rigidbody2DComponent);
+
+        void ApplyLinearImpulse(const Vector2& value, bool wake = true) {
+            return Internal.Rigidbody2DComponent_ApplyLinearImpulseToCenter(m_EntityID, value, wake);
+        }
+    };
 }

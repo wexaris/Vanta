@@ -3,15 +3,12 @@
 #include "Vanta/Scripts/Native/Interface.hpp"
 #include "Vanta/Scripts/Native/ScriptEngine.hpp"
 
+#include <box2d/b2_body.h>
+
 namespace Vanta {
     namespace Native {
 
         static std::unordered_map<usize, std::function<bool(Entity)>> s_EntityHasComponent;
-
-        template<typename Target, typename Source>
-        static void ForceAssign(Target& target, Source&& source) { target = (Target)source; }
-
-#define VANTA_REGISTER_FUNCTION(name) ForceAssign(functions.name, name);
 
         static void Log_Trace(const char* message) {
             VANTA_TRACE(message);
@@ -37,7 +34,7 @@ namespace Vanta {
             return Input::IsMouseButtonPressed(button);
         }
 
-        static UUID Entity_GetEntityByName(const char* name) {
+        static uint64 Entity_GetEntityByName(const char* name) {
             Scene* scene = ScriptEngine::GetContext();
             VANTA_CORE_ASSERT(scene, "Script engine context not set!");
 
@@ -81,11 +78,44 @@ namespace Vanta {
 
             entity.GetComponent<TransformComponent>().Set().SetPosition(pos);
         }
+
+        static void SpriteComponent_SetColor(UUID entityID, const glm::vec4& color) {
+            static_assert(sizeof(Vector4) == sizeof(glm::vec4));
+
+            Scene* scene = ScriptEngine::GetContext();
+            VANTA_CORE_ASSERT(scene, "Engine scene context not set!");
+            Entity entity = scene->GetEntityByID(entityID);
+            VANTA_CORE_ASSERT(scene, "Engine scene context not set!");
+
+            entity.GetComponent<SpriteComponent>().Color = color;
+        }
+
+        void Rigidbody2DComponent_ApplyLinearImpulseToCenter(UUID entityID, const glm::vec2& impulse, bool wake) {
+            static_assert(sizeof(Vector2) == sizeof(glm::vec2));
+
+            Scene* scene = ScriptEngine::GetContext();
+            VANTA_CORE_ASSERT(scene, "Script engine context not set!");
+            Entity entity = scene->GetEntityByID(entityID);
+            VANTA_ASSERT(entity, "Entity referenced in script doesn't exist!");
+
+            Rigidbody2DComponent& rb = entity.GetComponent<Rigidbody2DComponent>();
+            b2Body* body = (b2Body*)rb.RuntimeBody;
+            body->ApplyLinearImpulseToCenter(b2Vec2(impulse.x, impulse.y), wake);
+        }
+
+        /// <summary>
+        /// Force assign a function pointer to target.
+        /// Lets us cast function parameters to easier-to-use types.
+        /// </summary>
+        template<typename Target, typename Source>
+        static void ForceAssign(Target& target, Source&& source) { target = (Target)source; }
      
         void Interface::RegisterFunctions() {
             ScriptAssembly* assembly = ScriptEngine::GetAppAssembly();
 
             EngineFunctions functions;
+#define VANTA_REGISTER_FUNCTION(name) ForceAssign(functions.name, name);
+
             VANTA_REGISTER_FUNCTION(Log_Trace);
             VANTA_REGISTER_FUNCTION(Log_Info);
             VANTA_REGISTER_FUNCTION(Log_Warn);
@@ -99,6 +129,10 @@ namespace Vanta {
 
             VANTA_REGISTER_FUNCTION(TransformComponent_GetPosition);
             VANTA_REGISTER_FUNCTION(TransformComponent_SetPosition);
+
+            VANTA_REGISTER_FUNCTION(SpriteComponent_SetColor);
+
+            VANTA_REGISTER_FUNCTION(Rigidbody2DComponent_ApplyLinearImpulseToCenter);
 
             assembly->RegisterEngineFunctions(functions);
         }

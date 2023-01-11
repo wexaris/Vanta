@@ -20,6 +20,10 @@ namespace Vanta {
 
             const Vector3& (*TransformComponent_GetPosition) (uint64);
             void (*TransformComponent_SetPosition) (uint64, const Vector3&);
+
+            void (*SpriteComponent_SetColor) (uint64, const Vector4&);
+
+            void (*Rigidbody2DComponent_ApplyLinearImpulseToCenter) (uint64, const Vector2&, bool);
         };
 
         struct ClassFunctions {
