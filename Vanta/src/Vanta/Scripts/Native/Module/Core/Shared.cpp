@@ -1,9 +1,8 @@
 #pragma once
-#include <Vanta/Scripts/Native/Module/Shared.hpp>
-#include "../Core/Registry.hpp"
+#include "../Vanta.hpp"
 
 namespace Vanta {
-    static Native::EngineFunctions Internal;
+    Native::EngineFunctions Internal;
 }
 
 VANTA_EXPORT void RegisterEngineFunctions(const Vanta::Native::EngineFunctions& funcs) {

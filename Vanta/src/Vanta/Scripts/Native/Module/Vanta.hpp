@@ -8,7 +8,7 @@
 #include <Vanta/Input/MouseCodes.hpp>
 
 // Module support
-#include "Core/Shared.cpp"
+#include "Shared.hpp"
 #include "Core/Registry.hpp"
 
 // Interfaces

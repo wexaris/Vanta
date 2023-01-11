@@ -9,6 +9,11 @@ set(OUTPUT_DIR "${CMAKE_BINARY_DIR}/../Binaries")
 
 file(GLOB_RECURSE ${PROJECT_NAME}_SOURCE "Source/*.cpp")
 
+cmake_path(SET MODULE_SOURCE "${VANTA_INCLUDE_DIR}/Vanta/Scripts/Native/Module/Vanta.cpp")
+list(APPEND ${PROJECT_NAME}_SOURCE ${MODULE_SOURCE})
+
+message(${${PROJECT_NAME}_SOURCE})
+
 add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCE})
 
 target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${VANTA_INCLUDE_DIR})

@@ -29,6 +29,8 @@ namespace Vanta {
             void (*OnDestroy) (ScriptObject*);
         };
     }
+
+    extern Native::EngineFunctions Internal;
 }
 
 typedef      void (*RegisterEngineFunctions_Fn) (const Vanta::Native::EngineFunctions&);
