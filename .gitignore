@@ -1,13 +1,17 @@
-# Directories
+# Visual Studio
 .vs/
 .vscode/
-build/
-
-Sandbox/Scripts/CSharp/Build
-Sandbox/Scripts/CSharp/Binaries
-
-# Files
 CMakeSettings.json
 *.idb
 *.pdb
 *.hint
+
+# Vanta
+build/
+
+# Sandbox
+Sandbox/Cache
+Sandbox/Scripts/CSharp/Binaries
+Sandbox/Scripts/CSharp/Build
+Sandbox/Scripts/Native/Binaries
+Sandbox/Scripts/Native/Build
