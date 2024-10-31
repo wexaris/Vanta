@@ -46,5 +46,35 @@ namespace Vanta {
         void ScriptInstance::OnDestroy() {
             m_ScriptClass->InvokeOnDestroy(m_Instance);
         }
+
+        bool ScriptInstance::GetFieldValue_Impl(const std::string& name, void* buffer) {
+            VANTA_PROFILE_FUNCTION();
+
+            const auto& fields = m_ScriptClass->GetFields();
+            auto it = fields.find(name);
+            if (it == fields.end()) {
+                VANTA_CORE_ASSERT(false, "Script class field not found!");
+                return false;
+            }
+
+            const ScriptField& field = it->second;
+            field.GetValue(m_Instance, buffer);
+            return true;
+        }
+
+        bool ScriptInstance::SetFieldValue_Impl(const std::string& name, const void* value) {
+            VANTA_PROFILE_FUNCTION();
+
+            const auto& fields = m_ScriptClass->GetFields();
+            auto it = fields.find(name);
+            if (it == fields.end()) {
+                VANTA_CORE_ASSERT(false, "Script class field not found!");
+                return false;
+            }
+
+            const ScriptField& field = it->second;
+            field.SetValue(m_Instance, value);
+            return true;
+        }
     }
 }

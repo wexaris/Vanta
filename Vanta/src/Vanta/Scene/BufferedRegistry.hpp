@@ -110,12 +110,16 @@ namespace Vanta {
         /// </summary>
         template<typename Func>
         void Each(Func&& func) {
-            return m_Registry.each(func);
+            for (auto& entity : m_Registry.view<entt::entity>()) {
+                func(entity);
+            }
         }
 
         template<typename Func>
         void Each(Func&& func) const {
-            return m_Registry.each(func);
+            for (auto& entity : m_Registry.view<entt::entity>()) {
+                func(entity);
+            }
         }
 
         /// <summary>

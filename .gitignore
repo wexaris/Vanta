@@ -3,11 +3,8 @@
 .vscode/
 build/
 
-Sandbox/Scripts_CSharp/Build
-Sandbox/Scripts_CSharp/Binaries
-
-Sandbox/Scripts_Native/Build
-Sandbox/Scripts_Native/Binaries
+Sandbox/Scripts/CSharp/Build
+Sandbox/Scripts/CSharp/Binaries
 
 # Files
 CMakeSettings.json

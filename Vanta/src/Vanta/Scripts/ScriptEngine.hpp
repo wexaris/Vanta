@@ -32,6 +32,7 @@ namespace Vanta {
 
         static void ClearFieldInstances() {
             CSharp::ScriptEngine::ClearFieldInstances();
+            Native::ScriptEngine::ClearFieldInstances();
         }
     };
 }

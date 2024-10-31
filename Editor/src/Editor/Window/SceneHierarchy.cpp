@@ -29,7 +29,7 @@ namespace Vanta {
                     m_SelectedEntity = Entity();
 
                 if (allowInteraction) {
-                    if (ImGui::BeginPopupContextWindow(0, 1, false)) {
+                    if (ImGui::BeginPopupContextWindow(0, 1)) {
                         if (ImGui::MenuItem("Create New Entity"))
                             m_Context->CreateEntity("Entity");
 
@@ -355,6 +355,7 @@ namespace Vanta {
                                     instances[name] = NewBox<CSharp::ScriptFieldBuffer<float>>(field, data);
                                 }
                             }
+                            // TODO: Add remaining types
                             default:;
                             }
                         }
@@ -376,6 +377,61 @@ namespace Vanta {
 
                 if (!classExists)
                     ImGui::PopStyleColor();
+
+                // Runtime field data
+                if (component.Instance) {
+                    const auto& fields = component.Instance->GetClass()->GetFields();
+                    for (const auto& [name, field] : fields) {
+                        switch (field.Type) {
+                        case Native::ScriptFieldType::Float: {
+                            float data = component.Instance->GetFieldValue<float>(name);
+                            if (ImGui::DragFloat(name.c_str(), &data)) {
+                                component.Instance->SetFieldValue(name, data);
+                            }
+                        }
+                        default: break;
+                        }
+                    }
+                }
+                // Editor field data
+                else if (classExists) {
+                    Ref<Native::ScriptClass> klass = Native::ScriptEngine::GetClass(component.ClassName);
+                    auto& instances = Native::ScriptEngine::GetFieldInstances(entity);
+
+                    // Loop though every class field and check
+                    // if an instance has already been created.
+                    for (auto& [name, field] : klass->GetFields()) {
+                        auto it = instances.find(name);
+
+                        // Field instance exists
+                        if (it != instances.end()) {
+                            auto& instance = it->second;
+
+                            switch (field.Type) {
+                            case Native::ScriptFieldType::Float: {
+                                float data = instance->GetFieldValue<float>();
+                                if (ImGui::DragFloat(name.c_str(), &data)) {
+                                    instance->SetFieldValue(data);
+                                }
+                            }
+                            default:;
+                            }
+                        }
+                        // Create new field instance
+                        else {
+                            switch (field.Type) {
+                            case Native::ScriptFieldType::Float: {
+                                float data = 0.0f;
+                                if (ImGui::DragFloat(name.c_str(), &data)) {
+                                    instances[name] = NewBox<Native::ScriptFieldBuffer<float>>(field, data);
+                                }
+                            }
+                            // TODO: Add remaining types
+                            default:;
+                            }
+                        }
+                    }
+                }
             });
 
             DrawComponent<SpriteComponent>("Sprite", entity, [](SpriteComponent& component) {

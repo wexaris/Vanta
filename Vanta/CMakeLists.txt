@@ -20,8 +20,8 @@ find_package(yaml-cpp CONFIG REQUIRED)
 find_path(STB_INCLUDE_DIRS "stb_image.h")
 
 set(${PROJECT_NAME}_SOURCE
+    "src/Vanta/EntryPoint.cpp"
     "src/Vanta/Core/Engine.cpp"
-    "src/Vanta/Core/EntryPoint.cpp"
     "src/Vanta/Core/Fibers.cpp"
     "src/Vanta/Core/GUILayer.cpp"
     "src/Vanta/Core/LayerStack.cpp"
@@ -47,19 +47,24 @@ set(${PROJECT_NAME}_SOURCE
     "src/Vanta/Render/UniformBuffer.cpp"
     "src/Vanta/Render/VertexArray.cpp"
     "src/Vanta/Scene/BufferedRegistry.cpp"
-    "src/Vanta/Scene/Components.cpp"
     "src/Vanta/Scene/Entity.cpp"
     "src/Vanta/Scene/Scene.cpp"
     "src/Vanta/Scene/SceneCamera.cpp"
     "src/Vanta/Scene/Serializer.cpp"
+    "src/Vanta/Scene/Components/TransformComponent.cpp"
+    "src/Vanta/Scene/Components/CameraComponent.cpp"
+    "src/Vanta/Scene/Components/ScriptComponent.cpp"
+    "src/Vanta/Scene/Components/NativeScriptComponent.cpp"
     "src/Vanta/Scripts/CSharp/Class.cpp"
     "src/Vanta/Scripts/CSharp/Field.cpp"
     "src/Vanta/Scripts/CSharp/Interface.cpp"
     "src/Vanta/Scripts/CSharp/ScriptEngine.cpp"
-    "src/Vanta/Scripts/Native/Assembly.cpp"
     "src/Vanta/Scripts/Native/Class.cpp"
+    "src/Vanta/Scripts/Native/Field.cpp"
     "src/Vanta/Scripts/Native/Interface.cpp"
     "src/Vanta/Scripts/Native/ScriptEngine.cpp"
+    "src/Vanta/Scripts/Native/Module/Assembly.cpp"
+    "src/Vanta/Scripts/Native/Module/Input/Input.cpp"
     "src/Vanta/Util/Math.cpp"
     "src/Vanta/Util/Time.cpp"
     "src/Platform/OpenGL/Buffer.cpp"
@@ -73,6 +78,11 @@ set(${PROJECT_NAME}_SOURCE
     "src/Platform/Windows/Input.cpp"
     "src/Platform/Windows/PlatformUtils.cpp"
     "src/Platform/Windows/Window.cpp"
+ "src/Vanta/Scripts/Native/Module/Core/Log.cpp"
+ "src/Vanta/Scripts/Native/Module/Scene/Entity.cpp"
+ "src/Vanta/Scripts/Native/Module/Scene/Components/TransformComponent.cpp"
+ "src/Vanta/Scripts/Native/Module/Scene/Components/SpriteComponent.cpp"
+ "src/Vanta/Scripts/Native/Module/Scene/Components/Rigidbody2DComponent.cpp"
 )
 
 set(${${PROJECT_NAME}_PCH} "${CMAKE_CURRENT_SOURCE_DIR}/src/vantapch.hpp")
@@ -81,17 +91,20 @@ add_library(${PROJECT_NAME} STATIC ${${PROJECT_NAME}_SOURCE})
 target_precompile_headers(${PROJECT_NAME} PRIVATE ${${PROJECT_NAME}_PCH})
 
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}-ScriptCore-CSharp)
+add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}-ScriptCore-Native)
 
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 target_link_libraries(${PROJECT_NAME}
+    PUBLIC Vanta-ScriptCore-Native
     PUBLIC Boost::boost Boost::fiber Boost::thread EnTT::EnTT filewatch fmt::fmt glm::glm
         imgui::imgui imguizmo::imguizmo spdlog::spdlog
     PRIVATE box2d::box2d glad::glad glfw mono spirv-cross-core spirv-cross-glsl
-        Vulkan::Vulkan Vulkan::glslang Vulkan::shaderc_combined Vulkan::SPIRV-Tools yaml-cpp)
+        Vulkan::Vulkan Vulkan::glslang Vulkan::shaderc_combined Vulkan::SPIRV-Tools yaml-cpp::yaml-cpp)
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE
-    $<$<BOOL:${VANTA_DISTRIB}>:
+target_compile_definitions(${PROJECT_NAME} 
+    PUBLIC -DBOOST_FIBERS_STATIC_LINK
+    PRIVATE $<$<BOOL:${VANTA_DISTRIB}>:
         -DVANTA_DISTRIB>
 )
 
@@ -120,8 +133,10 @@ target_link_options(${PROJECT_NAME} PUBLIC
 # Copy assets to runtime directory
 add_custom_command(
     TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/Vanta/Base/Definitions.hpp" "${CMAKE_CURRENT_BINARY_DIR}/input.txt"
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_CURRENT_SOURCE_DIR}/resources" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources"
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-        "${CMAKE_CURRENT_SOURCE_DIR}/mono" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/mono"
+        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/mono/runtime" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/mono"
 )

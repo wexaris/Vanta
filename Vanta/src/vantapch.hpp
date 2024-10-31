@@ -18,17 +18,18 @@
 #include <glm/ext.hpp>
 
 // Core
-#include "Vanta/Core/Config.hpp"
-#include "Vanta/Core/Definitions.hpp"
-#include "Vanta/Core/Types.hpp"
+#include "Vanta/Config.hpp"
+#include "Vanta/Base/Platform.hpp"
+#include "Vanta/Base/Definitions.hpp"
+#include "Vanta/Base/Types.hpp"
+#include "Vanta/Core/Assert.hpp"
 #include "Vanta/Core/Buffer.hpp"
 #include "Vanta/Core/Log.hpp"
 #include "Vanta/Core/Fibers.hpp"
 #include "Vanta/Core/UUID.hpp"
 
 // Util
-#include "Vanta/Util/Util.hpp"
-#include "Vanta/Util/Math.hpp"
+#include "Vanta/Util/Format.hpp"
 
 // Telemetry
 #include "Vanta/Debug/Instrumentor.hpp"

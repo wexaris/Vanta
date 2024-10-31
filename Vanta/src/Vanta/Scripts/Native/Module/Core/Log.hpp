@@ -1,22 +1,11 @@
 #pragma once
 
 namespace Vanta {
-    
-    struct Log {
-        static void Trace(const char* message) {
-            Internal.Log_Trace(message);
-        }
+    namespace NativeImpl {
 
-        static void Info(const char* message) {
-            Internal.Log_Info(message);
-        }
-
-        static void Warn(const char* message) {
-            Internal.Log_Warn(message);
-        }
-
-        static void Error(const char* message) {
-            Internal.Log_Error(message);
-        }
-    };
+        void Log_Trace(const char* message);
+        void Log_Info(const char* message);
+        void Log_Warn(const char* message);
+        void Log_Error(const char* message);
+    }
 }

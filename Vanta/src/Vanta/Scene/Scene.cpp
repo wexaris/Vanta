@@ -264,9 +264,7 @@ namespace Vanta {
     void Scene::OnScriptUpdate(double delta) {
         VANTA_PROFILE_FUNCTION();
 
-        ParallelView<NativeScriptComponent>(m_Barrier, m_Registry,
-            [=](entt::entity, NativeScriptComponent& script)
-        {
+        View<NativeScriptComponent>([=](entt::entity, NativeScriptComponent& script) {
             if (script.Instance)
                 script.Instance->OnUpdate((float)delta);
         });

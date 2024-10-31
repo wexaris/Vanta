@@ -4,6 +4,7 @@
 #include "Vanta/Render/Renderer.hpp"
 #include "Vanta/Scene/Scene.hpp"
 #include "Vanta/Scripts/ScriptEngine.hpp"
+#include "Vanta/Util/Time.hpp"
 
 namespace Vanta {
 

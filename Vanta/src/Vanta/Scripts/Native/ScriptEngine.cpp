@@ -1,12 +1,52 @@
 #include "vantapch.hpp"
 #include "Vanta/Core/Engine.hpp"
 #include "Vanta/Project/Project.hpp"
+#include "Vanta/Scripts/Native/Field.hpp"
 #include "Vanta/Scripts/Native/Interface.hpp"
 #include "Vanta/Scripts/Native/ScriptEngine.hpp"
 #include "Vanta/Util/PlatformUtils.hpp"
 
 namespace Vanta {
     namespace Native {
+
+        namespace detail {
+            static std::unordered_map<std::string, ScriptFieldType> s_NativeFieldTypeMap = {
+                { "bool", ScriptFieldType::Bool },
+                { "char", ScriptFieldType::Char },
+
+                { "byte", ScriptFieldType::Int8 },
+                { "int8", ScriptFieldType::Int8 },
+                { "int16", ScriptFieldType::Int16 },
+                { "int32", ScriptFieldType::Int32 },
+                { "int64", ScriptFieldType::Int64 },
+                { "int", ScriptFieldType::Int32 },
+
+                { "uint8", ScriptFieldType::UInt8 },
+                { "uint16", ScriptFieldType::UInt16 },
+                { "uint32", ScriptFieldType::UInt32 },
+                { "uint32", ScriptFieldType::UInt32 },
+                { "uint64", ScriptFieldType::UInt64 },
+                { "uint", ScriptFieldType::UInt32 },
+
+                { "float", ScriptFieldType::Float },
+                { "double", ScriptFieldType::Double },
+
+                { "Vector2", ScriptFieldType::Vector2 },
+                { "Vector3", ScriptFieldType::Vector3 },
+                { "Vector4", ScriptFieldType::Vector4 },
+
+                { "Entity", ScriptFieldType::Entity },
+            };
+
+            static ScriptFieldType NativeTypeToFieldType(const char* name) {
+                auto it = s_NativeFieldTypeMap.find(name);
+                if (it == s_NativeFieldTypeMap.end()) {
+                    VANTA_CORE_ERROR("Invalid native field type: {}", name);
+                    return ScriptFieldType::None;
+                }
+                return it->second;
+            }
+        }
 
         struct ScriptData {
             Box<ScriptAssembly> AppAssembly;
@@ -19,6 +59,8 @@ namespace Vanta {
             // Editor
             Box<IO::FileWatcher> AppAssemblyFileWatcher;
             bool AppAssemblyReloadPending = false;
+
+            std::unordered_map<UUID, std::unordered_map<std::string, Box<ScriptFieldInstance>>> EntityFieldInstances;
         };
 
         static ScriptData s_Data;
@@ -108,12 +150,21 @@ namespace Vanta {
         void ScriptEngine::InspectAssembly(ScriptAssembly* assembly) {
             VANTA_PROFILE_FUNCTION();
 
-            auto [data, count] = assembly->GetClassList();
-            for (; count > 0; count--, data++) {
+            auto [data, class_count] = assembly->GetClassList();
+            for (; class_count > 0; class_count--, data++) {
                 const char* className = *data;
 
                 Ref<ScriptClass> scriptClass = NewRef<ScriptClass>(assembly, className);
                 s_Data.EntityClasses[className] = scriptClass;
+
+                // Save public fields
+                auto [fields, field_count] = assembly->GetClassFieldList(className);
+                for (; field_count > 0; field_count--, fields++) {
+                    const ClassField& field = *fields;
+
+                    ScriptFieldType type = detail::NativeTypeToFieldType(field.Type);
+                    scriptClass->m_Fields[field.Name] = { field.Name, type, field.Getter, field.Setter };
+                }
             }
         }
 
@@ -133,6 +184,13 @@ namespace Vanta {
             VANTA_CORE_ASSERT(entity, "Invalid entity!");
 
             Ref<ScriptInstance> instance = NewRef<ScriptInstance>(GetClass(className), entity);
+
+            // Set variables modified in editor
+            UUID entityId = entity.GetUUID();
+            for (auto& [name, field] : s_Data.EntityFieldInstances[entityId]) {
+                instance->SetFieldValue_Impl(name, field->m_Buffer);
+            }
+
             return instance;
         }
 
@@ -151,6 +209,15 @@ namespace Vanta {
 
         ScriptAssembly* ScriptEngine::GetAppAssembly() {
             return s_Data.AppAssembly.get();
+        }
+
+        std::unordered_map<std::string, Box<ScriptFieldInstance>>& ScriptEngine::GetFieldInstances(Entity entity) {
+            VANTA_CORE_ASSERT(entity, "Invalid entity!");
+            return s_Data.EntityFieldInstances[entity.GetUUID()];
+        }
+
+        void ScriptEngine::ClearFieldInstances() {
+            s_Data.EntityFieldInstances.clear();
         }
     }
 }

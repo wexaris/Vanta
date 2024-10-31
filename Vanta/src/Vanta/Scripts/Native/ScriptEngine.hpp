@@ -1,7 +1,7 @@
 #pragma once
 #include "Vanta/Scene/Entity.hpp"
 #include "Vanta/Scripts/Native/Class.hpp"
-#include "Vanta/Scripts/Native/Assembly.hpp"
+#include "Vanta/Scripts/Native/Module/Assembly.hpp"
 
 namespace Vanta {
     namespace Native {
@@ -23,6 +23,9 @@ namespace Vanta {
 
             static Scene* GetContext();
             static ScriptAssembly* GetAppAssembly();
+
+            static std::unordered_map<std::string, Box<ScriptFieldInstance>>& GetFieldInstances(Entity entity);
+            static void ClearFieldInstances();
 
         private:
             friend struct Interface;

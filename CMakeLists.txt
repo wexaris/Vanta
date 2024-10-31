@@ -15,7 +15,10 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/lib)
 
 set(CMAKE_CXX_STANDARD 20)
 
+set(VANTA_SCRIPT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/Resources/Scripts" CACHE INTERNAL "")
+
 add_subdirectory(Vanta)
 add_subdirectory(Vanta-ScriptCore-CSharp)
+add_subdirectory(Vanta-ScriptCore-Native)
 add_subdirectory(Vanta-Tests)
 add_subdirectory(Editor)

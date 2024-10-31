@@ -2,6 +2,7 @@
 #include "Platform/OpenGL/Shader.hpp"
 #include "Vanta/Core/Engine.hpp"
 #include "Vanta/Project/Project.hpp"
+#include "Vanta/Util/String.hpp"
 
 #include <glad/glad.h>
 
@@ -116,7 +117,7 @@ namespace Vanta {
         std::string source = IO::File(filepath).Read();
         auto sources = PreProcess(source);
 
-        constexpr bool spirv = true;
+        constexpr bool spirv = false;
         if constexpr (spirv) {
             VANTA_PROFILE_RENDER_SCOPE("Shader Creation");
             CompileOrLoadVulkanBinaries(sources);
@@ -159,7 +160,7 @@ namespace Vanta {
             // Get the shader type
             usize begin = pos + strlen(delimToken) + 1;
             std::string typeStr = source.substr(begin, eol - begin);
-            Util::Trim(typeStr);
+            String::Trim(typeStr);
 
             auto type = detail::StringToShaderType(typeStr);
             VANTA_CORE_ASSERT(type != 0, "Invalid shader type: '{}'", typeStr);

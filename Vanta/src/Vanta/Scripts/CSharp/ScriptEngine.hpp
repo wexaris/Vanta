@@ -55,6 +55,8 @@ namespace Vanta {
             static void InspectAssemblyImage(MonoImage* image);
 
             static MonoObject* CreateObject(MonoClass* klass);
+
+            static Path DefaultScriptCorePath();
         };
     }
 }

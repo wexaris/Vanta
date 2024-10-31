@@ -141,7 +141,7 @@ namespace Vanta {
 
             Interface::RegisterFunctions();
 
-            Path coreAssemblyPath = Engine::RuntimeResourceDirectory() / "Scripts" / "Vanta-ScriptCore-CSharp.dll";
+            Path coreAssemblyPath = DefaultScriptCorePath();
             if (!LoadCoreAssembly(coreAssemblyPath)) {
                 VANTA_CORE_CRITICAL("Failed to load script core assembly!");
                 return;
@@ -422,6 +422,10 @@ namespace Vanta {
 
         void ScriptEngine::ClearFieldInstances() {
             s_Data.EntityFieldInstances.clear();
+        }
+    
+        Path ScriptEngine::DefaultScriptCorePath() {
+            return Engine::RuntimeResourceDirectory() / "Scripts" / "CSharp" / "Vanta-ScriptCore-CSharp.dll";
         }
     }
 }

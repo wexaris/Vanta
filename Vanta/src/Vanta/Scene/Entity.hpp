@@ -17,25 +17,33 @@ namespace Vanta {
             return m_Scene ? m_Scene->IsValid(*this) : false;
         }
 
+        /// <summary>
         /// Add a component of a certain type.
+        /// </summary>
         template<typename Component, typename... Args>
         Component& AddComponent(Args&&... args) {
             return m_Scene->AddComponent<Component>(*this, std::forward<Args>(args)...);
         }
 
+        /// <summary>
         /// Add or replace a component of a certain type.
+        /// </summary>
         template<typename Component, typename... Args>
         Component& AddOrReplaceComponent(Args&&... args) {
             return m_Scene->AddOrReplaceComponent<Component>(*this, std::forward<Args>(args)...);
         }
 
+        /// <summary>
         /// Remove a component of a certain type.
+        /// </summary>
         template<typename Component>
         void RemoveComponent() {
             return m_Scene->RemoveComponent<Component>(*this);
         }
 
+        /// <summary>
         /// Get a component of a certain type.
+        /// </summary>
         template<typename Component>
         decltype(auto) GetComponent() {
             return m_Scene->GetComponent<Component>(*this);
@@ -46,7 +54,9 @@ namespace Vanta {
             return m_Scene->GetComponent<Component>(*this);
         }
 
+        /// <summary>
         /// Attempt to get a component of a certain type.
+        /// </summary>
         template<typename Component>
         decltype(auto) TryGetComponent() {
             return m_Scene->TryGetComponent<Component>(*this);
@@ -57,7 +67,9 @@ namespace Vanta {
             return m_Scene->TryGetComponent<Component>(*this);
         }
 
+        /// <summary>
         /// Check if entity has a component of a certain type.
+        /// </summary>
         template<typename Component>
         bool HasComponent() const {
             VANTA_ASSERT(IsValid(), "Attempting to access invalid entity!");

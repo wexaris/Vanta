@@ -24,4 +24,15 @@ namespace Vanta {
             Internal.Rigidbody2DComponent_ApplyLinearImpulseToCenter(Entity.ID, ref impulse, wake);
         }
     }
+
+    public class BoxCollider2DComponent : Component {}
+    public class CircleCollider2DComponent : Component {}
+
+    public class SpriteComponent : Component { }
+    public class CircleRendererComponent : Component { }
+
+    public class CameraComponent : Component {}
+
+    public class ScriptComponent : Component {}
+    public class NativeScriptComponent : Component {}
 }

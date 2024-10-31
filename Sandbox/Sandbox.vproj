@@ -2,6 +2,6 @@ Project:
   Name: Sandbox
   AssetDirectory: Assets
   CacheDirectory: Cache
-  NativeScriptAssemblyPath: Scripts_Native/Binaries/Scripts_Native.dll
-  CSharpScriptAssemblyPath: Scripts_CSharp/Binaries/Scripts_CSharp.dll
+  NativeScriptAssemblyPath: Scripts/Native/Binaries/Scripts_Native.dll
+  CSharpScriptAssemblyPath: Scripts/CSharp/Binaries/Scripts_CSharp.dll
   InitialScene: Scenes/Simple.vnta

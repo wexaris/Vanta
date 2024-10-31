@@ -34,11 +34,11 @@ namespace Vanta {
         }
 
         void Scripts::RebuildCSharp(bool clean) {
-            InvokeBuild(Project::GetRootDirectory() / "Scripts_CSharp", clean);
+            InvokeBuild(Project::GetRootDirectory() / "Scripts" / "CSharp", clean);
         }
 
         void Scripts::RebuildNative(bool clean) {
-            InvokeBuild(Project::GetRootDirectory() / "Scripts_Native", clean);
+            InvokeBuild(Project::GetRootDirectory() / "Scripts" / "Native", clean);
         }
     }
 }

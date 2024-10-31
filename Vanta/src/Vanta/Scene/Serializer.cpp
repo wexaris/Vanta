@@ -3,6 +3,7 @@
 #include "Vanta/Scene/Entity.hpp"
 #include "Vanta/Scene/Serializer.hpp"
 #include "Vanta/Scripts/CSharp/ScriptEngine.hpp"
+#include "Vanta/Scripts/Native/ScriptEngine.hpp"
 
 #include <yaml-cpp/yaml.h>
 
@@ -133,8 +134,71 @@ namespace Vanta {
             out << YAML::BeginMap;
             out << YAML::Key << "Class" << YAML::Value << component.ClassName;
 
-            // TODO: Fields
+            if (!Native::ScriptEngine::ClassExists(component.ClassName)) {
+                out << YAML::EndMap;
+                return;
+            }
 
+            const auto& klass = Native::ScriptEngine::GetClass(component.ClassName);
+            if (!klass) {
+                out << YAML::EndMap;
+                return;
+            }
+
+            const auto& fields = klass->GetFields();
+
+            if (fields.size() > 0) {
+                out << YAML::Key << "Fields";
+                out << YAML::BeginSeq;
+
+                auto& instances = Native::ScriptEngine::GetFieldInstances(entity);
+                for (const auto& [name, field] : fields) {
+                    auto it = instances.find(name);
+                    if (it == instances.end())
+                        continue;
+
+                    auto& instance = it->second;
+
+                    out << YAML::BeginMap; // Field
+                    out << YAML::Key << "Name" << YAML::Value << name;
+                    out << YAML::Key << "Type" << YAML::Value << field.Type.ToString();
+                    out << YAML::Key << "Value" << YAML::Value;
+
+#define WRITE_SCRIPT_FIELD(fieldType, type) \
+    case Native::ScriptFieldType::fieldType: { \
+        out << (type)instance->GetFieldValue<type>(); \
+        break; \
+    }
+
+                    switch (field.Type) {
+                        WRITE_SCRIPT_FIELD(Bool, bool);
+                        WRITE_SCRIPT_FIELD(Char, char);
+
+                        WRITE_SCRIPT_FIELD(Int8, int8);
+                        WRITE_SCRIPT_FIELD(Int16, int16);
+                        WRITE_SCRIPT_FIELD(Int32, int32);
+                        WRITE_SCRIPT_FIELD(Int64, int64);
+
+                        WRITE_SCRIPT_FIELD(UInt8, uint8);
+                        WRITE_SCRIPT_FIELD(UInt16, uint16);
+                        WRITE_SCRIPT_FIELD(UInt32, uint32);
+                        WRITE_SCRIPT_FIELD(UInt64, uint64);
+
+                        WRITE_SCRIPT_FIELD(Float, float);
+                        WRITE_SCRIPT_FIELD(Double, double);
+
+                        WRITE_SCRIPT_FIELD(Vector2, glm::vec2);
+                        WRITE_SCRIPT_FIELD(Vector3, glm::vec3);
+                        WRITE_SCRIPT_FIELD(Vector4, glm::vec4);
+
+                        WRITE_SCRIPT_FIELD(Entity, UUID);
+                    }
+#undef WRITE_SCRIPT_FIELD
+
+                    out << YAML::EndMap; // Field
+                }
+                out << YAML::EndSeq; // Field sequence
+            }
             out << YAML::EndMap;
         });
 
@@ -365,7 +429,63 @@ after_csharp_script_component:
             if (nativeScriptComponent) {
                 auto& sc = entity.AddComponent<NativeScriptComponent>();
                 sc.ClassName = nativeScriptComponent["Class"].as<std::string>();
+
+                auto scriptFields = scriptComponent["Fields"];
+                if (scriptFields) {
+                    if (!Native::ScriptEngine::ClassExists(sc.ClassName)) {
+                        VANTA_CORE_WARN("Class no longer exists: {}", sc.ClassName);
+                        goto after_native_script_component;
+                    }
+                    const auto& fields = Native::ScriptEngine::GetClass(sc.ClassName)->GetFields();
+
+                    auto& instances = Native::ScriptEngine::GetFieldInstances(entity);
+
+                    for (auto scriptField : scriptFields) {
+                        std::string fieldName = scriptField["Name"].as<std::string>();
+                        Native::ScriptFieldType type(scriptField["Type"].as<std::string>());
+
+                        const auto& it = fields.find(fieldName);
+                        if (it == fields.end()) {
+                            VANTA_CORE_WARN("Field no longer exists: {}", fieldName);
+                            continue;
+                        }
+
+                        const auto& field = it->second;
+
+#define READ_SCRIPT_FIELD(fieldType, type) \
+    case Native::ScriptFieldType::fieldType: { \
+        type value = scriptField["Value"].as<type>(); \
+        instances[fieldName] = NewBox<Native::ScriptFieldBuffer<type>>(field, value); \
+        break; \
+    }
+                        switch (type) {
+                            READ_SCRIPT_FIELD(Bool, bool);
+                            READ_SCRIPT_FIELD(Char, char);
+
+                            READ_SCRIPT_FIELD(Int8, int8);
+                            READ_SCRIPT_FIELD(Int16, int16);
+                            READ_SCRIPT_FIELD(Int32, int32);
+                            READ_SCRIPT_FIELD(Int64, int64);
+
+                            READ_SCRIPT_FIELD(UInt8, uint8);
+                            READ_SCRIPT_FIELD(UInt16, uint16);
+                            READ_SCRIPT_FIELD(UInt32, uint32);
+                            READ_SCRIPT_FIELD(UInt64, uint64);
+
+                            READ_SCRIPT_FIELD(Float, float);
+                            READ_SCRIPT_FIELD(Double, double);
+
+                            READ_SCRIPT_FIELD(Vector2, glm::vec2);
+                            READ_SCRIPT_FIELD(Vector3, glm::vec3);
+                            READ_SCRIPT_FIELD(Vector4, glm::vec4);
+
+                            READ_SCRIPT_FIELD(Entity, UUID);
+                        }
+#undef READ_SCRIPT_FIELD
+                    }
+                }
             }
+after_native_script_component:
 
             auto spriteComponent = item["SpriteComponent"];
             if (spriteComponent) {
