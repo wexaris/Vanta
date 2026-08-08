@@ -1,7 +1,7 @@
 #include "vantapch.hpp"
 #include "Vanta/Core/Engine.hpp"
 #include "Vanta/IO/File.hpp"
-#include "Vanta/Util/PlatformUtils.hpp"
+#include "Vanta/Util/FileSystem.hpp"
 
 namespace Vanta {
     namespace IO {
@@ -69,21 +69,21 @@ namespace Vanta {
         }
 
         Opt<Path> FileDialog::OpenDirectory() {
-            Path path = Platform::OpenDirectoryDialog();
+            Path path = FileSystem::OpenDirectoryDialog();
             if (path.empty())
                 return None;
             return path;
         }
 
         Opt<File> FileDialog::OpenFile(const char* filter) {
-            Path path = Platform::OpenFileDialog(filter);
+            Path path = FileSystem::OpenFileDialog(filter);
             if (path.empty())
                 return None;
             return File(path);
         }
 
         Opt<File> FileDialog::SaveFile(const char* filter) {
-            Path path = Platform::SaveFileDialog(filter);
+            Path path = FileSystem::SaveFileDialog(filter);
             if (path.empty())
                 return None;
             return File(path);

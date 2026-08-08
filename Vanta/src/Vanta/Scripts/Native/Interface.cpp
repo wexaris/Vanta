@@ -24,7 +24,7 @@ namespace Vanta {
         void Interface::RegisterFunctions() {
             ScriptAssembly* assembly = ScriptEngine::GetAppAssembly();
 
-            EngineFunctions functions;
+            EngineFunctions functions = {};
 #define VANTA_REGISTER_FUNCTION(name) ForceAssign(functions.name, name);
 
             VANTA_REGISTER_FUNCTION(Log_Trace);

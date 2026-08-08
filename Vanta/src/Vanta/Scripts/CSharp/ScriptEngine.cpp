@@ -70,40 +70,6 @@ namespace Vanta {
                     VANTA_CORE_INFO("{}.{}", nameSpace, name);
                 }
             }
-
-            static std::unordered_map<std::string, ScriptFieldType> s_MonoFieldTypeMap = {
-                { "System.Boolean", ScriptFieldType::Bool },
-                { "System.Char", ScriptFieldType::Char },
-
-                { "System.Byte", ScriptFieldType::Int8 },
-                { "System.Int16", ScriptFieldType::Int16 },
-                { "System.Int32", ScriptFieldType::Int32 },
-                { "System.Int64", ScriptFieldType::Int64 },
-
-                { "System.UByte", ScriptFieldType::UInt8 },
-                { "System.UInt16", ScriptFieldType::UInt16 },
-                { "System.UInt32", ScriptFieldType::UInt32 },
-                { "System.UInt64", ScriptFieldType::UInt64 },
-
-                { "System.Single", ScriptFieldType::Float },
-                { "System.Double", ScriptFieldType::Double },
-
-                { "Vanta.Vector2", ScriptFieldType::Vector2 },
-                { "Vanta.Vector3", ScriptFieldType::Vector3 },
-                { "Vanta.Vector4", ScriptFieldType::Vector4 },
-
-                { "Vanta.Entity", ScriptFieldType::Entity },
-            };
-
-            static ScriptFieldType MonoTypeToFieldType(MonoType* type) {
-                std::string name = mono_type_get_name(type);
-                auto it = s_MonoFieldTypeMap.find(name);
-                if (it == s_MonoFieldTypeMap.end()) {
-                    VANTA_CORE_ERROR("Invalid script field type: {}", name);
-                    return ScriptFieldType::None;
-                }
-                return it->second;
-            }
         }
 
         struct ScriptData {
@@ -116,8 +82,8 @@ namespace Vanta {
             MonoAssembly* AppAssembly = nullptr;
             MonoImage* AppAssemblyImage = nullptr;
 
-            ScriptClass EntityClass;
-            std::unordered_map<std::string, Ref<ScriptClass>> EntityClasses;
+            CSharpScriptClass EntityBaseClass;
+            std::unordered_map<std::string, Ref<CSharpScriptClass>> EntityClasses;
 
             // Runtime
             Scene* SceneContext = nullptr;
@@ -128,7 +94,7 @@ namespace Vanta {
             Box<IO::FileWatcher> AppAssemblyFileWatcher;
             bool AppAssemblyReloadPending = false;
 
-            std::unordered_map<UUID, std::unordered_map<std::string, Box<ScriptFieldInstance>>> EntityFieldInstances;
+            std::unordered_map<UUID, std::unordered_map<std::string_view, Box<ScriptFieldInstance>>> EntityFieldInstances;
         };
 
         static ScriptData s_Data;
@@ -230,7 +196,7 @@ namespace Vanta {
             s_Data.CoreAssemblyImage = mono_assembly_get_image(s_Data.CoreAssembly);
 
             // Save entity class
-            s_Data.EntityClass = ScriptClass(s_Data.CoreAssemblyImage, "Vanta", "Entity");
+            s_Data.EntityBaseClass = CSharpScriptClass(s_Data.CoreAssemblyImage, "Vanta", "Entity", {});
 
             return true;
         }
@@ -334,17 +300,17 @@ namespace Vanta {
 
                 MonoClass* klass = mono_class_from_name(image, namespaceName, className);
 
-                if (klass == s_Data.EntityClass)
+                if (klass == s_Data.EntityBaseClass)
                     continue;
 
-                bool isEntity = mono_class_is_subclass_of(klass, (MonoClass*)s_Data.EntityClass, false);
+                bool isEntity = mono_class_is_subclass_of(klass, (MonoClass*)s_Data.EntityBaseClass, false);
                 if (!isEntity)
                     continue;
 
                 // Save classes that derive our `Entity` class
                 std::string fullName = (strlen(namespaceName) != 0) ? FMT("{}.{}", namespaceName, className) : className;
-                Ref<ScriptClass> scriptClass = NewRef<ScriptClass>(image, namespaceName, className);
-                s_Data.EntityClasses[fullName] = scriptClass;
+
+                std::vector<Ref<ScriptField>> classFields;
 
                 // Save public fields
                 void* fieldIterator = nullptr;
@@ -356,10 +322,13 @@ namespace Vanta {
                         continue;
 
                     const char* name = mono_field_get_name(field);
-                    ScriptFieldType type = detail::MonoTypeToFieldType(mono_field_get_type(field));
-
-                    scriptClass->m_Fields[name] = { name, type, field };
+                    MonoType* type = mono_field_get_type(field);
+                    Ref<ScriptField> classField = NewRef<CSharpScriptField>(name, type, field);
+                    classFields.push_back(classField);
                 }
+
+                Ref<CSharpScriptClass> scriptClass = NewRef<CSharpScriptClass>(image, namespaceName, className, std::move(classFields));
+                s_Data.EntityClasses[fullName] = scriptClass;
             }
         }
 
@@ -383,7 +352,7 @@ namespace Vanta {
             // Set variables modified in editor
             UUID entityId = entity.GetUUID();
             for (auto& [name, field] : s_Data.EntityFieldInstances[entityId]) {
-                instance->SetFieldValue_Impl(name, field->m_Buffer);
+                instance->WriteFieldValue(name, field->GetFieldData());
             }
 
             return instance;
@@ -404,7 +373,7 @@ namespace Vanta {
         }
 
         const ScriptClass& ScriptEngine::GetEntityClass() {
-            return s_Data.EntityClass;
+            return s_Data.EntityBaseClass;
         }
 
         Scene* ScriptEngine::GetContext() {
@@ -415,7 +384,7 @@ namespace Vanta {
             return s_Data.CoreAssemblyImage;
         }
 
-        std::unordered_map<std::string, Box<ScriptFieldInstance>>& ScriptEngine::GetFieldInstances(Entity entity) {
+        std::unordered_map<std::string_view, Box<ScriptFieldInstance>>& ScriptEngine::GetFieldInstances(Entity entity) {
             VANTA_CORE_ASSERT(entity, "Invalid entity!");
             return s_Data.EntityFieldInstances[entity.GetUUID()];
         }

@@ -47,7 +47,7 @@ namespace Vanta {
         }
 
         void SceneHierarchy::DrawEntity(Entity entity) {
-            auto name = entity.GetName();
+            auto& name = entity.GetName();
 
             ImGuiTreeNodeFlags flags = ((m_SelectedEntity == entity) ? ImGuiTreeNodeFlags_Selected : 0) |
                 ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
@@ -311,20 +311,21 @@ namespace Vanta {
                 if (component.Instance) {
                     const auto& fields = component.Instance->GetClass()->GetFields();
                     for (const auto& [name, field] : fields) {
-                        switch (field.Type) {
-                        case CSharp::ScriptFieldType::Float: {
+                        switch (field->Type) {
+                        case ScriptFieldType::Float: {
                             float data = component.Instance->GetFieldValue<float>(name);
-                            if (ImGui::DragFloat(name.c_str(), &data)) {
+                            if (ImGui::DragFloat(name.data(), &data)) {
                                 component.Instance->SetFieldValue(name, data);
                             }
                         }
+                        // TODO: Add remaining types
                         default: break;
                         }
                     }
                 }
                 // Editor field data
                 else if (classExists) {
-                    Ref<CSharp::ScriptClass> klass = CSharp::ScriptEngine::GetClass(component.ClassName);
+                    Ref<ScriptClass> klass = CSharp::ScriptEngine::GetClass(component.ClassName);
                     auto& instances = CSharp::ScriptEngine::GetFieldInstances(entity);
                     
                     // Loop though every class field and check
@@ -336,23 +337,24 @@ namespace Vanta {
                         if (it != instances.end()) {
                             auto& instance = it->second;
 
-                            switch (field.Type) {
-                            case CSharp::ScriptFieldType::Float: {
+                            switch (field->Type) {
+                            case ScriptFieldType::Float: {
                                 float data = instance->GetFieldValue<float>();
-                                if (ImGui::DragFloat(name.c_str(), &data)) {
+                                if (ImGui::DragFloat(name.data(), &data)) {
                                     instance->SetFieldValue(data);
                                 }
                             }
+                            // TODO: Add remaining types
                             default:;
                             }
                         }
                         // Create new field instance
                         else {
-                            switch (field.Type) {
-                            case CSharp::ScriptFieldType::Float: {
+                            switch (field->Type) {
+                            case ScriptFieldType::Float: {
                                 float data = 0.0f;
-                                if (ImGui::DragFloat(name.c_str(), &data)) {
-                                    instances[name] = NewBox<CSharp::ScriptFieldBuffer<float>>(field, data);
+                                if (ImGui::DragFloat(name.data(), &data)) {
+                                    instances[name] = NewBox<ScriptFieldBuffer<float>>(field, data);
                                 }
                             }
                             // TODO: Add remaining types
@@ -382,20 +384,21 @@ namespace Vanta {
                 if (component.Instance) {
                     const auto& fields = component.Instance->GetClass()->GetFields();
                     for (const auto& [name, field] : fields) {
-                        switch (field.Type) {
-                        case Native::ScriptFieldType::Float: {
+                        switch (field->Type) {
+                        case ScriptFieldType::Float: {
                             float data = component.Instance->GetFieldValue<float>(name);
-                            if (ImGui::DragFloat(name.c_str(), &data)) {
+                            if (ImGui::DragFloat(name.data(), &data)) {
                                 component.Instance->SetFieldValue(name, data);
                             }
                         }
+                        // TODO: Add remaining types
                         default: break;
                         }
                     }
                 }
                 // Editor field data
                 else if (classExists) {
-                    Ref<Native::ScriptClass> klass = Native::ScriptEngine::GetClass(component.ClassName);
+                    Ref<ScriptClass> klass = Native::ScriptEngine::GetClass(component.ClassName);
                     auto& instances = Native::ScriptEngine::GetFieldInstances(entity);
 
                     // Loop though every class field and check
@@ -407,23 +410,24 @@ namespace Vanta {
                         if (it != instances.end()) {
                             auto& instance = it->second;
 
-                            switch (field.Type) {
-                            case Native::ScriptFieldType::Float: {
+                            switch (field->Type) {
+                            case ScriptFieldType::Float: {
                                 float data = instance->GetFieldValue<float>();
-                                if (ImGui::DragFloat(name.c_str(), &data)) {
+                                if (ImGui::DragFloat(name.data(), &data)) {
                                     instance->SetFieldValue(data);
                                 }
                             }
+                            // TODO: Add remaining types
                             default:;
                             }
                         }
                         // Create new field instance
                         else {
-                            switch (field.Type) {
-                            case Native::ScriptFieldType::Float: {
+                            switch (field->Type) {
+                            case ScriptFieldType::Float: {
                                 float data = 0.0f;
-                                if (ImGui::DragFloat(name.c_str(), &data)) {
-                                    instances[name] = NewBox<Native::ScriptFieldBuffer<float>>(field, data);
+                                if (ImGui::DragFloat(name.data(), &data)) {
+                                    instances[name] = NewBox<ScriptFieldBuffer<float>>(field, data);
                                 }
                             }
                             // TODO: Add remaining types

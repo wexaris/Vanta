@@ -55,6 +55,8 @@ set(${PROJECT_NAME}_SOURCE
     "src/Vanta/Scene/Components/CameraComponent.cpp"
     "src/Vanta/Scene/Components/ScriptComponent.cpp"
     "src/Vanta/Scene/Components/NativeScriptComponent.cpp"
+    "src/Vanta/Scripts/Class.cpp"
+    "src/Vanta/Scripts/Field.cpp"
     "src/Vanta/Scripts/CSharp/Class.cpp"
     "src/Vanta/Scripts/CSharp/Field.cpp"
     "src/Vanta/Scripts/CSharp/Interface.cpp"
@@ -80,8 +82,10 @@ set(${PROJECT_NAME}_SOURCE
     "src/Platform/OpenGL/Texture.cpp"
     "src/Platform/OpenGL/UniformBuffer.cpp"
     "src/Platform/OpenGL/VertexArray.cpp"
+    "src/Platform/Windows/DynamicLibrary.cpp"
+    "src/Platform/Windows/FileSystem.cpp"
     "src/Platform/Windows/Input.cpp"
-    "src/Platform/Windows/PlatformUtils.cpp"
+    "src/Platform/Windows/Process.cpp"
     "src/Platform/Windows/Window.cpp"
 )
 

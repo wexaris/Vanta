@@ -14,7 +14,7 @@ namespace Vanta {
         float RollingResistance = 0.1f;
 
         // Physics runtime instance
-        b2ShapeId RuntimeShape;
+        b2ShapeId RuntimeShape = {};
 
         CircleCollider2DComponent() = default;
         CircleCollider2DComponent(const CircleCollider2DComponent&) = default;

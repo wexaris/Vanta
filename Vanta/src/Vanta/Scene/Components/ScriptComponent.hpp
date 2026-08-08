@@ -5,15 +5,13 @@ namespace Vanta {
 
     class Scene;
 
-    namespace CSharp {
-        class ScriptInstance;
-    }
+    class ScriptInstance;
 
     struct ScriptComponent {
         std::string ClassName;
 
         // Script runtime instance
-        Ref<CSharp::ScriptInstance> Instance = nullptr;
+        Ref<ScriptInstance> Instance = nullptr;
 
         void Create(entt::entity e, Scene* scene);
         void Destroy();

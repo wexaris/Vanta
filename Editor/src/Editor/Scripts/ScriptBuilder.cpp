@@ -1,47 +1,17 @@
 #include "ScriptBuilder.hpp"
 
-#include <array>
-#include <cstdlib>
 #include <filesystem>
 #include <string>
 #include <vector>
+
+#include <Vanta/Util/Process.hpp>
 
 namespace Vanta {
     namespace Editor {
 
         namespace {
-            struct CommandResult {
-                int ExitCode = 0;
-                std::string Output;
-            };
-
-            static std::string Quote(const std::string& value) {
+            std::string Quote(const std::string& value) {
                 return std::string("\"") + value + "\"";
-            }
-
-            static CommandResult RunCommand(const std::vector<std::string_view>& commandParts, const Path& workingDirectory) {
-                std::string command;
-                for (usize i = 0; i < commandParts.size(); i++) {
-                    if (i > 0)
-                        command += " ";
-                    command += commandParts[i];
-                }
-
-                // Keep the build execution in the script project directory for deterministic relative paths.
-                std::string shellCommand = std::string("cmd /c \"cd /d ") + Quote(workingDirectory.string()) + " && " + command + " 2>&1\"";
-
-                std::array<char, 512> buffer{};
-                std::string output;
-
-                FILE* pipe = _popen(shellCommand.c_str(), "r");
-                if (!pipe)
-                    return { 1, "Failed to launch process" };
-
-                while (fgets(buffer.data(), static_cast<int>(buffer.size()), pipe) != nullptr)
-                    output += buffer.data();
-
-                int exitCode = _pclose(pipe);
-                return { exitCode, output };
             }
         }
 
@@ -52,7 +22,7 @@ namespace Vanta {
 
             std::filesystem::create_directories(buildDirectory);
 
-            CommandResult configure = RunCommand({
+            CommandResult configure = Process::Run({
                 "cmake",
                 "-S", Quote(projectDirectory.string()),
                 "-B", Quote(buildDirectory.string()),
@@ -64,7 +34,7 @@ namespace Vanta {
                 return false;
             }
 
-            CommandResult build = RunCommand({
+            CommandResult build = Process::Run({
                 "cmake",
                 "--build", Quote(buildDirectory.string()),
                 "--config", ToCMakeBuildType(options.Configuration)
@@ -87,7 +57,7 @@ namespace Vanta {
 
             const Path projectFile = projectDirectory / "Scripts_CSharp.csproj";
 
-            CommandResult build = RunCommand({
+            CommandResult build = Process::Run({
                 "dotnet",
                 "build", Quote(projectFile.string()),
                 "--configuration", ToDotnetConfiguration(options.Configuration),

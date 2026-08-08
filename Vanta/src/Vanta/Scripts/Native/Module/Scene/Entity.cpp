@@ -35,7 +35,7 @@ namespace Vanta {
         }
 
         uint64 Entity_GetEntityByName(const char* name) {
-            Scene* scene = ScriptEngine::GetContext();
+            Scene* scene = Native::ScriptEngine::GetContext();
             VANTA_CORE_ASSERT(scene, "Script engine context not set!");
 
             Entity entity = scene->GetEntityByName(name);
@@ -46,7 +46,7 @@ namespace Vanta {
         }
 
         bool Entity_HasComponent(UUID entityID, usize componentID) {
-            Scene* scene = ScriptEngine::GetContext();
+            Scene* scene = Native::ScriptEngine::GetContext();
             VANTA_CORE_ASSERT(scene, "Script engine context not set!");
             Entity entity = scene->GetEntityByID(entityID);
             VANTA_ASSERT(entity, "Entity referenced in script doesn't exist!");

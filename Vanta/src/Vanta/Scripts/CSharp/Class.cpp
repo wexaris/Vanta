@@ -7,101 +7,75 @@
 namespace Vanta {
     namespace CSharp {
 
-        ScriptClass::ScriptClass(MonoImage* image, const std::string& namespaceName, const std::string& className)
-            : m_NamespaceName(namespaceName), m_ClassName(className)
+        CSharpScriptClass::CSharpScriptClass(MonoImage* image, const std::string& namespaceName, const std::string& className, std::vector<Ref<ScriptField>> fields)
+            : ScriptClass(std::move(fields)), m_NamespaceName(namespaceName), m_ClassName(className)
         {
             VANTA_PROFILE_FUNCTION();
             m_Class = mono_class_from_name(image, namespaceName.c_str(), className.c_str());
             if (!m_Class)
                 VANTA_CORE_CRITICAL("Failed to retrieve class from C# assembly: {}.{}", namespaceName, className);
+
+            m_Constructor = TryGetMethod(".ctor", 1);
+            m_OnCreateMethod = TryGetMethod("OnCreate", 0);
+            m_OnUpdateMethod = TryGetMethod("OnUpdate", 1);
+            m_OnDestroyMethod = TryGetMethod("OnDestroy", 0);
         }
 
-        MonoObject* ScriptClass::Instantiate() const {
+        void* CSharpScriptClass::InstantiateRuntimeInstance(Entity entity) const {
             VANTA_PROFILE_FUNCTION();
+            VANTA_CORE_ASSERT(m_Class, "Invalid script class!");
+
+            // Create new class instance
             MonoObject* object = ScriptEngine::CreateObject(m_Class);
             mono_runtime_object_init(object);
+
+            // Call constructor with entity ID
+            UUID entityID = entity.GetUUID();
+            void* param = &entityID;
+            InvokeMethod(object, m_Constructor, &param);
+
             return object;
         }
 
-        MonoMethod* ScriptClass::TryGetMethod(const std::string& name, int paramCount) const {
+        void CSharpScriptClass::InvokeOnCreate(const ScriptInstance* instance) const
+        {
+            VANTA_CORE_ASSERT(instance, "Invalid script class instance!");
+            VANTA_CORE_ASSERT(instance->GetRuntimeInstance(), "Invalid script class instance runtime object!");
+            VANTA_CORE_ASSERT(m_OnCreateMethod, "Script class missing OnCreate method!");
+
+            InvokeMethod((MonoObject*)instance->GetRuntimeInstance(), m_OnCreateMethod);
+        }
+
+        void CSharpScriptClass::InvokeOnUpdate(const ScriptInstance* instance, double delta) const
+        {
+            VANTA_CORE_ASSERT(instance, "Invalid script class instance!");
+            VANTA_CORE_ASSERT(instance->GetRuntimeInstance(), "Invalid script class instance runtime object!");
+            VANTA_CORE_ASSERT(m_OnCreateMethod, "Script class missing OnCreate method!");
+
+            void* param = &delta;
+            InvokeMethod((MonoObject*)instance->GetRuntimeInstance(), m_OnUpdateMethod, &param);
+        }
+
+        void CSharpScriptClass::InvokeOnDestroy(const ScriptInstance* instance) const
+        {
+            VANTA_CORE_ASSERT(instance, "Invalid script class instance!");
+            VANTA_CORE_ASSERT(instance->GetRuntimeInstance(), "Invalid script class instance runtime object!");
+            VANTA_CORE_ASSERT(m_OnCreateMethod, "Script class missing OnCreate method!");
+
+            InvokeMethod((MonoObject*)instance->GetRuntimeInstance(), m_OnDestroyMethod);
+        }
+
+        MonoMethod* CSharpScriptClass::TryGetMethod(const std::string& name, int paramCount) const {
+            VANTA_CORE_ASSERT(m_Class, "Invalid script class!");
             return mono_class_get_method_from_name(m_Class, name.c_str(), paramCount);
         }
 
-        MonoObject* ScriptClass::InvokeMethod(MonoObject* instance, MonoMethod* method, void** params) const {
+        MonoObject* CSharpScriptClass::InvokeMethod(MonoObject* instance, MonoMethod* method, void** params) const {
             VANTA_CORE_ASSERT(instance, "Invalid script class instance!");
             VANTA_CORE_ASSERT(method, "Invalid script class method!");
 
             MonoObject* exception = nullptr;
             return mono_runtime_invoke(method, instance, params, &exception);
-        }
-
-        ScriptInstance::ScriptInstance(Ref<ScriptClass> scriptClass, Entity entity)
-            : m_ScriptClass(scriptClass)
-        {
-            VANTA_PROFILE_FUNCTION();
-
-            m_Instance = m_ScriptClass->Instantiate();
-
-            m_Constructor = ScriptEngine::GetEntityClass().TryGetMethod(".ctor", 1);
-            VANTA_CORE_ASSERT(m_Constructor, "Script class missing valid constructor!");
-
-            m_OnCreateMethod = m_ScriptClass->TryGetMethod("OnCreate", 0);
-            m_OnUpdateMethod = m_ScriptClass->TryGetMethod("OnUpdate", 1);
-            m_OnDestroyMethod = m_ScriptClass->TryGetMethod("OnDestroy", 0);
-
-            // Call constructor with entity ID
-            UUID entityID = entity.GetUUID();
-            void* param = &entityID;
-            m_ScriptClass->InvokeMethod(m_Instance, m_Constructor, &param);
-        }
-
-        void ScriptInstance::OnCreate() {
-            if (m_OnCreateMethod) {
-                m_ScriptClass->InvokeMethod(m_Instance, m_OnCreateMethod);
-            }
-        }
-
-        void ScriptInstance::OnUpdate(float delta) {
-            if (m_OnUpdateMethod) {
-                void* param = &delta;
-                m_ScriptClass->InvokeMethod(m_Instance, m_OnUpdateMethod, &param);
-            }
-        }
-
-        void ScriptInstance::OnDestroy() {
-            if (m_OnDestroyMethod) {
-                m_ScriptClass->InvokeMethod(m_Instance, m_OnDestroyMethod);
-            }
-        }
-
-        bool ScriptInstance::GetFieldValue_Impl(const std::string& name, void* buffer) {
-            VANTA_PROFILE_FUNCTION();
-
-            const auto& fields = m_ScriptClass->GetFields();
-            auto it = fields.find(name);
-            if (it == fields.end()) {
-                VANTA_CORE_ASSERT(false, "Script class field not found!");
-                return false;
-            }
-
-            const ScriptField& field = it->second;
-            mono_field_get_value(m_Instance, field.MonoField, buffer);
-            return true;
-        }
-
-        bool ScriptInstance::SetFieldValue_Impl(const std::string& name, const void* value) {
-            VANTA_PROFILE_FUNCTION();
-
-            const auto& fields = m_ScriptClass->GetFields();
-            auto it = fields.find(name);
-            if (it == fields.end()) {
-                VANTA_CORE_ASSERT(false, "Script class field not found!");
-                return false;
-            }
-
-            const ScriptField& field = it->second;
-            mono_field_set_value(m_Instance, field.MonoField, const_cast<void*>(value));
-            return true;
         }
     }
 }

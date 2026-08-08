@@ -11,7 +11,7 @@ namespace Vanta {
         bool FixedRotation = false;
 
         // Physics runtime object handle
-        b2BodyId RuntimeBody;
+        b2BodyId RuntimeBody = {};
 
         Rigidbody2DComponent() = default;
         Rigidbody2DComponent(const Rigidbody2DComponent&) = default;
