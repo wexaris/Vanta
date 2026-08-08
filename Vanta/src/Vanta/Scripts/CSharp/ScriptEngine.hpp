@@ -4,7 +4,6 @@
 #include "Vanta/Scripts/CSharp/Field.hpp"
 
 extern "C" {
-    typedef struct _MonoAssembly MonoAssembly;
     typedef struct _MonoImage MonoImage;
 }
 
@@ -33,12 +32,11 @@ namespace Vanta {
             static Scene* GetContext();
             static MonoImage* GetCoreAssemblyImage();
 
-            static std::unordered_map<std::string, Box<ScriptFieldInstance>>& GetFieldInstances(Entity entity);
+            static std::unordered_map<std::string_view, Box<ScriptFieldInstance>>& GetFieldInstances(Entity entity);
             static void ClearFieldInstances();
 
         private:
-            friend class ScriptClass;
-            friend class ScriptInstance;
+            friend class CSharpScriptClass;
             friend struct Interface;
 
             ScriptEngine() = delete;

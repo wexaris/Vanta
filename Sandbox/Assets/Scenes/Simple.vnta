@@ -14,13 +14,13 @@ Scene:
       Rigidbody2DComponent:
         BodyType: 0
         FixedRotation: false
-      BoxCollider2DComponent:
-        Size: [0.5, 0.5]
-        Offset: [0, 0]
+      CircleCollider2DComponent:
+        Radius: 0.4
+        Offset: [-0.01, 0.01]
         Density: 1
-        Friction: 0.400000006
-        Restitution: 0.300000012
-        RestitutionThreshold: 0.5
+        Friction: 0.4
+        Restitution: 0.3
+        RollingResistance: 0.1
     - Entity: [Camera, 15579620444860803001]
       TransformComponent:
         Position: [0, 0, 10]
@@ -30,7 +30,7 @@ Scene:
         Camera:
           ProjectionType: 0
           PerspectiveFOV: 34
-          PerspectiveNear: 3.0999999
+          PerspectiveNear: 3.1
           PerspectiveFar: 1000
           OrthographicSize: 10
           OrthographicNear: -1
@@ -38,9 +38,13 @@ Scene:
         FixedAspectRatio: false
       NativeScriptComponent:
         Class: Camera
+        Fields:
+          - Name: DistanceZ
+            Type: Float
+            Value: 30
     - Entity: [Player, 7154378457275276275]
       TransformComponent:
-        Position: [0, 1, 0]
+        Position: [-1.4901161e-08, 1, 0]
         Rotation: [0, -0, 0]
         Scale: [0.5, 1, 1]
       ScriptComponent:
@@ -51,7 +55,7 @@ Scene:
             Value: 4
       SpriteComponent:
         TilingFactor: 1
-        Color: [0.344538718, 0.70358628, 0.833976865, 1]
+        Color: [0.34453872, 0.7035863, 0.83397686, 1]
       Rigidbody2DComponent:
         BodyType: 1
         FixedRotation: false
@@ -59,17 +63,17 @@ Scene:
         Size: [0.5, 0.5]
         Offset: [0, 0]
         Density: 1
-        Friction: 0.400000006
-        Restitution: 0.300000012
-        RestitutionThreshold: 0.5
+        Friction: 0.4
+        Restitution: 0.3
+        RollingResistance: 0.1
     - Entity: [Foor, 14123905778971563486]
       TransformComponent:
         Position: [0, -3, 0]
-        Rotation: [0, -0, -9.92182541]
-        Scale: [12.0000019, 0.5, 1]
+        Rotation: [0, -0, -9.921825]
+        Scale: [12.000002, 0.5, 1]
       SpriteComponent:
         TilingFactor: 1
-        Color: [0.907335877, 0.806675553, 0.479942113, 1]
+        Color: [0.9073359, 0.80667555, 0.4799421, 1]
       Rigidbody2DComponent:
         BodyType: 0
         FixedRotation: false
@@ -77,17 +81,17 @@ Scene:
         Size: [0.5, 0.5]
         Offset: [0, 0]
         Density: 1
-        Friction: 0.400000006
-        Restitution: 0.300000012
-        RestitutionThreshold: 0.5
+        Friction: 0.4
+        Restitution: 0.3
+        RollingResistance: 0.1
     - Entity: [Red, 4639143949621759840]
       TransformComponent:
-        Position: [2.42580962, 0.535613179, 0]
-        Rotation: [0, -0, 63.2588234]
-        Scale: [1.00000012, 1.00000012, 1]
+        Position: [2.4258096, 0.5356132, 0]
+        Rotation: [0, -0, 63.258823]
+        Scale: [1.0000001, 1.0000001, 1]
       SpriteComponent:
         TilingFactor: 1
-        Color: [0.888030887, 0.397728115, 0.397728115, 1]
+        Color: [0.8880309, 0.39772812, 0.39772812, 1]
       Rigidbody2DComponent:
         BodyType: 1
         FixedRotation: false
@@ -95,10 +99,10 @@ Scene:
         Size: [0.5, 0.5]
         Offset: [0, 0]
         Density: 1
-        Friction: 0.400000006
-        Restitution: 0.300000012
-        RestitutionThreshold: 0.5
+        Friction: 0.4
+        Restitution: 0.3
+        RollingResistance: 0.1
 
-ViewportCameraPosition: [-0.162236348, 8.12314606, 17.6865101]
+ViewportCameraPosition: [2.524572, 4.3651886, 12.787536]
 
-ViewportCameraRotation: [-25.7000504, 0.95982492, 0]
+ViewportCameraRotation: [-17.960073, 12.399811, 0]

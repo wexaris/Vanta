@@ -2,16 +2,35 @@
 .vs/
 .vscode/
 CMakeSettings.json
+CMakePresets.json
 *.idb
 *.pdb
 *.hint
 
-# Vanta
+# Build
 build/
+out/
+vcpkg_installed/
+
+# Vanta
+Vanta/src/Vanta/Scripts/CSharp/BuildTemplate/bin
+Vanta/src/Vanta/Scripts/CSharp/BuildTemplate/obj
+
+Vanta-ScriptCore-CSharp/bin
+Vanta-ScriptCore-CSharp/build
+Vanta-ScriptCore-CSharp/obj
+
+Vanta-ScriptCore-Native/bin
+Vanta-ScriptCore-Native/build
+Vanta-ScriptCore-Native/obj
 
 # Sandbox
 Sandbox/Cache
 Sandbox/Scripts/CSharp/Binaries
 Sandbox/Scripts/CSharp/Build
+Sandbox/Scripts/CSharp/bin
+Sandbox/Scripts/CSharp/obj
 Sandbox/Scripts/Native/Binaries
 Sandbox/Scripts/Native/Build
+Sandbox/Scripts/Native/bin
+Sandbox/Scripts/Native/obj

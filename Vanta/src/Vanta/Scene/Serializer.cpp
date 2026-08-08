@@ -88,16 +88,16 @@ namespace Vanta {
 
                     out << YAML::BeginMap; // Field
                     out << YAML::Key << "Name" << YAML::Value << name;
-                    out << YAML::Key << "Type" << YAML::Value << field.Type.ToString();
+                    out << YAML::Key << "Type" << YAML::Value << field->Type.ToString();
                     out << YAML::Key << "Value" << YAML::Value;
 
 #define WRITE_SCRIPT_FIELD(fieldType, type) \
-    case CSharp::ScriptFieldType::fieldType: { \
+    case ScriptFieldType::fieldType: { \
         out << (type)instance->GetFieldValue<type>(); \
         break; \
     }
 
-                    switch (field.Type) {
+                    switch (field->Type) {
                         WRITE_SCRIPT_FIELD(Bool, bool);
                         WRITE_SCRIPT_FIELD(Char, char);
 
@@ -161,16 +161,16 @@ namespace Vanta {
 
                     out << YAML::BeginMap; // Field
                     out << YAML::Key << "Name" << YAML::Value << name;
-                    out << YAML::Key << "Type" << YAML::Value << field.Type.ToString();
+                    out << YAML::Key << "Type" << YAML::Value << field->Type.ToString();
                     out << YAML::Key << "Value" << YAML::Value;
 
 #define WRITE_SCRIPT_FIELD(fieldType, type) \
-    case Native::ScriptFieldType::fieldType: { \
+    case ScriptFieldType::fieldType: { \
         out << (type)instance->GetFieldValue<type>(); \
         break; \
     }
 
-                    switch (field.Type) {
+                    switch (field->Type) {
                         WRITE_SCRIPT_FIELD(Bool, bool);
                         WRITE_SCRIPT_FIELD(Char, char);
 
@@ -239,7 +239,7 @@ namespace Vanta {
             out << YAML::Key << "Density" << YAML::Value << component.Density;
             out << YAML::Key << "Friction" << YAML::Value << component.Friction;
             out << YAML::Key << "Restitution" << YAML::Value << component.Restitution;
-            out << YAML::Key << "RestitutionThreshold" << YAML::Value << component.RestitutionThreshold;
+            out << YAML::Key << "RollingResistance" << YAML::Value << component.RollingResistance;
             out << YAML::EndMap;
         });
 
@@ -251,7 +251,7 @@ namespace Vanta {
             out << YAML::Key << "Density" << YAML::Value << component.Density;
             out << YAML::Key << "Friction" << YAML::Value << component.Friction;
             out << YAML::Key << "Restitution" << YAML::Value << component.Restitution;
-            out << YAML::Key << "RestitutionThreshold" << YAML::Value << component.RestitutionThreshold;
+            out << YAML::Key << "RollingResistance" << YAML::Value << component.RollingResistance;
             out << YAML::EndMap;
         });
 
@@ -380,7 +380,7 @@ namespace Vanta {
 
                     for (auto scriptField : scriptFields) {
                         std::string fieldName = scriptField["Name"].as<std::string>();
-                        CSharp::ScriptFieldType type(scriptField["Type"].as<std::string>());
+                        ScriptFieldType type(scriptField["Type"].as<std::string>());
 
                         const auto& it = fields.find(fieldName);
                         if (it == fields.end()) {
@@ -391,9 +391,9 @@ namespace Vanta {
                         const auto& field = it->second;
 
 #define READ_SCRIPT_FIELD(fieldType, type) \
-    case CSharp::ScriptFieldType::fieldType: { \
+    case ScriptFieldType::fieldType: { \
         type value = scriptField["Value"].as<type>(); \
-        instances[fieldName] = NewBox<CSharp::ScriptFieldBuffer<type>>(field, value); \
+        instances[fieldName] = NewBox<ScriptFieldBuffer<type>>(field, value); \
         break; \
     }
                         switch (type) {
@@ -442,7 +442,7 @@ after_csharp_script_component:
 
                     for (auto scriptField : scriptFields) {
                         std::string fieldName = scriptField["Name"].as<std::string>();
-                        Native::ScriptFieldType type(scriptField["Type"].as<std::string>());
+                        ScriptFieldType type(scriptField["Type"].as<std::string>());
 
                         const auto& it = fields.find(fieldName);
                         if (it == fields.end()) {
@@ -453,9 +453,9 @@ after_csharp_script_component:
                         const auto& field = it->second;
 
 #define READ_SCRIPT_FIELD(fieldType, type) \
-    case Native::ScriptFieldType::fieldType: { \
+    case ScriptFieldType::fieldType: { \
         type value = scriptField["Value"].as<type>(); \
-        instances[fieldName] = NewBox<Native::ScriptFieldBuffer<type>>(field, value); \
+        instances[fieldName] = NewBox<ScriptFieldBuffer<type>>(field, value); \
         break; \
     }
                         switch (type) {
@@ -521,7 +521,7 @@ after_native_script_component:
                 bc.Density = boxCollider2DComponent["Density"].as<float>();
                 bc.Friction = boxCollider2DComponent["Friction"].as<float>();
                 bc.Restitution = boxCollider2DComponent["Restitution"].as<float>();
-                bc.RestitutionThreshold = boxCollider2DComponent["RestitutionThreshold"].as<float>();
+                bc.RollingResistance = boxCollider2DComponent["RollingResistance"].as<float>(0.1f);
             }
 
             auto circleCollider2DComponent = item["CircleCollider2DComponent"];
@@ -532,7 +532,7 @@ after_native_script_component:
                 cc.Density = circleCollider2DComponent["Density"].as<float>();
                 cc.Friction = circleCollider2DComponent["Friction"].as<float>();
                 cc.Restitution = circleCollider2DComponent["Restitution"].as<float>();
-                cc.RestitutionThreshold = circleCollider2DComponent["RestitutionThreshold"].as<float>();
+                cc.RollingResistance = circleCollider2DComponent["RollingResistance"].as<float>(0.1f);
             }
 
             // Check for active camera entity

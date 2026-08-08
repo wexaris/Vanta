@@ -5,7 +5,8 @@ set(${PROJECT_NAME}_SOURCE
     "src/Editor/CameraController.cpp"
     "src/Editor/Editor.cpp"
     "src/Editor/EditorLayer.cpp"
-    "src/Editor/Utils.cpp"
+    "src/Editor/Scripts/ScriptBuildCoordinator.cpp"
+    "src/Editor/Scripts/ScriptBuilder.cpp"
     "src/Editor/Window/Console.cpp"
     "src/Editor/Window/ContentBrowser.cpp"
     "src/Editor/Window/SceneHierarchy.cpp"
@@ -27,7 +28,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE
         $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
             -Wall -Wextra -pedantic -O0 -g -Wno-unused-function -Wno-format-security -Wno-language-extension-token>
         $<$<CXX_COMPILER_ID:MSVC>:
-            /W3 /ZI /RTC1 /sdl /Od>>
+            /W3 /RTC1 /sdl /Od>>
     #RELEASE
     $<$<CONFIG:RELEASE>:
         $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:

@@ -1,58 +1,11 @@
+#define VANTA_CUSTOM_LOG_SINKS
 #include <Vanta/EntryPoint.hpp>
 #include <Vanta/Vanta.hpp>
+#include "TestHarness.hpp"
 
 using namespace Vanta;
 
 namespace Testing {
-
-    /// ///////////////////////////////////////////////////
-    /// SETUP
-
-    struct Test {
-        const char* Name;
-        bool (*Function) ();
-    };
-
-    class TestSet {
-    public:
-        TestSet(const char* name, std::initializer_list<Test> tests)
-            : m_Name(name), m_Tests(tests)
-        {
-            Run();
-        }
-
-        bool IsGood() const { return m_IsGood; }
-
-    private:
-        bool Run() {
-            for (const auto& test : m_Tests) {
-                m_IsGood = m_IsGood && RunOne(test);
-            }
-
-            if (m_IsGood)
-                VANTA_CORE_INFO("Test set `{}` succeeded!", m_Name);
-            else
-                VANTA_CORE_ERROR("Test set `{}` failed!", m_Name);
-
-            return m_IsGood;
-        }
-
-        bool RunOne(const Test& test) {
-            bool good = test.Function();
-
-            if (good)
-                VANTA_CORE_INFO("Test `{}` succeeded!", test.Name);
-            else
-                VANTA_CORE_ERROR("Test `{}` failed!", test.Name);
-
-            return good;
-        }
-
-        const char* m_Name;
-        std::vector<Test> m_Tests;
-        bool m_IsGood = true;
-    };
-
 
     /// ///////////////////////////////////////////////////
     /// TESTS
@@ -144,7 +97,7 @@ namespace Testing {
 
         return true;
     }
-    
+
     bool TestBuffering() {
         Buffered<TransformComponent> tr_0;
         TRUE_OR_FAIL(&tr_0.Get() != &tr_0.Set());

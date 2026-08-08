@@ -1,70 +1,72 @@
 #include "vantapch.hpp"
+#include "Vanta/Scripts/Class.hpp"
 #include "Vanta/Scripts/CSharp/Field.hpp"
+
+#include <mono/metadata/assembly.h>
+#include <mono/metadata/object.h>
 
 namespace Vanta {
     namespace CSharp {
 
-        static std::unordered_map<std::string_view, ScriptFieldType> s_MonoFieldTypeMap = {
-            { "Bool", ScriptFieldType::Bool },
-            { "Char", ScriptFieldType::Char },
+        namespace {
+            static std::unordered_map<std::string, ScriptFieldType> s_MonoFieldTypeMap = {
+                { "System.Boolean", ScriptFieldType::Bool },
+                { "System.Char", ScriptFieldType::Char },
 
-            { "Int8", ScriptFieldType::Int8 },
-            { "Int16", ScriptFieldType::Int16 },
-            { "Int32", ScriptFieldType::Int32 },
-            { "Int64", ScriptFieldType::Int64 },
+                { "System.Byte", ScriptFieldType::Int8 },
+                { "System.Int16", ScriptFieldType::Int16 },
+                { "System.Int32", ScriptFieldType::Int32 },
+                { "System.Int64", ScriptFieldType::Int64 },
 
-            { "UInt8", ScriptFieldType::UInt8 },
-            { "UInt16", ScriptFieldType::UInt16 },
-            { "UInt32", ScriptFieldType::UInt32 },
-            { "UInt64", ScriptFieldType::UInt64 },
+                { "System.UByte", ScriptFieldType::UInt8 },
+                { "System.UInt16", ScriptFieldType::UInt16 },
+                { "System.UInt32", ScriptFieldType::UInt32 },
+                { "System.UInt64", ScriptFieldType::UInt64 },
 
-            { "Float", ScriptFieldType::Float },
-            { "Double", ScriptFieldType::Double },
+                { "System.Single", ScriptFieldType::Float },
+                { "System.Double", ScriptFieldType::Double },
 
-            { "Vector2", ScriptFieldType::Vector2 },
-            { "Vector3", ScriptFieldType::Vector3 },
-            { "Vector4", ScriptFieldType::Vector4 },
+                { "Vanta.Vector2", ScriptFieldType::Vector2 },
+                { "Vanta.Vector3", ScriptFieldType::Vector3 },
+                { "Vanta.Vector4", ScriptFieldType::Vector4 },
 
-            { "Entity", ScriptFieldType::Entity },
-        };
+                { "Vanta.Entity", ScriptFieldType::Entity },
+            };
 
-        ScriptFieldType::ScriptFieldType(std::string_view string) {
-            auto it = s_MonoFieldTypeMap.find(string);
-            if (it == s_MonoFieldTypeMap.end()) {
-                VANTA_CORE_ERROR("Invalid script field type: {}", string);
-                m_Value = ScriptFieldType::None;
-            }
-            m_Value = it->second;
-        }
-
-        const char* ScriptFieldType::ToString() const {
-            switch (m_Value) {
-            case ScriptFieldType::Bool: return "Bool";
-            case ScriptFieldType::Char: return "Char";
-
-            case ScriptFieldType::Int8:  return "Int8";
-            case ScriptFieldType::Int16: return "Int16";
-            case ScriptFieldType::Int32: return "Int32";
-            case ScriptFieldType::Int64: return "Int64";
-
-            case ScriptFieldType::UInt8:  return "UInt8";
-            case ScriptFieldType::UInt16: return "UInt16";
-            case ScriptFieldType::UInt32: return "UInt32";
-            case ScriptFieldType::UInt64: return "UInt64";
-
-            case ScriptFieldType::Float:  return "Float";
-            case ScriptFieldType::Double: return "Double";
-
-            case ScriptFieldType::Vector2: return "Vector2";
-            case ScriptFieldType::Vector3: return "Vector3";
-            case ScriptFieldType::Vector4: return "Vector4";
-
-            case ScriptFieldType::Entity: return "Entity";
-
-            default:
-                VANTA_UNREACHABLE("Invalid script field type!");
-                return "None";
+            static ScriptFieldType MonoTypeToFieldType(MonoType* type) {
+                std::string name = mono_type_get_name(type);
+                auto it = s_MonoFieldTypeMap.find(name);
+                if (it == s_MonoFieldTypeMap.end()) {
+                    VANTA_CORE_ERROR("Invalid script field type: {}", name);
+                    return ScriptFieldType::None;
+                }
+                return it->second;
             }
         }
+
+        CSharpScriptField::CSharpScriptField(std::string name, MonoType* type, MonoClassField* field)
+            : CSharpScriptField(std::move(name), MonoTypeToFieldType(type), field)
+        {
+        }
+
+        CSharpScriptField::CSharpScriptField(std::string name, ScriptFieldType type, MonoClassField* field)
+            : ScriptField(std::move(name), type), MonoField(field)
+        {
+        }
+
+        void CSharpScriptField::GetValue(ScriptInstance* instance, void* buffer) const {
+            VANTA_CORE_ASSERT(instance, "Script object instance cannot be null!");
+            VANTA_CORE_ASSERT(buffer, "Buffer cannot be null!");
+            VANTA_CORE_ASSERT(MonoField, "MonoField cannot be null!");
+            mono_field_get_value((MonoObject*)instance->GetRuntimeInstance(), MonoField, buffer);
+        }
+
+        void CSharpScriptField::SetValue(ScriptInstance* instance, const void* value) const {
+            VANTA_CORE_ASSERT(instance, "Script object instance cannot be null!");
+            VANTA_CORE_ASSERT(value, "Value cannot be null!");
+            VANTA_CORE_ASSERT(MonoField, "MonoField cannot be null!");
+            mono_field_set_value((MonoObject*)instance->GetRuntimeInstance(), MonoField, const_cast<void*>(value));
+        }
+
     }
 }

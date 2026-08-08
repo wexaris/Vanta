@@ -1,31 +1,25 @@
 cmake_minimum_required(VERSION 3.20)
-project(Vanta-ScriptCore-CSharp VERSION 0.1.0 LANGUAGES CSharp)
+project(Vanta-ScriptCore-CSharp)
 
-set(${PROJECT_NAME}_SOURCE
-    "Source/Core/Internal.cs"
-    "Source/Core/Log.cs"
-    "Source/Input/Input.cs"
-    "Source/Input/KeyCode.cs"
-    "Source/Input/MouseButton.cs"
-    "Source/Math/Math.cs"
-    "Source/Scene/Components.cs"
-    "Source/Scene/Entity.cs"
-)
+# Find the dotnet executable
+find_program(DOTNET_EXE dotnet REQUIRED)
 
-add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCE})
+# Define source and output locations
+set(CS_PROJ_PATH "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.csproj")
+set(CS_OUT_DIR "${VANTA_SCRIPT_DIRECTORY}/CSharp")
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DOTNET_TARGET_FRAMEWORK_VERSION "v4.6.2")
+# Map CMake build types to standard .NET configurations
+if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR NOT CMAKE_BUILD_TYPE)
+    set(DOTNET_CONFIG "Debug")
+else()
+    set(DOTNET_CONFIG "Release")
+endif()
 
-set_target_properties(${PROJECT_NAME} PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${VANTA_SCRIPT_DIRECTORY}/CSharp"
-    RUNTIME_OUTPUT_DIRECTORY_DEBUG "${VANTA_SCRIPT_DIRECTORY}/CSharp"
-    RUNTIME_OUTPUT_DIRECTORY_RELEASE "${VANTA_SCRIPT_DIRECTORY}/CSharp"
-
-    ARCHIVE_OUTPUT_DIRECTORY "${VANTA_SCRIPT_DIRECTORY}/CSharp"
-    ARCHIVE_OUTPUT_DIRECTORY_DEBUG "${VANTA_SCRIPT_DIRECTORY}/CSharp"
-    ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${VANTA_SCRIPT_DIRECTORY}/CSharp"
-
-    LIBRARY_OUTPUT_DIRECTORY "${VANTA_SCRIPT_DIRECTORY}/CSharp"
-    LIBRARY_OUTPUT_DIRECTORY_DEBUG "${VANTA_SCRIPT_DIRECTORY}/CSharp"
-    LIBRARY_OUTPUT_DIRECTORY_RELEASE "${VANTA_SCRIPT_DIRECTORY}/CSharp"
+# Ninja target that triggers the cross-platform compile
+add_custom_target(${PROJECT_NAME} ALL
+    COMMAND ${DOTNET_EXE} build "${CS_PROJ_PATH}"
+            --configuration ${DOTNET_CONFIG}
+            --output "${CS_OUT_DIR}"
+    COMMENT "Compiling C# project '${PROJECT_NAME}' via .NET CLI..."
+    VERBATIM
 )

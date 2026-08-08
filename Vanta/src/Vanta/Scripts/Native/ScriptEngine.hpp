@@ -24,7 +24,7 @@ namespace Vanta {
             static Scene* GetContext();
             static ScriptAssembly* GetAppAssembly();
 
-            static std::unordered_map<std::string, Box<ScriptFieldInstance>>& GetFieldInstances(Entity entity);
+            static std::unordered_map<std::string_view, Box<ScriptFieldInstance>>& GetFieldInstances(Entity entity);
             static void ClearFieldInstances();
 
         private:

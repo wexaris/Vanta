@@ -1,6 +1,5 @@
 #include "vantapch.hpp"
-#include "Vanta/Core/Engine.hpp"
-#include "Vanta/Util/PlatformUtils.hpp"
+#include "Vanta/Util/FileSystem.hpp"
 
 #include <commdlg.h>
 #include <ShlObj_core.h>
@@ -11,20 +10,7 @@
 
 namespace Vanta {
 
-    DynamicLibrary::DynamicLibrary(const Path& filepath) {
-        std::string path = filepath.string();
-        m_Library = LoadLibrary((LPCSTR)path.c_str());
-    }
-
-    DynamicLibrary::~DynamicLibrary() {
-        FreeLibrary((HMODULE)m_Library);
-    }
-
-    void* DynamicLibrary::GetFunction_Impl(const char* name) {
-        return GetProcAddress((HMODULE)m_Library, (LPCSTR)name);
-    }
-
-    Path Platform::OpenDirectoryDialog() {
+    Path FileSystem::OpenDirectoryDialog() {
         Path ret;
 
         // The BROWSEINFO struct tells the shell 
@@ -59,7 +45,7 @@ namespace Vanta {
         return ret;
     }
 
-    Path Platform::OpenFileDialog(const char* filter) {
+    Path FileSystem::OpenFileDialog(const char* filter) {
         OPENFILENAMEA ofn;
         CHAR szFile[260] = { 0 };
         CHAR currentDir[256] = { 0 };
@@ -80,7 +66,7 @@ namespace Vanta {
         return Path();
     }
 
-    Path Platform::SaveFileDialog(const char* filter) {
+    Path FileSystem::SaveFileDialog(const char* filter) {
         OPENFILENAMEA ofn;
         CHAR szFile[260] = { 0 };
         CHAR currentDir[256] = { 0 };

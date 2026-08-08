@@ -8,16 +8,12 @@ namespace Vanta {
 #include "Vanta/Scripts/CSharp/BuildTemplate/CMakeLists.txt"
         ;
 
-    static const char* CSharp_Build =
-#include "Vanta/Scripts/CSharp/BuildTemplate/Build.bat"
+    static const char* CSharp_Csproj =
+#include "Vanta/Scripts/CSharp/BuildTemplate/Scripts_CSharp.csproj"
         ;
 
     static const char* Native_CMake =
 #include "Vanta/Scripts/Native/BuildTemplate/CMakeLists.txt"
-        ;
-
-    static const char* Native_Build =
-#include "Vanta/Scripts/Native/BuildTemplate/Build.bat"
         ;
 
     Ref<Project> Project::New(const Path& root_dir) {
@@ -37,14 +33,12 @@ namespace Vanta {
 
         // Create script build files
         IO::File csharp_cmake(s_ActiveProject->m_RootDirectory / "Scripts" / "CSharp" / "CMakeLists.txt");
-        IO::File csharp_build(s_ActiveProject->m_RootDirectory / "Scripts" / "CSharp" / "Build.bat");
+        IO::File csharp_csproj(s_ActiveProject->m_RootDirectory / "Scripts" / "CSharp" / "Scripts_CSharp.csproj");
         csharp_cmake.Write(CSharp_CMake);
-        csharp_build.Write(CSharp_Build);
+        csharp_csproj.Write(CSharp_Csproj);
 
         IO::File native_cmake(s_ActiveProject->m_RootDirectory / "Scripts" / "Native" / "CMakeLists.txt");
-        IO::File native_build(s_ActiveProject->m_RootDirectory / "Scripts" / "Native" / "Build.bat");
         native_cmake.Write(Native_CMake);
-        native_build.Write(Native_Build);
 
         // Create default scene
         IO::File scene(GetAssetDirectory() / config.InitialScenePath);

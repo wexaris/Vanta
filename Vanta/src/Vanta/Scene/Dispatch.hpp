@@ -11,7 +11,7 @@ namespace Vanta {
     /// </summary>
     template<typename... Components, typename Registry, typename Func>
     void LinearView(Registry& registry, Func&& func) {
-        registry.ViewIter<Components...>([&](auto, auto beg, auto end) {
+        registry.template ViewIter<Components...>([&](auto, auto beg, auto end) {
             if (beg == end)
                 return;
 
@@ -72,7 +72,7 @@ namespace Vanta {
         // Number of entities each fiber will process
         static constexpr usize CHUNK_SIZE = 16;
 
-        registry.ViewIter<Components...>([&](auto view, auto beg, auto end) {
+        registry.template ViewIter<Components...>([&](auto view, auto beg, auto end) {
             if (beg == end)
                 return;
 
@@ -110,7 +110,7 @@ namespace Vanta {
     void ParallelView(ParallelBarrier& barrier, Registry& registry, Func&& func) {
         static constexpr usize CHUNK_SIZE = 16;
 
-        registry.ViewIter<Components...>([&](auto view, auto beg, auto end) {
+        registry.template ViewIter<Components...>([&](auto view, auto beg, auto end) {
             if (beg == end)
                 return;
 

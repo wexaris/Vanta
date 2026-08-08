@@ -4,7 +4,8 @@
 
 namespace Vanta {
 
-    struct ScriptEngine {
+    class ScriptEngine {
+    public:
         static void Init() {
             CSharp::ScriptEngine::Init();
             Native::ScriptEngine::Init();

@@ -3,9 +3,9 @@ project(Vanta LANGUAGES C CXX)
 
 add_subdirectory(vendor)
 
-find_package(Boost REQUIRED COMPONENTS fiber thread)
+find_package(Boost CONFIG REQUIRED COMPONENTS fiber thread)
 find_package(box2d CONFIG REQUIRED)
-find_package(entt CONFIG REQUIRED)
+find_package(EnTT CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
@@ -55,6 +55,8 @@ set(${PROJECT_NAME}_SOURCE
     "src/Vanta/Scene/Components/CameraComponent.cpp"
     "src/Vanta/Scene/Components/ScriptComponent.cpp"
     "src/Vanta/Scene/Components/NativeScriptComponent.cpp"
+    "src/Vanta/Scripts/Class.cpp"
+    "src/Vanta/Scripts/Field.cpp"
     "src/Vanta/Scripts/CSharp/Class.cpp"
     "src/Vanta/Scripts/CSharp/Field.cpp"
     "src/Vanta/Scripts/CSharp/Interface.cpp"
@@ -64,7 +66,12 @@ set(${PROJECT_NAME}_SOURCE
     "src/Vanta/Scripts/Native/Interface.cpp"
     "src/Vanta/Scripts/Native/ScriptEngine.cpp"
     "src/Vanta/Scripts/Native/Module/Assembly.cpp"
+    "src/Vanta/Scripts/Native/Module/Core/Log.cpp"
     "src/Vanta/Scripts/Native/Module/Input/Input.cpp"
+    "src/Vanta/Scripts/Native/Module/Scene/Entity.cpp"
+    "src/Vanta/Scripts/Native/Module/Scene/Components/Rigidbody2DComponent.cpp"
+    "src/Vanta/Scripts/Native/Module/Scene/Components/SpriteComponent.cpp"
+    "src/Vanta/Scripts/Native/Module/Scene/Components/TransformComponent.cpp"
     "src/Vanta/Util/Math.cpp"
     "src/Vanta/Util/Time.cpp"
     "src/Platform/OpenGL/Buffer.cpp"
@@ -75,14 +82,11 @@ set(${PROJECT_NAME}_SOURCE
     "src/Platform/OpenGL/Texture.cpp"
     "src/Platform/OpenGL/UniformBuffer.cpp"
     "src/Platform/OpenGL/VertexArray.cpp"
+    "src/Platform/Windows/DynamicLibrary.cpp"
+    "src/Platform/Windows/FileSystem.cpp"
     "src/Platform/Windows/Input.cpp"
-    "src/Platform/Windows/PlatformUtils.cpp"
+    "src/Platform/Windows/Process.cpp"
     "src/Platform/Windows/Window.cpp"
- "src/Vanta/Scripts/Native/Module/Core/Log.cpp"
- "src/Vanta/Scripts/Native/Module/Scene/Entity.cpp"
- "src/Vanta/Scripts/Native/Module/Scene/Components/TransformComponent.cpp"
- "src/Vanta/Scripts/Native/Module/Scene/Components/SpriteComponent.cpp"
- "src/Vanta/Scripts/Native/Module/Scene/Components/Rigidbody2DComponent.cpp"
 )
 
 set(${${PROJECT_NAME}_PCH} "${CMAKE_CURRENT_SOURCE_DIR}/src/vantapch.hpp")
@@ -93,7 +97,9 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE ${${PROJECT_NAME}_PCH})
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}-ScriptCore-CSharp)
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}-ScriptCore-Native)
 
-target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
+target_include_directories(${PROJECT_NAME} PUBLIC
+    "${CMAKE_CURRENT_SOURCE_DIR}/src"
+    "${CMAKE_SOURCE_DIR}/Vanta-ScriptCore-Native")
 
 target_link_libraries(${PROJECT_NAME}
     PUBLIC Vanta-ScriptCore-Native
@@ -102,7 +108,7 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE box2d::box2d glad::glad glfw mono spirv-cross-core spirv-cross-glsl
         Vulkan::Vulkan Vulkan::glslang Vulkan::shaderc_combined Vulkan::SPIRV-Tools yaml-cpp::yaml-cpp)
 
-target_compile_definitions(${PROJECT_NAME} 
+target_compile_definitions(${PROJECT_NAME}
     PUBLIC -DBOOST_FIBERS_STATIC_LINK
     PRIVATE $<$<BOOL:${VANTA_DISTRIB}>:
         -DVANTA_DISTRIB>
@@ -114,7 +120,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE
         $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
             -Wall -Wextra -pedantic -O0 -g -Wno-unused-function -Wno-format-security -Wno-language-extension-token>
         $<$<CXX_COMPILER_ID:MSVC>:
-            /MP /W4 /ZI /RTC1 /sdl /Od>>
+            /MP /W4 /RTC1 /sdl /Od>>
     #RELEASE
     $<$<CONFIG:RELEASE>:
         $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
@@ -133,8 +139,6 @@ target_link_options(${PROJECT_NAME} PUBLIC
 # Copy assets to runtime directory
 add_custom_command(
     TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/Vanta/Base/Definitions.hpp" "${CMAKE_CURRENT_BINARY_DIR}/input.txt"
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_CURRENT_SOURCE_DIR}/resources" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources"
     COMMAND ${CMAKE_COMMAND} -E copy_directory

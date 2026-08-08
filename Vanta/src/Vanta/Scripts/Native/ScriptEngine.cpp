@@ -4,7 +4,7 @@
 #include "Vanta/Scripts/Native/Field.hpp"
 #include "Vanta/Scripts/Native/Interface.hpp"
 #include "Vanta/Scripts/Native/ScriptEngine.hpp"
-#include "Vanta/Util/PlatformUtils.hpp"
+#include "Vanta/Util/DynamicLibrary.hpp"
 
 namespace Vanta {
     namespace Native {
@@ -51,16 +51,16 @@ namespace Vanta {
         struct ScriptData {
             Box<ScriptAssembly> AppAssembly;
 
-            std::unordered_map<std::string, Ref<ScriptClass>> EntityClasses;
+            std::unordered_map<std::string, Ref<NativeScriptClass>> EntityClasses;
 
             // Runtime
-            Scene* SceneContext;
+            Scene* SceneContext = nullptr;
 
             // Editor
             Box<IO::FileWatcher> AppAssemblyFileWatcher;
             bool AppAssemblyReloadPending = false;
 
-            std::unordered_map<UUID, std::unordered_map<std::string, Box<ScriptFieldInstance>>> EntityFieldInstances;
+            std::unordered_map<UUID, std::unordered_map<std::string_view, Box<ScriptFieldInstance>>> EntityFieldInstances;
         };
 
         static ScriptData s_Data;
@@ -73,7 +73,7 @@ namespace Vanta {
             VANTA_PROFILE_FUNCTION();
         }
 
-        void OnAppAssemblyFileChange(const std::string&, const filewatch::Event type) {
+        static void OnAppAssemblyFileChange(const std::string&, const filewatch::Event type) {
             if (!s_Data.AppAssemblyReloadPending && type == filewatch::Event::modified) {
                 s_Data.AppAssemblyReloadPending = true;
 
@@ -154,17 +154,20 @@ namespace Vanta {
             for (; class_count > 0; class_count--, data++) {
                 const char* className = *data;
 
-                Ref<ScriptClass> scriptClass = NewRef<ScriptClass>(assembly, className);
-                s_Data.EntityClasses[className] = scriptClass;
-
                 // Save public fields
-                auto [fields, field_count] = assembly->GetClassFieldList(className);
-                for (; field_count > 0; field_count--, fields++) {
-                    const ClassField& field = *fields;
+                auto [field, field_count] = assembly->GetClassFieldList(className);
 
-                    ScriptFieldType type = detail::NativeTypeToFieldType(field.Type);
-                    scriptClass->m_Fields[field.Name] = { field.Name, type, field.Getter, field.Setter };
+                std::vector<Ref<ScriptField>> classFields;
+                classFields.reserve(field_count);
+
+                for (; field_count > 0; field_count--, field++) {
+                    ScriptFieldType type = detail::NativeTypeToFieldType(field->Type);
+                    Ref<ScriptField> classField = NewRef<NativeScriptField>(field->Name, type, field->Getter, field->Setter);
+                    classFields.push_back(classField);
                 }
+
+                Ref<NativeScriptClass> scriptClass = NewRef<NativeScriptClass>(assembly, className, std::move(classFields));
+                s_Data.EntityClasses[className] = scriptClass;
             }
         }
 
@@ -188,7 +191,7 @@ namespace Vanta {
             // Set variables modified in editor
             UUID entityId = entity.GetUUID();
             for (auto& [name, field] : s_Data.EntityFieldInstances[entityId]) {
-                instance->SetFieldValue_Impl(name, field->m_Buffer);
+                instance->WriteFieldValue(name, field->GetFieldData());
             }
 
             return instance;
@@ -211,7 +214,7 @@ namespace Vanta {
             return s_Data.AppAssembly.get();
         }
 
-        std::unordered_map<std::string, Box<ScriptFieldInstance>>& ScriptEngine::GetFieldInstances(Entity entity) {
+        std::unordered_map<std::string_view, Box<ScriptFieldInstance>>& ScriptEngine::GetFieldInstances(Entity entity) {
             VANTA_CORE_ASSERT(entity, "Invalid entity!");
             return s_Data.EntityFieldInstances[entity.GetUUID()];
         }

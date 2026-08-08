@@ -1,6 +1,6 @@
 #pragma once
 #include <Vanta/Module/Interface.hpp>
-#include "Vanta/Util/PlatformUtils.hpp"
+#include "Vanta/Util/DynamicLibrary.hpp"
 
 namespace Vanta {
     namespace Native {

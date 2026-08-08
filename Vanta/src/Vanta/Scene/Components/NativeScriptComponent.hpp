@@ -5,15 +5,13 @@ namespace Vanta {
 
     class Scene;
 
-    namespace Native {
-        class ScriptInstance;
-    }
+    class ScriptInstance;
 
     struct NativeScriptComponent {
         std::string ClassName;
 
         // Script runtime instance
-        Ref<Native::ScriptInstance> Instance = nullptr;
+        Ref<ScriptInstance> Instance = nullptr;
 
         void Create(entt::entity e, Scene* scene);
         void Destroy();
