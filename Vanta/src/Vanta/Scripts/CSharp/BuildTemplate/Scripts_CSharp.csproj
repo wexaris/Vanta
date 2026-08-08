@@ -1,0 +1,22 @@
+R"=(
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <VantaScriptCoreLib Condition="'$(VantaScriptCoreLib)' == ''">$(MSBuildThisFileDirectory)../Binaries/Vanta-ScriptCore-CSharp.dll</VantaScriptCoreLib>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Reference Include="Vanta-ScriptCore-CSharp">
+            <HintPath>$(VantaScriptCoreLib)</HintPath>
+        </Reference>
+    </ItemGroup>
+
+</Project>
+)="

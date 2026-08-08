@@ -1,5 +1,4 @@
 #include "Editor/EditorLayer.hpp"
-#include "Editor/Utils.hpp"
 
 #include <Vanta/Project/Project.hpp>
 #include <Vanta/Scene/Serializer.hpp>
@@ -244,10 +243,10 @@ namespace Vanta {
 
                 if (ImGui::BeginMenu("Scripts")) {
                     if (ImGui::MenuItem("Rebuild C# Scripts"))
-                        Scripts::RebuildCSharp();
+                        m_ScriptBuildCoordinator.RebuildCSharp();
 
                     if (ImGui::MenuItem("Rebuild Native Scripts"))
-                        Scripts::RebuildNative();
+                        m_ScriptBuildCoordinator.RebuildNative();
 
                     ImGui::Separator();
 
@@ -329,7 +328,7 @@ namespace Vanta {
                 m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
                 uint64 textureID = m_Framebuffer->GetColorAttachmentRendererID();
-                ImGui::Image(reinterpret_cast<ImTextureID>(textureID), viewportPanelSize, { 0, 1 }, { 1, 0 });
+                ImGui::Image((ImTextureID)textureID, viewportPanelSize, { 0, 1 }, { 1, 0 });
 
                 if (ImGui::BeginDragDropTarget()) {
                     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM")) {
@@ -418,7 +417,7 @@ namespace Vanta {
                     auto& icon = m_IconPlay;
                     usize texID = icon->GetRendererID();
 
-                    if (ImGui::ImageButton((ImTextureID)texID, ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tintColor) && toolbarEnabled) {
+                    if (ImGui::ImageButton("##Play", (ImTextureID)texID, ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tintColor) && toolbarEnabled) {
                         if (m_State == State::Edit || m_State == State::Simulate)
                             OnPlay();
                         else if (m_State == State::Play)
@@ -430,7 +429,7 @@ namespace Vanta {
                     auto& icon = m_IconSimulate;
                     usize texID = icon->GetRendererID();
 
-                    if (ImGui::ImageButton((ImTextureID)texID, ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tintColor) && toolbarEnabled) {
+                    if (ImGui::ImageButton("##Simulate", (ImTextureID)texID, ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tintColor) && toolbarEnabled) {
                         if (m_State == State::Edit || m_State == State::Play)
                             OnSimulate();
                         else if (m_State == State::Simulate)
@@ -445,7 +444,7 @@ namespace Vanta {
                     auto& icon = m_IconStop;
                     usize texID = icon->GetRendererID();
 
-                    if (ImGui::ImageButton((ImTextureID)texID, ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tintColor) && toolbarEnabled) {
+                    if (ImGui::ImageButton("##Stop", (ImTextureID)texID, ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tintColor) && toolbarEnabled) {
                         OnStop();
                     }
                 }
@@ -456,7 +455,7 @@ namespace Vanta {
                     auto& icon = isPaused ? m_IconPlay : m_IconPause;
                     usize texID = icon->GetRendererID();
 
-                    if (ImGui::ImageButton((ImTextureID)texID, ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tintColor) && toolbarEnabled) {
+                    if (ImGui::ImageButton("##Pause", (ImTextureID)texID, ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tintColor) && toolbarEnabled) {
                         m_ActiveScene->SetPaused(!isPaused);
                     }
                 }
@@ -465,13 +464,13 @@ namespace Vanta {
                     auto& icon = m_IconStep;
                     usize texID = icon->GetRendererID();
 
-                    if (ImGui::ImageButton((ImTextureID)texID, ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tintColor) && toolbarEnabled) {
+                    if (ImGui::ImageButton("##Step", (ImTextureID)texID, ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tintColor) && toolbarEnabled) {
                         m_ActiveScene->Step(1);
                     }
                 }
-                
+
             }
-            
+
             ImGui::PopStyleVar(2);
             ImGui::PopStyleColor(3);
             ImGui::End();
@@ -653,7 +652,7 @@ namespace Vanta {
             auto project_dir = IO::FileDialog::OpenDirectory();
             if (!project_dir)
                 return false;
-                
+
             Ref<Project> project = Project::New(project_dir.value());
 
             ScriptEngine::ReloadAssemblies();
@@ -668,7 +667,7 @@ namespace Vanta {
         bool EditorLayer::OpenProject() {
             VANTA_PROFILE_FUNCTION();
 
-            // TODO: Prompt 
+            // TODO: Prompt
             auto file = IO::FileDialog::OpenFile("Vanta Project (*.vproj)\0*.vproj\0");
             if (file)
                 return OpenProject(file->Filepath);
@@ -694,7 +693,7 @@ namespace Vanta {
             }
 
             ScriptEngine::ReloadAssemblies();
-             
+
             if (IO::File(project->GetAssetDirectory() / project->GetConfig().InitialScenePath).Exists()) {
                 OpenScene(project->GetConfig().InitialScenePath);
             }

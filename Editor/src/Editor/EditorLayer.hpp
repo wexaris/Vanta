@@ -3,6 +3,7 @@
 #include <Vanta/Render/Framebuffer.hpp>
 
 #include "Editor/CameraController.hpp"
+#include "Editor/Scripts/ScriptBuildCoordinator.hpp"
 #include "Editor/Window/Console.hpp"
 #include "Editor/Window/ContentBrowser.hpp"
 #include "Editor/Window/SceneHierarchy.hpp"
@@ -60,6 +61,7 @@ namespace Vanta {
             Ref<Texture2D> m_IconPause;
             Ref<Texture2D> m_IconStep;
             Ref<Texture2D> m_IconStop;
+            ScriptBuildCoordinator m_ScriptBuildCoordinator;
 
             void RenderOverlay();
 

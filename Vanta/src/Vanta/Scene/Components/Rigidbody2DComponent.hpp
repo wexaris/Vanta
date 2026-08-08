@@ -1,5 +1,7 @@
 #pragma once
 
+struct b2BodyId;
+
 namespace Vanta {
 
     struct Rigidbody2DComponent {
@@ -8,8 +10,8 @@ namespace Vanta {
         BodyType Type = BodyType::Static;
         bool FixedRotation = false;
 
-        // Physics runtime instance
-        void* RuntimeBody = nullptr;
+        // Physics runtime object handle
+        b2BodyId RuntimeBody;
 
         Rigidbody2DComponent() = default;
         Rigidbody2DComponent(const Rigidbody2DComponent&) = default;

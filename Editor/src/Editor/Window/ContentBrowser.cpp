@@ -34,39 +34,39 @@ namespace Vanta {
 
             ImGui::Columns(columnCount, 0, false);
 
-			for (auto& item : std::filesystem::directory_iterator(m_CurrentDirectory)) {
-				const Path& path = item.path();
-				std::string filenameStr = path.filename().string();
+            for (auto& item : std::filesystem::directory_iterator(m_CurrentDirectory)) {
+                const Path& path = item.path();
+                std::string filenameStr = path.filename().string();
 
                 Ref<Texture2D> icon = GetIcon(item);
                 usize texID = icon->GetRendererID();
 
-				ImGui::PushID(filenameStr.c_str());
-				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-				ImGui::ImageButton((ImTextureID)texID, { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
-				
+                ImGui::PushID(filenameStr.c_str());
+                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+                ImGui::ImageButton("##Thumb", (ImTextureID)texID, {thumbnailSize, thumbnailSize}, {0, 1}, {1, 0});
+                
                 if (ImGui::BeginDragDropSource()) {
-					const wchar_t* itemPath = path.c_str();
-					ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", itemPath, (wcslen(itemPath) + 1) * sizeof(wchar_t));
-					ImGui::EndDragDropSource();
-				}
+                    const wchar_t* itemPath = path.c_str();
+                    ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", itemPath, (wcslen(itemPath) + 1) * sizeof(wchar_t));
+                    ImGui::EndDragDropSource();
+                }
 
                 if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
                     OnClick(item);
                 }
 
-				ImGui::TextWrapped(filenameStr.c_str());
+                ImGui::TextWrapped(filenameStr.c_str());
 
                 ImGui::PopStyleColor();
                 ImGui::PopID();
 
-				ImGui::NextColumn();
-			}
+                ImGui::NextColumn();
+            }
 
-			ImGui::Columns(1);
+            ImGui::Columns(1);
 
-			ImGui::SliderFloat("Thumbnail Size", &thumbnailSize, 16, 512);
-			ImGui::SliderFloat("Padding", &padding, 0, 32);
+            ImGui::SliderFloat("Thumbnail Size", &thumbnailSize, 16, 512);
+            ImGui::SliderFloat("Padding", &padding, 0, 32);
 
             ImGui::End();
         }

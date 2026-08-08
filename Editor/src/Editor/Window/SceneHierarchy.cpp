@@ -97,7 +97,7 @@ namespace Vanta {
             ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
 
-            float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+            float lineHeight = GImGui->FontSize + GImGui->Style.FramePadding.y * 2.0f;
             ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
 
             ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
@@ -153,13 +153,13 @@ namespace Vanta {
             const ImGuiTreeNodeFlags flags =
                 ImGuiTreeNodeFlags_DefaultOpen |
                 ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_FramePadding |
-                ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap;
+                ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowOverlap;
 
             if (entity.HasComponent<T>()) {
                 ImVec2 contentRegion = ImGui::GetContentRegionAvail();
 
                 ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
-                float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+                float lineHeight = GImGui->FontSize + GImGui->Style.FramePadding.y * 2.0f;
                 ImGui::Separator();
                 bool open = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), flags, name.c_str());
                 ImGui::PopStyleVar();
@@ -439,7 +439,7 @@ namespace Vanta {
 
                 if (component.Texture) {
                     usize texID = component.Texture->GetRendererID();
-                    ImGui::ImageButton((ImTextureID)texID, ImVec2(100.f, 100.f));
+                    ImGui::ImageButton("##Thumb", (ImTextureID)texID, ImVec2(100.f, 100.f));
 
                     if (ImGui::BeginPopupContextItem()) {
                         if (ImGui::MenuItem("Remove"))
@@ -503,7 +503,7 @@ namespace Vanta {
                 ImGui::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
                 ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
                 ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
-                ImGui::DragFloat("Restitution Threshold", &component.RestitutionThreshold, 0.01f, 0.0f);
+                ImGui::DragFloat("Rolling Resistance", &component.RollingResistance, 0.01f, 0.0f);
             });
 
             DrawComponent<CircleCollider2DComponent>("Circle Collider 2D", entity, [](auto& component) {
@@ -512,7 +512,7 @@ namespace Vanta {
                 ImGui::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
                 ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
                 ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
-                ImGui::DragFloat("Restitution Threshold", &component.RestitutionThreshold, 0.01f, 0.0f);
+                ImGui::DragFloat("Rolling Resistance", &component.RollingResistance, 0.01f, 0.0f);
             });
         }
 

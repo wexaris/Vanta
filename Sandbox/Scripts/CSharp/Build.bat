@@ -1,12 +1,12 @@
 @echo off
 
-set "VANTA_DEBUG=E:\Code\engine\Vanta\build\x64-Debug-MSVC\bin"
-set "VANTA_RELEASE=E:\Code\engine\Vanta\build\x64-Release-MSVC\bin"
+set "VANTA_DEBUG=E:\Engine\Vanta\out\build\x64-debug\bin"
+set "VANTA_RELEASE=E:\Engine\Vanta\out\build\x64-release\bin"
 
 if "%~1"=="Release" (
-	set "BUILD_TYPE=Release
+	set "BUILD_TYPE=Release"
 ) else (
-	set "BUILD_TYPE=Debug
+	set "BUILD_TYPE=Debug"
 )
 
 if "%BUILD_TYPE%"=="Release" (

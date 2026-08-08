@@ -1,5 +1,7 @@
 #pragma once
 
+struct b2ShapeId;
+
 namespace Vanta {
 
     struct BoxCollider2DComponent {
@@ -8,11 +10,11 @@ namespace Vanta {
 
         float Density = 1.0f;
         float Friction = 0.4f;
-        float Restitution = 0.3f;           // bounciness
-        float RestitutionThreshold = 0.5f;
+        float Restitution = 0.3f; // bounciness
+        float RollingResistance = 0.1f;
 
         // Physics runtime instance
-        void* RuntimeFixture = nullptr;
+        b2ShapeId RuntimeShape;
 
         BoxCollider2DComponent() = default;
         BoxCollider2DComponent(const BoxCollider2DComponent&) = default;

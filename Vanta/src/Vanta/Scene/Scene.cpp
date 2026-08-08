@@ -1,16 +1,14 @@
 #include "vantapch.hpp"
 #include "Vanta/Core/Engine.hpp"
 #include "Vanta/Render/Renderer2D.hpp"
+
+#include <box2d/box2d.h>
+
 #include "Vanta/Scene/Entity.hpp"
 #include "Vanta/Scene/Scene.hpp"
 #include "Vanta/Scene/SceneCamera.hpp"
 #include "Vanta/Scripts/ScriptEngine.hpp"
 
-#include <box2d/b2_body.h>
-#include <box2d/b2_world.h>
-#include <box2d/b2_fixture.h>
-#include <box2d/b2_polygon_shape.h>
-#include <box2d/b2_circle_shape.h>
 
 namespace Vanta {
 
@@ -146,64 +144,61 @@ namespace Vanta {
 
     void Scene::InitPhysics() {
         // Create physics world
-        m_PhysicsWorld = new b2World({ 0.f, -9.8f });
+		const float gravity = 9.8f;                 // TODO: Move to a config variable
+		const float restitutionThreshold = 0.5f;    // TODO: Move to a config variable
+        b2WorldDef worldDef = b2DefaultWorldDef();
+        worldDef.gravity = { 0.f, -gravity };
+        worldDef.restitutionThreshold = restitutionThreshold;
+
+        m_PhysicsWorld = b2CreateWorld(&worldDef);
 
         m_Registry.View<TransformComponent, Rigidbody2DComponent>(
             [&](entt::entity e, TransformComponent& tr, Rigidbody2DComponent& rb)
         {
             Entity entity(e, this);
 
-            b2BodyDef bodyDef;
+            b2BodyDef bodyDef = b2DefaultBodyDef();
             bodyDef.type = detail::Rigidbody2DTypeToBox2D(rb.Type);
-            bodyDef.position = { tr.GetPosition().x, tr.GetPosition().y};
-            bodyDef.angle = tr.GetRotationRadians().z;
+            bodyDef.position = { tr.GetPosition().x, tr.GetPosition().y };
+            bodyDef.rotation = b2MakeRot(tr.GetRotationRadians().z);
 
-            b2Body* body = m_PhysicsWorld->CreateBody(&bodyDef);
-            body->SetFixedRotation(rb.FixedRotation);
+            b2BodyId body = b2CreateBody(m_PhysicsWorld, &bodyDef);
+            b2Body_SetFixedRotation(body, rb.FixedRotation);
 
             rb.RuntimeBody = body;
 
-            if (HasComponent<BoxCollider2DComponent>(e)) {
-                auto& bc = GetComponent<BoxCollider2DComponent>(e);
+            if (auto bc = entity.TryGetComponent<BoxCollider2DComponent>()) {
+                b2Polygon box = b2MakeBox(bc->Size.x * tr.GetScale().x, bc->Size.y * tr.GetScale().y);
 
-                b2PolygonShape shape;
-                shape.SetAsBox(bc.Size.x * tr.GetScale().x, bc.Size.y * tr.GetScale().y);
+                b2ShapeDef shapeDef = b2DefaultShapeDef();
+                shapeDef.density = bc->Friction;
+                shapeDef.material.friction = bc->Friction;
+                shapeDef.material.restitution = bc->Restitution;
+                shapeDef.material.rollingResistance = bc->RollingResistance;
 
-                b2FixtureDef fixtureDef;
-                fixtureDef.shape = &shape;
-                fixtureDef.density = bc.Friction;
-                fixtureDef.friction = bc.Friction;
-                fixtureDef.restitution = bc.Restitution;
-                fixtureDef.restitutionThreshold = bc.RestitutionThreshold;
-
-                b2Fixture* fixture = body->CreateFixture(&fixtureDef);
-
-                bc.RuntimeFixture = fixture;
+                bc->RuntimeShape = b2CreatePolygonShape(rb.RuntimeBody, &shapeDef, &box);
             }
 
-            if (HasComponent<CircleCollider2DComponent>(e)) {
-                auto& cc = GetComponent<CircleCollider2DComponent>(e);
+            if (auto cc = entity.TryGetComponent<CircleCollider2DComponent>()) {
 
-                b2CircleShape shape;
-                shape.m_p.Set(cc.Offset.x, cc.Offset.y);
-                shape.m_radius = cc.Radius;
+                b2Circle circle = {};
+                circle.center = { cc->Offset.x, cc->Offset.y };
+                circle.radius = cc->Radius;
 
-                b2FixtureDef fixtureDef;
-                fixtureDef.shape = &shape;
-                fixtureDef.density = cc.Friction;
-                fixtureDef.friction = cc.Friction;
-                fixtureDef.restitution = cc.Restitution;
-                fixtureDef.restitutionThreshold = cc.RestitutionThreshold;
+                b2ShapeDef shapeDef = b2DefaultShapeDef();
+                shapeDef.density = cc->Friction;
+                shapeDef.material.friction = cc->Friction;
+                shapeDef.material.restitution = cc->Restitution;
+                shapeDef.material.rollingResistance = cc->RollingResistance;
 
-                b2Fixture* fixture = body->CreateFixture(&fixtureDef);
-
-                cc.RuntimeFixture = fixture;
+                cc->RuntimeShape = b2CreateCircleShape(rb.RuntimeBody, &shapeDef, &circle);
             }
         });
     }
 
     void Scene::DestroyPhysics() {
-        delete m_PhysicsWorld;
+        b2DestroyWorld(m_PhysicsWorld);
+        m_PhysicsWorld = b2_nullWorldId;
     }
 
     void Scene::OnUpdateRuntime(double delta) {
@@ -278,16 +273,15 @@ namespace Vanta {
     void Scene::OnPhysicsUpdate(double delta) {
         VANTA_PROFILE_FUNCTION();
 
-        const uint velocityIterations = 6;
-        const uint positionIterations = 2;
-        m_PhysicsWorld->Step((float)delta, velocityIterations, positionIterations);
+        const uint subStepCount = 4; // TODO: Move to a config variable
+        b2World_Step(m_PhysicsWorld, (float)delta, subStepCount);
 
         View<TransformComponent, Rigidbody2DComponent>(
             [&](entt::entity, Buffered<TransformComponent>& buffer, Rigidbody2DComponent& rb)
         {
-            b2Body* body = (b2Body*)rb.RuntimeBody;
-            auto& position = body->GetPosition();
-            float angle = body->GetAngle();
+            b2Vec2 position = b2Body_GetPosition(rb.RuntimeBody);
+            b2Rot rotation = b2Body_GetRotation(rb.RuntimeBody);
+            float angle = b2Rot_GetAngle(rotation);
 
             auto& get = buffer.Get();
             auto& set = buffer.Set();

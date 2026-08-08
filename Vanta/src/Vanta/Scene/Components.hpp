@@ -1,4 +1,8 @@
 #pragma once
+
+#include <box2d/box2d.h>
+#include <entt/entt.hpp>
+
 #include "Vanta/Scene/Components/IDComponent.hpp"
 #include "Vanta/Scene/Components/TransformComponent.hpp"
 #include "Vanta/Scene/Components/CameraComponent.hpp"
@@ -9,7 +13,6 @@
 #include "Vanta/Scene/Components/CircleRendererComponent.hpp"
 #include "Vanta/Scene/Components/ScriptComponent.hpp"
 #include "Vanta/Scene/Components/NativeScriptComponent.hpp"
-#include <entt/entt.hpp>
 
 namespace Vanta {
 

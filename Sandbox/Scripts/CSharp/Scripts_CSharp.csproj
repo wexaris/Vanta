@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <!-- Expecting a variable named 'VantaScriptCoreLib' passed from the CLI -->
+        <!-- Fallback to a default directory if it's empty -->
+        <ExternalDllPath Condition="'$(VantaScriptCoreLib)' == ''">libs/Vanta-ScriptCore-Charp.dll</ExternalDllPath>
+        <ExternalDllPath Condition="'$(VantaScriptCoreLib)' != ''">$(VantaScriptCoreLib)</ExternalDllPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Reference Include="Vanta-ScriptCore-Charp">
+            <HintPath>$(VantaScriptCoreLib)</HintPath>
+        </Reference>
+    </ItemGroup>
+
+</Project>

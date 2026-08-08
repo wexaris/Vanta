@@ -65,7 +65,7 @@ namespace Vanta {
 
         template<typename T>
         bool HasComponent() {
-            return Internal.Entity_HasComponent(m_ID, typeid(T).hash_code());
+            return Internal.Entity_HasComponent(m_ID, T::GetComponentID());
         }
 
     protected:
@@ -73,9 +73,8 @@ namespace Vanta {
         virtual void OnUpdate(double) {}
         virtual void OnDestroy() {}
 
-        
+
     private:
         UUID m_ID;
     };
 }
- 

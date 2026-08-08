@@ -6,7 +6,7 @@
 #include <mono/metadata/object.h>
 #include <mono/metadata/reflection.h>
 
-#include <box2d/b2_body.h>
+#include <box2d/box2d.h>
 
 namespace Vanta {
     namespace CSharp {
@@ -126,8 +126,7 @@ namespace Vanta {
             VANTA_ASSERT(entity, "Entity referenced in script doesn't exist!");
 
             Rigidbody2DComponent& rb = entity.GetComponent<Rigidbody2DComponent>();
-            b2Body* body = (b2Body*)rb.RuntimeBody;
-            body->ApplyLinearImpulseToCenter(b2Vec2(impulse->x, impulse->y), wake);
+            b2Body_ApplyLinearImpulseToCenter(rb.RuntimeBody, b2Vec2(impulse->x, impulse->y), wake);
         }
 
         void Interface::RegisterFunctions() {

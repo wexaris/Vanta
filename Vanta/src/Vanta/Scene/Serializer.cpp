@@ -239,7 +239,7 @@ namespace Vanta {
             out << YAML::Key << "Density" << YAML::Value << component.Density;
             out << YAML::Key << "Friction" << YAML::Value << component.Friction;
             out << YAML::Key << "Restitution" << YAML::Value << component.Restitution;
-            out << YAML::Key << "RestitutionThreshold" << YAML::Value << component.RestitutionThreshold;
+            out << YAML::Key << "RollingResistance" << YAML::Value << component.RollingResistance;
             out << YAML::EndMap;
         });
 
@@ -251,7 +251,7 @@ namespace Vanta {
             out << YAML::Key << "Density" << YAML::Value << component.Density;
             out << YAML::Key << "Friction" << YAML::Value << component.Friction;
             out << YAML::Key << "Restitution" << YAML::Value << component.Restitution;
-            out << YAML::Key << "RestitutionThreshold" << YAML::Value << component.RestitutionThreshold;
+            out << YAML::Key << "RollingResistance" << YAML::Value << component.RollingResistance;
             out << YAML::EndMap;
         });
 
@@ -521,7 +521,7 @@ after_native_script_component:
                 bc.Density = boxCollider2DComponent["Density"].as<float>();
                 bc.Friction = boxCollider2DComponent["Friction"].as<float>();
                 bc.Restitution = boxCollider2DComponent["Restitution"].as<float>();
-                bc.RestitutionThreshold = boxCollider2DComponent["RestitutionThreshold"].as<float>();
+                bc.RollingResistance = boxCollider2DComponent["RollingResistance"].as<float>(0.1f);
             }
 
             auto circleCollider2DComponent = item["CircleCollider2DComponent"];
@@ -532,7 +532,7 @@ after_native_script_component:
                 cc.Density = circleCollider2DComponent["Density"].as<float>();
                 cc.Friction = circleCollider2DComponent["Friction"].as<float>();
                 cc.Restitution = circleCollider2DComponent["Restitution"].as<float>();
-                cc.RestitutionThreshold = circleCollider2DComponent["RestitutionThreshold"].as<float>();
+                cc.RollingResistance = circleCollider2DComponent["RollingResistance"].as<float>(0.1f);
             }
 
             // Check for active camera entity

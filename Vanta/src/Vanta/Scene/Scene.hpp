@@ -4,7 +4,7 @@
 #include "Vanta/Scene/SceneCamera.hpp"
 #include "Vanta/Render/Camera.hpp"
 
-class b2World;
+struct b2WorldId;
 
 namespace Vanta {
 
@@ -115,7 +115,7 @@ namespace Vanta {
 
     private:
         Registry m_Registry;
-        b2World* m_PhysicsWorld = nullptr;
+        b2WorldId m_PhysicsWorld;
         ParallelBarrier m_Barrier;
 
         glm::uvec2 m_ViewportSize;

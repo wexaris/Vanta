@@ -1,23 +1,29 @@
 {
-    "name": "vanta",
-    "version": "0.0.1",
-    "dependencies": [
-        "boost-fiber",
-        "boost-thread",
-        "box2d",
-        "entt",
-        "fmt",
-        "glad",
-        "glfw3",
-        "glm",
-        {
-            "name": "imgui",
-            "features": [ "freetype", "docking-experimental", "glfw-binding", "opengl3-binding" ]
-        },
-        "imguizmo",
-        "spdlog",
-        "spirv-cross",
-        "stb",
-        "yaml-cpp"
-    ]
+  "name": "vanta",
+  "version": "0.0.1",
+  "dependencies": [
+    "boost-fiber",
+    "boost-thread",
+    "box2d",
+    "entt",
+    "fmt",
+    "glad",
+    "glfw3",
+    "glm",
+    {
+      "name": "imgui",
+      "features": [
+        "freetype",
+        "docking-experimental",
+        "glfw-binding",
+        "opengl3-binding"
+      ]
+    },
+    "imguizmo",
+    "spdlog",
+    "spirv-cross",
+    "stb",
+    "yaml-cpp"
+  ],
+  "builtin-baseline": "8779f47d2db0785ee034b47fdfdcdb0e88b7010e"
 }
