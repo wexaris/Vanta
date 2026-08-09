@@ -2,6 +2,8 @@
 #include "Vanta/Scripts/Native/Module/Scene/Components/TransformComponent.hpp"
 #include "Vanta/Scripts/Native/ScriptEngine.hpp"
 
+#include "Vanta/Scene/TransformCommandQueue.hpp"
+
 namespace Vanta {
 
     using namespace Native;
@@ -16,7 +18,8 @@ namespace Vanta {
             Entity entity = scene->GetEntityByID(entityID);
             VANTA_ASSERT(entity, "Entity referenced in script doesn't exist!");
 
-            return entity.GetComponent<TransformComponent>().Get().GetPosition();
+            TransformComponent& tr = entity.GetComponent<TransformComponent>();
+            return tr.GetPosition();
         }
 
         void TransformComponent_SetPosition(UUID entityID, const glm::vec3& pos) {
@@ -27,7 +30,10 @@ namespace Vanta {
             Entity entity = scene->GetEntityByID(entityID);
             VANTA_CORE_ASSERT(scene, "Engine scene context not set!");
 
-            entity.GetComponent<TransformComponent>().Set().SetPosition(pos);
+            scene->EnqueueTransformCommand(SetPositionCommand{
+                { entity.GetHandle(), CommandSource::NativeScript, CommandPhase::Script },
+                pos
+            });
         }
     }
 }

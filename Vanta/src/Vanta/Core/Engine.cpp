@@ -89,7 +89,7 @@ namespace Vanta {
 
     void Engine::OnEvent(Event& e) {
         VANTA_PROFILE_FUNCTION();
-        
+
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<WindowCloseEvent>(EVENT_METHOD(Engine::OnWindowClose));
         dispatcher.Dispatch<WindowMoveEvent>(EVENT_METHOD(Engine::OnWindowMove));

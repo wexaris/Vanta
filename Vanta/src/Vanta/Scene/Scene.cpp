@@ -65,12 +65,9 @@ namespace Vanta {
 
     void Scene::OnRuntimeBegin() {
         VANTA_PROFILE_FUNCTION();
+        ResetCommandDiagnostics();
         InitPhysics();
         InitScripts();
-
-        // Forward state, so any initial changes made by scripts
-        // are propagated to all buffers.
-        m_Registry.SwapBuffersFwd();
     }
 
     void Scene::OnRuntimeEnd() {
@@ -78,16 +75,19 @@ namespace Vanta {
         m_Barrier.Wait();
         DestroyScripts();
         DestroyPhysics();
+        FlushCommands();
     }
 
     void Scene::OnSimulationBegin() {
         VANTA_PROFILE_FUNCTION();
+        ResetCommandDiagnostics();
         InitPhysics();
     }
 
     void Scene::OnSimulationEnd() {
         VANTA_PROFILE_FUNCTION();
         DestroyPhysics();
+        FlushCommands();
     }
 
     void Scene::InitScripts() {
@@ -118,8 +118,7 @@ namespace Vanta {
 
     void Scene::DestroyScripts() {
         // Destroy native scripts
-        View<NativeScriptComponent>([](entt::entity, NativeScriptComponent& script)
-        {
+        View<NativeScriptComponent>([](entt::entity, NativeScriptComponent& script) {
             if (script.Instance)
                 script.Instance->OnDestroy();
         });
@@ -130,8 +129,7 @@ namespace Vanta {
                 script.Instance->OnDestroy();
         });
 
-        View<NativeScriptComponent>([](entt::entity, NativeScriptComponent& script)
-        {
+        View<NativeScriptComponent>([](entt::entity, NativeScriptComponent& script) {
             script.Destroy();
         });
 
@@ -144,8 +142,8 @@ namespace Vanta {
 
     void Scene::InitPhysics() {
         // Create physics world
-		const float gravity = 9.8f;                 // TODO: Move to a config variable
-		const float restitutionThreshold = 0.5f;    // TODO: Move to a config variable
+        const float gravity = 9.8f;                 // TODO: Move to a config variable
+        const float restitutionThreshold = 0.5f;    // TODO: Move to a config variable
         b2WorldDef worldDef = b2DefaultWorldDef();
         worldDef.gravity = { 0.f, -gravity };
         worldDef.restitutionThreshold = restitutionThreshold;
@@ -204,20 +202,19 @@ namespace Vanta {
     void Scene::OnUpdateRuntime(double delta) {
         VANTA_PROFILE_FUNCTION();
         m_Barrier.Wait();
-        
+
         if (!m_IsPaused) {
-            m_Registry.SwapBuffers();
             OnScriptUpdate(delta);
+            ApplyCommandsPhase(CommandPhase::Script);
             OnPhysicsUpdate(delta);
+            ApplyCommandsPhase(CommandPhase::Physics);
         }
         else if (m_StepFrames > 0) {
-            m_Registry.SwapBuffers();
             OnScriptUpdate(delta);
+            ApplyCommandsPhase(CommandPhase::Script);
             OnPhysicsUpdate(delta);
+            ApplyCommandsPhase(CommandPhase::Physics);
             m_StepFrames--;
-        }
-        else {
-            m_Registry.SwapBuffersFwd();
         }
 
         OnRender(delta, GetActiveCameraEntity());
@@ -228,16 +225,13 @@ namespace Vanta {
         m_Barrier.Wait();
 
         if (!m_IsPaused) {
-            m_Registry.SwapBuffers();
             OnPhysicsUpdate(delta);
+            ApplyCommandsPhase(CommandPhase::Physics);
         }
         else if (m_StepFrames > 0) {
-            m_Registry.SwapBuffers();
             OnPhysicsUpdate(delta);
+            ApplyCommandsPhase(CommandPhase::Physics);
             m_StepFrames--;
-        }
-        else {
-            m_Registry.SwapBuffersFwd();
         }
 
         OnRender(delta, camera);
@@ -245,14 +239,7 @@ namespace Vanta {
 
     void Scene::OnUpdateEditor(double delta, Camera* camera) {
         VANTA_PROFILE_FUNCTION();
-        // Swap via state forwarding.
-        // Index swapping causes the buffer state to drift,
-        // as the editor overwrites the next state without touching the current one.
-        // This makes draw calls flip-flop between two significantly different states,
-        // making the model teleport each frame.
-        // This shouldn't be a problem in Simulate/Play, since editor interaction isn't expected,
-        // and entity state is make consistent by scripts or physics.
-        m_Registry.SwapBuffersFwd(); 
+        ApplyCommandsPhase(CommandPhase::Editor);
         OnRender(delta, camera);
     }
 
@@ -277,22 +264,25 @@ namespace Vanta {
         b2World_Step(m_PhysicsWorld, (float)delta, subStepCount);
 
         View<TransformComponent, Rigidbody2DComponent>(
-            [&](entt::entity, Buffered<TransformComponent>& buffer, Rigidbody2DComponent& rb)
+            [&](entt::entity e, TransformComponent& tr, Rigidbody2DComponent& rb)
         {
             b2Vec2 position = b2Body_GetPosition(rb.RuntimeBody);
             b2Rot rotation = b2Body_GetRotation(rb.RuntimeBody);
             float angle = b2Rot_GetAngle(rotation);
 
-            auto& get = buffer.Get();
-            auto& set = buffer.Set();
-            set.SetTransformRad({position.x, position.y, get.GetPosition().z}, {0.f, 0.f, angle}, get.GetScale());
+            EnqueueTransformCommand(SetTransformCommand{
+                { e, CommandSource::Physics, CommandPhase::Physics },
+                { position.x, position.y, tr.GetPosition().z },
+                { 0.f, 0.f, angle },
+                tr.GetScale()
+            });
         });
     }
 
     void Scene::OnRender(double delta, entt::entity camera) {
         VANTA_PROFILE_RENDER_FUNCTION();
         if (IsValid(camera)) {
-            auto& tr = GetComponent<TransformComponent>(camera).Get();
+            TransformComponent& tr = GetComponent<TransformComponent>(camera);
             auto& cc = GetComponent<CameraComponent>(camera);
             cc.Camera->SetView(glm::inverse(tr.GetTransform()));
             OnRender(delta, cc.Camera.get());

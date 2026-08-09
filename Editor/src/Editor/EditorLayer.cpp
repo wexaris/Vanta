@@ -356,8 +356,8 @@ namespace Vanta {
                     const glm::mat4& cameraView = camera.GetView();
 
                     // Entity transform
-                    auto& tc = selectedEntity.GetComponent<TransformComponent>();
-                    glm::mat4 transform = tc.Get().GetTransform();
+                    TransformComponent& tc = selectedEntity.GetComponent<TransformComponent>();
+                    glm::mat4 transform = tc.GetTransform();
 
                     // Snapping
                     bool snap = Input::IsKeyPressed(Key::LeftControl);
@@ -373,7 +373,17 @@ namespace Vanta {
                         nullptr, snap ? snapValues : nullptr);
 
                     if (ImGuizmo::IsUsing()) {
-                        tc.Set().SetTransform(transform);
+                        glm::vec3 position;
+                        glm::vec3 rotation;
+                        glm::vec3 scale;
+                        Math::Decompose(transform, position, rotation, scale);
+
+                        m_ActiveScene->EnqueueTransformCommand(SetTransformCommand{
+                            { selectedEntity.GetHandle(), CommandSource::Editor, CommandPhase::Editor },
+                            position,
+                            rotation,
+                            scale
+                        });
                     }
                 }
 
@@ -382,6 +392,9 @@ namespace Vanta {
             }
 
             RenderToolbar();
+
+            if (m_ActiveScene)
+                m_ActiveScene->ApplyTransformCommands(CommandPhase::Editor);
 
             ImGui::End();
         }

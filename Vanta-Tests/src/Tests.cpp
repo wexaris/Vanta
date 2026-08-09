@@ -1,7 +1,7 @@
 #define VANTA_CUSTOM_LOG_SINKS
 #include <Vanta/EntryPoint.hpp>
 #include <Vanta/Vanta.hpp>
-#include "TestHarness.hpp"
+#include <vanta-test-utils/TestHarness.hpp>
 
 using namespace Vanta;
 
@@ -98,26 +98,31 @@ namespace Testing {
         return true;
     }
 
-    bool TestBuffering() {
-        Buffered<TransformComponent> tr_0;
-        TRUE_OR_FAIL(&tr_0.Get() != &tr_0.Set());
+    bool TestSceneRegistryBasics() {
+        SceneRegistry reg;
 
-        BufferedRegistry<TransformComponent> reg;
         auto entity = reg.Create();
-        auto& tr_1 = reg.AddComponent<TransformComponent>(entity);
+        TRUE_OR_FAIL(reg.IsValid(entity));
+        TRUE_OR_FAIL(!reg.HasComponent<TransformComponent>(entity));
+
+        auto& tr = reg.AddComponent<TransformComponent>(entity);
+        TRUE_OR_FAIL(reg.HasComponent<TransformComponent>(entity));
 
         auto scale333 = glm::vec3{ 3, 3, 3 };
-        tr_1.Set().SetScale(scale333);
+        tr.SetScale(scale333);
 
-        reg.SwapBuffers();
+        auto* tc = reg.TryGetComponent<TransformComponent>(entity);
+        TRUE_OR_FAIL(tc != nullptr);
+        TRUE_OR_FAIL(tc->GetScale() == scale333);
 
-        TRUE_OR_FAIL(tr_1.Get().GetScale() == scale333);
-        TRUE_OR_FAIL(tr_1.Get().GetScale() != tr_1.Set().GetScale());
+        auto& trGet = reg.GetComponent<TransformComponent>(entity);
+        TRUE_OR_FAIL(trGet.GetScale() == scale333);
 
-        reg.SwapBuffers();
-        reg.SwapBuffersFwd();
+        reg.RemoveComponent<TransformComponent>(entity);
+        TRUE_OR_FAIL(!reg.HasComponent<TransformComponent>(entity));
 
-        TRUE_OR_FAIL(tr_1.Get().GetScale() == tr_1.Set().GetScale());
+        reg.Destroy(entity);
+        TRUE_OR_FAIL(!reg.IsValid(entity));
 
         return true;
     }
@@ -134,5 +139,5 @@ int main() {
 
     TestSet testEvents("Events", { { "Events", TestEvents } });
 
-    TestSet testComponents("Buffering", { { "Buffering", TestBuffering } });
+    TestSet testSceneRegistry("SceneRegistry", { { "BasicOperations", TestSceneRegistryBasics } });
 }

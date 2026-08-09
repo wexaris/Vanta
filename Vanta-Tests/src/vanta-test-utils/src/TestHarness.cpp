@@ -1,23 +1,7 @@
-#include "TestHarness.hpp"
+#include <vanta-test-utils/TestHarness.hpp>
+#include <Vanta/EntryPoint.hpp>
+
 #include <iostream>
-#include <memory>
-#include <vector>
-
-namespace spdlog {
-    namespace sinks {
-        class sink;
-    }
-    using sink_ptr = std::shared_ptr<sinks::sink>;
-}
-
-namespace Vanta {
-    class Log {
-    public:
-        using SinkList = std::vector<spdlog::sink_ptr>;
-    };
-
-    void CreateLogSinks(Log::SinkList&) {}
-}
 
 namespace Testing {
 

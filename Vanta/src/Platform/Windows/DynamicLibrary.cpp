@@ -5,7 +5,7 @@
 namespace Vanta {
 
     DynamicLibrary::DynamicLibrary(const Path& filepath) {
-        m_Library = LoadLibrary((LPCSTR)filepath.c_str());
+        m_Library = LoadLibraryW(filepath.c_str());
     }
 
     DynamicLibrary::~DynamicLibrary() {

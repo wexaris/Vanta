@@ -1,5 +1,6 @@
 #pragma once
-#include "Vanta/Scene/BufferedRegistry.hpp"
+#include "Vanta/Scene/SceneRegistry.hpp"
+#include "Vanta/Scene/SceneCommandQueues.hpp"
 #include "Vanta/Scene/Dispatch.hpp"
 #include "Vanta/Scene/SceneCamera.hpp"
 #include "Vanta/Render/Camera.hpp"
@@ -12,7 +13,7 @@ namespace Vanta {
 
     class Scene {
     public:
-        using Registry = BufferedRegistry<TransformComponent>;
+        using Registry = SceneRegistry;
 
         Scene();
         ~Scene();
@@ -113,8 +114,23 @@ namespace Vanta {
 
         Registry& GetRegistry() { return m_Registry; }
 
+        void EnqueueTransformCommand(const SetPositionCommand& command) { m_CommandQueues.EnqueueTransformCommand(command); }
+        void EnqueueTransformCommand(const SetRotationCommand& command) { m_CommandQueues.EnqueueTransformCommand(command); }
+        void EnqueueTransformCommand(const SetScaleCommand& command) { m_CommandQueues.EnqueueTransformCommand(command); }
+        void EnqueueTransformCommand(const SetTransformCommand& command) { m_CommandQueues.EnqueueTransformCommand(command); }
+
+        void ApplyCommandsPhase(CommandPhase phase) { m_CommandQueues.ApplyPhase(m_Registry, phase); }
+        void FlushCommands() { m_CommandQueues.Flush(); }
+        void ResetCommandDiagnostics() { m_CommandQueues.ResetDiagnostics(); }
+
+        void ApplyTransformCommands(CommandPhase phase) { m_CommandQueues.ApplyTransformCommands(m_Registry, phase); }
+        void FlushTransformCommands() { m_CommandQueues.FlushTransformCommands(); }
+        void ResetTransformCommandDiagnostics() { m_CommandQueues.ResetTransformCommandDiagnostics(); }
+        const CommandQueueDiagnostics& GetTransformCommandDiagnostics() const { return m_CommandQueues.GetTransformCommandDiagnostics(); }
+
     private:
         Registry m_Registry;
+        SceneCommandQueues m_CommandQueues;
         b2WorldId m_PhysicsWorld;
         ParallelBarrier m_Barrier;
 

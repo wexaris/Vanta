@@ -2,7 +2,7 @@
 #include <unordered_set>
 #include <Vanta/Vanta.hpp>
 #include <Vanta/Scripts/Native/Module/Assembly.hpp>
-#include "TestHarness.hpp"
+#include <vanta-test-utils/TestHarness.hpp>
 
 using namespace Vanta;
 
@@ -94,6 +94,7 @@ namespace Testing {
 using namespace Testing;
 
 int main(int argc, char** argv) {
+    Log::Init("Vanta-Tests.log");
     g_ExecutableDirectory = GetExecutableDirectory(argc > 0 ? argv[0] : "");
 
     TestSet tests("NativeScriptNoComponent", {

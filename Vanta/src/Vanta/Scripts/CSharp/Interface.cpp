@@ -2,6 +2,7 @@
 #include "Vanta/Input/Input.hpp"
 #include "Vanta/Scripts/CSharp/Interface.hpp"
 #include "Vanta/Scripts/CSharp/ScriptEngine.hpp"
+#include "Vanta/Scene/TransformCommandQueue.hpp"
 
 #include <mono/metadata/object.h>
 #include <mono/metadata/reflection.h>
@@ -105,7 +106,8 @@ namespace Vanta {
             Entity entity = scene->GetEntityByID(id);
             VANTA_ASSERT(entity, "Entity referenced in script doesn't exist!");
 
-            *pos = entity.GetComponent<TransformComponent>().Get().GetPosition();
+            TransformComponent& tr = entity.GetComponent<TransformComponent>();
+            *pos = tr.GetPosition();
         }
 
         static void TransformComponent_SetPosition(UUID id, glm::vec3* pos) {
@@ -114,9 +116,10 @@ namespace Vanta {
             Entity entity = scene->GetEntityByID(id);
             VANTA_CORE_ASSERT(entity, "Entity referenced in script doesn't exist!");
 
-            VANTA_CORE_ASSERT(entity.HasComponent<TransformComponent>(), "");
-            TransformComponent& tr = entity.GetComponent<TransformComponent>().Set();
-            tr.SetPosition(*pos);
+            scene->EnqueueTransformCommand(SetPositionCommand{
+                { entity.GetHandle(), CommandSource::CSharpScript, CommandPhase::Script },
+                *pos
+            });
         }
 
         static void Rigidbody2DComponent_ApplyLinearImpulseToCenter(UUID id, glm::vec2* impulse, bool wake) {

@@ -1,6 +1,7 @@
 #include "Editor/Window/SceneHierarchy.hpp"
 
 #include <Vanta/Scripts/ScriptEngine.hpp>
+#include <Vanta/Scene/TransformCommandQueue.hpp>
 
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -197,7 +198,7 @@ namespace Vanta {
             if (ImGui::InputText("##Name", buffer, sizeof(buffer))) {
                 name = std::string(buffer);
             }
-            
+
             ImGui::SameLine();
             ImGui::PushItemWidth(-1);
 
@@ -210,7 +211,7 @@ namespace Vanta {
                 DrawAddComponentMenu<NativeScriptComponent>("Native Script");
                 DrawAddComponentMenu<SpriteComponent>("Sprite Renderer");
                 DrawAddComponentMenu<CircleRendererComponent>("Circle Renderer");
-                DrawAddComponentMenu<Rigidbody2DComponent>("Rigidbody 2D"); 
+                DrawAddComponentMenu<Rigidbody2DComponent>("Rigidbody 2D");
                 DrawAddComponentMenu<BoxCollider2DComponent>("Box Collider 2D");
                 DrawAddComponentMenu<CircleCollider2DComponent>("Circle Collider 2D");
                 ImGui::EndPopup();
@@ -218,8 +219,7 @@ namespace Vanta {
 
             ImGui::PopItemWidth();
 
-            DrawComponent<TransformComponent>("Transform", entity, [](auto& buffer) {
-                auto& tr = buffer.Get();
+            DrawComponent<TransformComponent>("Transform", entity, [&](TransformComponent& tr) {
 
                 glm::vec3 position = tr.GetPosition();
                 glm::vec3 rotation = tr.GetRotationDegrees();
@@ -233,7 +233,12 @@ namespace Vanta {
                     rotation != tr.GetRotationDegrees() ||
                     scale != tr.GetScale())
                 {
-                    buffer.Set().SetTransformDeg(position, rotation, scale);
+                    m_Context->EnqueueTransformCommand(SetTransformCommand{
+                        { entity.GetHandle(), CommandSource::Editor, CommandPhase::Editor },
+                        position,
+                        glm::radians(rotation),
+                        scale
+                    });
                 }
             });
 
@@ -327,7 +332,7 @@ namespace Vanta {
                 else if (classExists) {
                     Ref<ScriptClass> klass = CSharp::ScriptEngine::GetClass(component.ClassName);
                     auto& instances = CSharp::ScriptEngine::GetFieldInstances(entity);
-                    
+
                     // Loop though every class field and check
                     // if an instance has already been created.
                     for (auto& [name, field] : klass->GetFields()) {

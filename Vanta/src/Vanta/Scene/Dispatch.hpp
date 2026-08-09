@@ -1,5 +1,5 @@
 #pragma once
-#include "Vanta/Scene/BufferedRegistry.hpp"
+#include "Vanta/Scene/SceneRegistry.hpp"
 
 #include <execution>
 

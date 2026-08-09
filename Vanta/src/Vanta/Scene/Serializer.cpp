@@ -334,11 +334,16 @@ namespace Vanta {
 
             auto transformComponent = item["TransformComponent"];
             if (transformComponent) {
-                auto& tc = entity.GetComponent<TransformComponent>().Set();
                 auto pos = transformComponent["Position"].as<glm::vec3>();
                 auto rot = transformComponent["Rotation"].as<glm::vec3>();
                 auto scale = transformComponent["Scale"].as<glm::vec3>();
-                tc.SetTransformDeg(pos, rot, scale);
+                scene->EnqueueTransformCommand(SetTransformCommand{
+                    { entity.GetHandle(), CommandSource::Serialization, CommandPhase::Editor },
+                    pos,
+                    glm::radians(rot),
+                    scale
+                });
+                scene->ApplyTransformCommands(CommandPhase::Editor);
             }
             else {
                 VANTA_CORE_ERROR("Entity missing TransformComponent!");

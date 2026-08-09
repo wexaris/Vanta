@@ -46,7 +46,7 @@ set(${PROJECT_NAME}_SOURCE
     "src/Vanta/Render/Texture.cpp"
     "src/Vanta/Render/UniformBuffer.cpp"
     "src/Vanta/Render/VertexArray.cpp"
-    "src/Vanta/Scene/BufferedRegistry.cpp"
+    "src/Vanta/Scene/TransformCommandQueue.cpp"
     "src/Vanta/Scene/Entity.cpp"
     "src/Vanta/Scene/Scene.cpp"
     "src/Vanta/Scene/SceneCamera.cpp"

@@ -8,6 +8,8 @@ namespace Vanta {
     boost::thread_group Fibers::s_Workers;
     std::stack<Fibers::FiberList> Fibers::s_JobStack;
 
+    static std::mutex s_InitMutex;
+    static uint32_t s_InitCount = 0;
     static fibers::mutex s_StopMutex;
     static fibers::condition_variable s_StopCondition;
 
@@ -19,6 +21,10 @@ namespace Vanta {
 
     void Fibers::Init() {
         VANTA_PROFILE_FUNCTION();
+
+        std::scoped_lock lock(s_InitMutex);
+        if (s_InitCount++ > 0)
+            return;
 
         // Spawn worker threads (start at 1 because the caller will be one of the workers)
         for (uint i = 1; i < THREAD_COUNT; i++) {
@@ -35,9 +41,13 @@ namespace Vanta {
     void Fibers::Shutdown() {
         VANTA_PROFILE_FUNCTION();
 
+        std::scoped_lock lock(s_InitMutex);
+        if (s_InitCount == 0 || --s_InitCount > 0)
+            return;
+
         {
             // Notify worker threads about shutdown, and wait for them to exit
-            std::unique_lock<fibers::mutex> lock(s_StopMutex);
+            std::unique_lock<fibers::mutex> stopLock(s_StopMutex);
             s_StopCondition.notify_all();
         }
 
