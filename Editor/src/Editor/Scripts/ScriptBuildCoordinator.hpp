@@ -18,7 +18,7 @@ namespace Vanta {
             CSharpScriptBuilder m_CSharpBuilder;
             ScriptBuildConfiguration m_BuildConfiguration = ScriptBuildConfiguration::Debug;
 
-            bool RebuildWithBuilder(const ScriptBuilder& builder, const Path& projectDirectory, bool clean, const char* failurePrefix);
+            bool RebuildWithBuilder(const ScriptBuilder& builder, bool clean);
         };
 
     }

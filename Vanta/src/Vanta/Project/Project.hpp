@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Vanta/Scripts/ScriptType.hpp>
+
 namespace Vanta {
 
     struct ProjectConfig {
@@ -7,9 +9,8 @@ namespace Vanta {
 
         Path AssetDirectory = "Assets";
         Path CacheDirectory = "Cache";
-
-        Path CSharpScriptAssemblyPath = "Scripts/CSharp/Binaries/Scripts_CSharp.dll";
-        Path NativeScriptAssemblyPath = "Scripts/Native/Binaries/Scripts_Native.dll";
+        Path CSharpScriptDirectory = "Scripts/CSharp";
+        Path NativeScriptDirectory = "Scripts/Native";
 
         Path InitialScenePath = "Scenes/Default.vnta";
     };
@@ -33,6 +34,20 @@ namespace Vanta {
         static Path GetCacheDirectory() {
             VANTA_CORE_ASSERT(s_ActiveProject, "No project currently loaded!");
             return GetRootDirectory() / GetActive()->m_Config.CacheDirectory;
+        }
+
+        static Path GetScriptDirectory(Scripts::ScriptType type) {
+            VANTA_CORE_ASSERT(s_ActiveProject, "No project currently loaded!");
+            switch (type) {
+                case Scripts::ScriptType::CSharp:
+                    return GetRootDirectory() / GetActive()->m_Config.CSharpScriptDirectory;
+                case Scripts::ScriptType::Native:
+                    return GetRootDirectory() / GetActive()->m_Config.NativeScriptDirectory;
+                // DO NOT add a default case!
+                // Omitting it will cause a compiler warning if a new value is missing.
+            }
+            VANTA_CORE_ASSERT(false, "Unknown script type!");
+            return GetRootDirectory();
         }
 
         /// TODO: Move to an asset manager

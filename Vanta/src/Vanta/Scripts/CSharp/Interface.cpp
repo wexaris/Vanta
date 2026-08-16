@@ -76,7 +76,7 @@ namespace Vanta {
 
             ScriptComponent* sc = entity.TryGetComponent<ScriptComponent>();
             if (!sc) {
-                VANTA_ERROR("Entity `{}` doesn't have a script component!", entity.GetName());
+                VANTA_ERROR("Entity `{}` doesn't have a C# script component!", entity.GetName());
                 return nullptr;
             }
 

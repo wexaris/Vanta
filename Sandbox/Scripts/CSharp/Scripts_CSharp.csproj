@@ -4,18 +4,26 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        
+        <!-- Disable generating runtime config files that your engine doesn't use -->
+        <GenerateRuntimeConfigurationFiles>false</GenerateRuntimeConfigurationFiles>
+        <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
     </PropertyGroup>
 
     <PropertyGroup>
-        <!-- Expecting a variable named 'VantaScriptCoreLib' passed from the CLI -->
-        <!-- Fallback to a default directory if it's empty -->
-        <ExternalDllPath Condition="'$(VantaScriptCoreLib)' == ''">libs/Vanta-ScriptCore-Charp.dll</ExternalDllPath>
-        <ExternalDllPath Condition="'$(VantaScriptCoreLib)' != ''">$(VantaScriptCoreLib)</ExternalDllPath>
+        <!-- 1. Define fallback path logic properly -->
+        <CoreLibDir Condition="'$(VantaScriptCoreDir)' == ''">lib/</CoreLibDir>
+        <CoreLibDir Condition="'$(VantaScriptCoreDir)' != ''">$(VantaScriptCoreDir)</CoreLibDir>
+
+        <!-- 2. Clean trailing slashes to keep HintPath safe -->
+        <CoreLibDir>$([MSBuild]::EnsureTrailingSlash('$(CoreLibDir)'))</CoreLibDir>
     </PropertyGroup>
 
     <ItemGroup>
-        <Reference Include="Vanta-ScriptCore-Charp">
-            <HintPath>$(VantaScriptCoreLib)</HintPath>
+        <!-- 3. Consume the evaluated property path here -->
+        <Reference Include="Vanta-ScriptCore-CSharp">
+            <HintPath>$(CoreLibDir)Vanta-ScriptCore-CSharp.dll</HintPath>
+            <Private>False</Private> <!-- Crucial: Prevents locking core.dll -->
         </Reference>
     </ItemGroup>
 

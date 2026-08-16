@@ -1,8 +1,9 @@
 #pragma once
 
 #include <Vanta/Vanta.hpp>
+#include <Vanta/Project/Project.hpp>
 
-#include "ScriptBuildTypes.hpp"
+#include "ScriptBuildOptions.hpp"
 
 namespace Vanta {
     namespace Editor {
@@ -10,17 +11,17 @@ namespace Vanta {
         class ScriptBuilder {
         public:
             virtual ~ScriptBuilder() = default;
-            virtual bool Build(const Path& projectDirectory, const ScriptBuildOptions& options) const = 0;
+            virtual bool Build(const ScriptBuildOptions& options) const = 0;
         };
 
         class NativeScriptBuilder final : public ScriptBuilder {
         public:
-            bool Build(const Path& projectDirectory, const ScriptBuildOptions& options) const override;
+            bool Build(const ScriptBuildOptions& options) const override;
         };
 
         class CSharpScriptBuilder final : public ScriptBuilder {
         public:
-            bool Build(const Path& projectDirectory, const ScriptBuildOptions& options) const override;
+            bool Build(const ScriptBuildOptions& options) const override;
         };
 
     }

@@ -6,7 +6,7 @@ namespace Vanta {
         internal UInt64 Value;
 
         internal UUID(UInt64 value) { Value = value; }
-     
+
         public static implicit operator bool(UUID id) {
             return id.Value != 0;
         }
@@ -25,6 +25,8 @@ namespace Vanta {
             }
         }
 
+        public static Entity Null { get; } = new Entity();
+
         protected Entity()       { ID = new UUID(0); }
         internal Entity(UUID id) { ID = id; }
 
@@ -32,19 +34,23 @@ namespace Vanta {
             return !object.ReferenceEquals(entity, null) && entity.ID;
         }
 
-        public T As<T>() where T : Entity, new() {
-            object instance = Internal.Entity_GetScriptInstance(ID);
+        public T? As<T>() where T : Entity, new() {
+            object? instance = Internal.Entity_GetScriptInstance(ID);
             return instance as T;
         }
 
-        public Entity GetEntityByName(string name) {
+        public Entity? GetEntityByName(string name) {
             UUID entityID = Internal.Entity_GetEntityByName(name);
             if (!entityID)
                 return null;
             return new Entity(entityID);
         }
 
-        public T GetComponent<T>() where T : Component, new() {
+        public T? GetEntityByName<T>(string name) where T : Entity, new() {
+            return GetEntityByName(name)?.As<T>();
+        }
+
+        public T? GetComponent<T>() where T : Component, new() {
             if (!HasComponent<T>())
                 return null;
 

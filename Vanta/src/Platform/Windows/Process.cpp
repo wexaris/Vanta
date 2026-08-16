@@ -1,6 +1,8 @@
 #include "vantapch.hpp"
 #include "Vanta/Util/Process.hpp"
 
+#include <sstream>
+
 namespace Vanta {
 
     namespace {
@@ -20,24 +22,32 @@ namespace Vanta {
     }
 
     CommandResult Process::Run(const std::vector<std::string_view>& commandParts, const Path& workingDirectory) {
-        if (commandParts.empty())
-            return { 1, "No command provided" };
+        std::stringstream output;
+        int exitCode = Run(commandParts, workingDirectory, output);
+        return { exitCode, output.str() };
+    }
+
+    int Process::Run(const std::vector<std::string_view>& commandParts, const Path& workingDirectory, std::ostream& outputStream) {
+        if (commandParts.empty()) {
+            VANTA_CORE_WARN("No command provided to run.");
+            return 1;
+        }
 
         const std::string command = JoinCommand(commandParts);
 
         std::string shellCommand = std::string("cmd /c \"cd /d ") + Quote(workingDirectory.string()) + " && " + command + " 2>&1\"";
 
-        std::array<char, 512> buffer{};
-        std::string output;
-
         FILE* pipe = _popen(shellCommand.c_str(), "r");
-        if (!pipe)
-            return { 1, "Failed to launch process" };
+        if (!pipe) {
+            VANTA_CORE_ERROR("Failed to run command: {}", command);
+            return 1;
+        }
 
+        std::array<char, 512> buffer{};
         while (fgets(buffer.data(), static_cast<int>(buffer.size()), pipe) != nullptr)
-            output += buffer.data();
+            outputStream << buffer.data();
 
         int exitCode = _pclose(pipe);
-        return { exitCode, output };
+        return exitCode;
     }
 }

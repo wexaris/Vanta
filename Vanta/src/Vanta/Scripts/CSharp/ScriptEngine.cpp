@@ -8,6 +8,7 @@
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/tabledefs.h>
+#include <mono/metadata/threads.h>
 
 #ifdef VANTA_DEBUG
     #include <mono/metadata/mono-debug.h>
@@ -94,7 +95,7 @@ namespace Vanta {
             Box<IO::FileWatcher> AppAssemblyFileWatcher;
             bool AppAssemblyReloadPending = false;
 
-            std::unordered_map<UUID, std::unordered_map<std::string_view, Box<ScriptFieldInstance>>> EntityFieldInstances;
+            std::unordered_map<UUID, std::unordered_map<std::string, Box<ScriptFieldInstance>>> EntityFieldInstances;
         };
 
         static ScriptData s_Data;
@@ -107,7 +108,7 @@ namespace Vanta {
 
             Interface::RegisterFunctions();
 
-            Path coreAssemblyPath = DefaultScriptCorePath();
+            Path coreAssemblyPath = EngineScriptCorePath();
             if (!LoadCoreAssembly(coreAssemblyPath)) {
                 VANTA_CORE_CRITICAL("Failed to load script core assembly!");
                 return;
@@ -126,6 +127,7 @@ namespace Vanta {
 
             mono_set_assemblies_path("mono/4.5");
 
+            // TODO: Move to config variable
 #ifdef VANTA_DEBUG
             const char* argv[] = {
                 "--debugger-agent=transport=dt_socket,address=127.0.0.1:2550,server=y,suspend=n,loglevel=3,logfile=MonoDebug.log",
@@ -142,6 +144,8 @@ namespace Vanta {
 #ifdef VANTA_DEBUG
             mono_debug_domain_create(s_Data.RootDomain);
 #endif
+
+            mono_thread_set_main(mono_thread_current());
         }
 
         void ScriptEngine::ShutdownMono() {
@@ -152,12 +156,14 @@ namespace Vanta {
         }
 
         void ScriptEngine::CreateAppDomain() {
+            VANTA_PROFILE_FUNCTION();
             std::string domainName = "VantaScripts";
             s_Data.AppDomain = mono_domain_create_appdomain(domainName.data(), nullptr);
             mono_domain_set(s_Data.AppDomain, true);
         }
 
         void ScriptEngine::DestroyAppDomain() {
+            VANTA_PROFILE_FUNCTION();
             mono_domain_set(mono_get_root_domain(), false);
             mono_domain_unload(s_Data.AppDomain);
             s_Data.AppDomain = nullptr;
@@ -273,7 +279,7 @@ namespace Vanta {
                 VANTA_CORE_CRITICAL("Failed to load script core assembly!");
                 return;
             }
-            Path appAssemblyPath = Project::GetRootDirectory() / Project::GetActive()->GetConfig().CSharpScriptAssemblyPath;
+            Path appAssemblyPath = ProjectScriptLibraryPath();
             if (!LoadAppAssembly(appAssemblyPath)) {
                 VANTA_CORE_CRITICAL("Failed to load app script assembly!");
                 return;
@@ -344,10 +350,10 @@ namespace Vanta {
 
         Ref<ScriptInstance> ScriptEngine::Instantiate(std::string fullName, Entity entity) {
             VANTA_PROFILE_FUNCTION();
-            VANTA_CORE_ASSERT(ClassExists(fullName), "Invalid class!");
+            VANTA_CORE_ASSERT(EntityClassExists(fullName), "Invalid class!");
             VANTA_CORE_ASSERT(entity, "Invalid entity!");
 
-            Ref<ScriptInstance> instance = NewRef<ScriptInstance>(GetClass(fullName), entity);
+            Ref<ScriptInstance> instance = NewRef<ScriptInstance>(GetEntityClass(fullName), entity);
 
             // Set variables modified in editor
             UUID entityId = entity.GetUUID();
@@ -363,16 +369,20 @@ namespace Vanta {
             return mono_object_new(s_Data.AppDomain, klass);
         }
 
-        bool ScriptEngine::ClassExists(const std::string& fullName) {
+        bool ScriptEngine::EntityClassExists(const std::string& fullName) {
             return s_Data.EntityClasses.contains(fullName);
         }
 
-        Ref<ScriptClass> ScriptEngine::GetClass(const std::string& fullName) {
-            VANTA_CORE_ASSERT(ClassExists(fullName), "Invalid class!");
-            return s_Data.EntityClasses.at(fullName);
+        Ref<ScriptClass> ScriptEngine::GetEntityClass(const std::string& fullName) {
+            auto it = s_Data.EntityClasses.find(fullName);
+            if (it == s_Data.EntityClasses.end()) {
+                VANTA_CORE_WARN("Script class '{}' does not exist!", fullName);
+                return nullptr;
+            }
+            return it->second;
         }
 
-        const ScriptClass& ScriptEngine::GetEntityClass() {
+        const CSharpScriptClass& ScriptEngine::GetEntityClass() {
             return s_Data.EntityBaseClass;
         }
 
@@ -384,7 +394,7 @@ namespace Vanta {
             return s_Data.CoreAssemblyImage;
         }
 
-        std::unordered_map<std::string_view, Box<ScriptFieldInstance>>& ScriptEngine::GetFieldInstances(Entity entity) {
+        std::unordered_map<std::string, Box<ScriptFieldInstance>>& ScriptEngine::GetFieldInstances(Entity entity) {
             VANTA_CORE_ASSERT(entity, "Invalid entity!");
             return s_Data.EntityFieldInstances[entity.GetUUID()];
         }
@@ -393,8 +403,12 @@ namespace Vanta {
             s_Data.EntityFieldInstances.clear();
         }
     
-        Path ScriptEngine::DefaultScriptCorePath() {
-            return Engine::RuntimeResourceDirectory() / "Scripts" / "CSharp" / "Vanta-ScriptCore-CSharp.dll";
+        Path ScriptEngine::EngineScriptCorePath() {
+            return Engine::RuntimeScriptDirectory(Scripts::ScriptType::CSharp) / "Vanta-ScriptCore-CSharp.dll";
+        }
+
+        Path ScriptEngine::ProjectScriptLibraryPath() {
+            return Project::GetScriptDirectory(Scripts::ScriptType::CSharp) / "Binaries" / "Scripts_CSharp.dll";
         }
     }
 }

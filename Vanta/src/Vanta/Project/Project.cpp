@@ -4,11 +4,7 @@
 
 namespace Vanta {
 
-    static const char* CSharp_CMake =
-#include "Vanta/Scripts/CSharp/BuildTemplate/CMakeLists.txt"
-        ;
-
-    static const char* CSharp_Csproj =
+    static const char* CSharp_Proj =
 #include "Vanta/Scripts/CSharp/BuildTemplate/Scripts_CSharp.csproj"
         ;
 
@@ -26,18 +22,14 @@ namespace Vanta {
         std::filesystem::create_directories(GetCacheDirectory());
         std::filesystem::create_directories(GetAssetDirectory());
         std::filesystem::create_directories(GetAssetDirectory() / config.InitialScenePath.parent_path());
-        std::filesystem::create_directories(s_ActiveProject->m_RootDirectory / config.CSharpScriptAssemblyPath.parent_path());
-        std::filesystem::create_directories(s_ActiveProject->m_RootDirectory / config.NativeScriptAssemblyPath.parent_path());
-        std::filesystem::create_directories(s_ActiveProject->m_RootDirectory / "Scripts" / "CSharp" / "Source");
-        std::filesystem::create_directories(s_ActiveProject->m_RootDirectory / "Scripts" / "Native" / "Source");
+        std::filesystem::create_directories(s_ActiveProject->m_RootDirectory / config.CSharpScriptDirectory / "Source");
+        std::filesystem::create_directories(s_ActiveProject->m_RootDirectory / config.NativeScriptDirectory / "Source");
 
         // Create script build files
-        IO::File csharp_cmake(s_ActiveProject->m_RootDirectory / "Scripts" / "CSharp" / "CMakeLists.txt");
-        IO::File csharp_csproj(s_ActiveProject->m_RootDirectory / "Scripts" / "CSharp" / "Scripts_CSharp.csproj");
-        csharp_cmake.Write(CSharp_CMake);
-        csharp_csproj.Write(CSharp_Csproj);
+        IO::File csharp_csproj(s_ActiveProject->m_RootDirectory / config.CSharpScriptDirectory / "Scripts_CSharp.csproj");
+        csharp_csproj.Write(CSharp_Proj);
 
-        IO::File native_cmake(s_ActiveProject->m_RootDirectory / "Scripts" / "Native" / "CMakeLists.txt");
+        IO::File native_cmake(s_ActiveProject->m_RootDirectory / config.NativeScriptDirectory / "CMakeLists.txt");
         native_cmake.Write(Native_CMake);
 
         // Create default scene

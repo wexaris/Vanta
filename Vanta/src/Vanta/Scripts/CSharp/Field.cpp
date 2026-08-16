@@ -45,7 +45,7 @@ namespace Vanta {
         }
 
         CSharpScriptField::CSharpScriptField(std::string name, MonoType* type, MonoClassField* field)
-            : CSharpScriptField(std::move(name), MonoTypeToFieldType(type), field)
+            : ScriptField(std::move(name), MonoTypeToFieldType(type)), MonoField(field)
         {
         }
 

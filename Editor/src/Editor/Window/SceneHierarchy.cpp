@@ -301,7 +301,7 @@ namespace Vanta {
                 static char buffer[64];
                 strcpy_s(buffer, component.ClassName.c_str());
 
-                bool classExists = CSharp::ScriptEngine::ClassExists(component.ClassName);
+                bool classExists = CSharp::ScriptEngine::EntityClassExists(component.ClassName);
 
                 if (!classExists)
                     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.9f, 0.2f, 0.3f, 1.0f));
@@ -330,7 +330,7 @@ namespace Vanta {
                 }
                 // Editor field data
                 else if (classExists) {
-                    Ref<ScriptClass> klass = CSharp::ScriptEngine::GetClass(component.ClassName);
+                    Ref<ScriptClass> klass = CSharp::ScriptEngine::GetEntityClass(component.ClassName);
                     auto& instances = CSharp::ScriptEngine::GetFieldInstances(entity);
 
                     // Loop though every class field and check
@@ -374,7 +374,7 @@ namespace Vanta {
                 static char buffer[64];
                 strcpy_s(buffer, component.ClassName.c_str());
 
-                bool classExists = Native::ScriptEngine::ClassExists(component.ClassName);
+                bool classExists = Native::ScriptEngine::EntityClassExists(component.ClassName);
 
                 if (!classExists)
                     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.9f, 0.2f, 0.3f, 1.0f));
@@ -403,7 +403,7 @@ namespace Vanta {
                 }
                 // Editor field data
                 else if (classExists) {
-                    Ref<ScriptClass> klass = Native::ScriptEngine::GetClass(component.ClassName);
+                    Ref<ScriptClass> klass = Native::ScriptEngine::GetEntityClass(component.ClassName);
                     auto& instances = Native::ScriptEngine::GetFieldInstances(entity);
 
                     // Loop though every class field and check

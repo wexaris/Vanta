@@ -18,13 +18,13 @@ namespace Vanta {
 
             static Ref<ScriptInstance> Instantiate(std::string fullName, Entity entity);
 
-            static bool ClassExists(const std::string& className);
-            static Ref<ScriptClass> GetClass(const std::string& className);
+            static bool EntityClassExists(const std::string& className);
+            static Ref<ScriptClass> GetEntityClass(const std::string& className);
 
             static Scene* GetContext();
             static ScriptAssembly* GetAppAssembly();
 
-            static std::unordered_map<std::string_view, Box<ScriptFieldInstance>>& GetFieldInstances(Entity entity);
+            static std::unordered_map<std::string, Box<ScriptFieldInstance>>& GetFieldInstances(Entity entity);
             static void ClearFieldInstances();
 
         private:
@@ -35,6 +35,8 @@ namespace Vanta {
             static bool LoadAppAssembly(const Path& filepath);
 
             static void InspectAssembly(ScriptAssembly* assembly);
+
+            static Path ProjectScriptLibraryPath();
         };
     }
 }

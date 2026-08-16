@@ -37,7 +37,7 @@ namespace Vanta {
         m_ScriptClass->InvokeOnDestroy(this);
     }
 
-    bool ScriptInstance::ReadFieldValue(std::string_view name, void* buffer) {
+    bool ScriptInstance::ReadFieldValue(const std::string& name, void* buffer) {
         VANTA_PROFILE_FUNCTION();
 
         const auto& fields = m_ScriptClass->GetFields();
@@ -52,7 +52,7 @@ namespace Vanta {
         return true;
     }
 
-    bool ScriptInstance::WriteFieldValue(std::string_view name, const void* value) {
+    bool ScriptInstance::WriteFieldValue(const std::string& name, const void* value) {
         VANTA_PROFILE_FUNCTION();
 
         const auto& fields = m_ScriptClass->GetFields();

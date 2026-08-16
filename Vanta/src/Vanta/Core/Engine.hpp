@@ -7,6 +7,7 @@
 #include "Vanta/Event/WindowEvent.hpp"
 #include "Vanta/Render/Camera.hpp"
 #include "Vanta/Render/GraphicsAPI.hpp"
+#include "Vanta/Scripts/ScriptType.hpp"
 
 namespace Vanta {
     struct CommandLineArguments {
@@ -45,9 +46,11 @@ namespace Vanta {
 
         const CommandLineArguments& GetCommandLineArgs() const { return m_CommandLineArgs; }
 
-        static Path RuntimeDirectory()         { return s_RuntimeDirectory; }
-        static Path RuntimeResourceDirectory() { return s_RuntimeDirectory / "Resources"; }
-        static Path RuntimeCacheDirectory()    { return s_RuntimeDirectory / "Cache"; }
+        static Path RuntimeDirectory()          { return s_RuntimeDirectory; }
+        static Path RuntimeResourceDirectory()  { return s_RuntimeDirectory / "Resources"; }
+        static Path RuntimeCacheDirectory()     { return s_RuntimeDirectory / "Cache"; }
+        static Path RuntimeScriptDirectory()    { return s_RuntimeDirectory / "Scripts"; }
+        static Path RuntimeScriptDirectory(Scripts::ScriptType type) { return RuntimeScriptDirectory() / Scripts::ScriptTypeToString(type); }
 
         bool IsMinimized() const { return m_Minimized; }
 

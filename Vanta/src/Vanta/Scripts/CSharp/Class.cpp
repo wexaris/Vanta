@@ -3,6 +3,7 @@
 #include "Vanta/Scripts/CSharp/ScriptEngine.hpp"
 
 #include <mono/jit/jit.h>
+#include <mono/metadata/class.h>
 
 namespace Vanta {
     namespace CSharp {
@@ -25,42 +26,42 @@ namespace Vanta {
             VANTA_PROFILE_FUNCTION();
             VANTA_CORE_ASSERT(m_Class, "Invalid script class!");
 
+            auto& entityBase = ScriptEngine::GetEntityClass();
+
             // Create new class instance
             MonoObject* object = ScriptEngine::CreateObject(m_Class);
-            mono_runtime_object_init(object);
 
-            // Call constructor with entity ID
             UUID entityID = entity.GetUUID();
             void* param = &entityID;
-            InvokeMethod(object, m_Constructor, &param);
+            InvokeMethod(object, entityBase.m_Constructor, &param);
 
             return object;
         }
 
-        void CSharpScriptClass::InvokeOnCreate(const ScriptInstance* instance) const
-        {
+        void CSharpScriptClass::InvokeOnCreate(const ScriptInstance* instance) const {
             VANTA_CORE_ASSERT(instance, "Invalid script class instance!");
-            VANTA_CORE_ASSERT(instance->GetRuntimeInstance(), "Invalid script class instance runtime object!");
-            VANTA_CORE_ASSERT(m_OnCreateMethod, "Script class missing OnCreate method!");
+
+            if (!m_OnCreateMethod)
+                return;
 
             InvokeMethod((MonoObject*)instance->GetRuntimeInstance(), m_OnCreateMethod);
         }
 
-        void CSharpScriptClass::InvokeOnUpdate(const ScriptInstance* instance, double delta) const
-        {
+        void CSharpScriptClass::InvokeOnUpdate(const ScriptInstance* instance, double delta) const {
             VANTA_CORE_ASSERT(instance, "Invalid script class instance!");
-            VANTA_CORE_ASSERT(instance->GetRuntimeInstance(), "Invalid script class instance runtime object!");
-            VANTA_CORE_ASSERT(m_OnCreateMethod, "Script class missing OnCreate method!");
+
+            if (!m_OnUpdateMethod)
+                return;
 
             void* param = &delta;
             InvokeMethod((MonoObject*)instance->GetRuntimeInstance(), m_OnUpdateMethod, &param);
         }
 
-        void CSharpScriptClass::InvokeOnDestroy(const ScriptInstance* instance) const
-        {
+        void CSharpScriptClass::InvokeOnDestroy(const ScriptInstance* instance) const {
             VANTA_CORE_ASSERT(instance, "Invalid script class instance!");
-            VANTA_CORE_ASSERT(instance->GetRuntimeInstance(), "Invalid script class instance runtime object!");
-            VANTA_CORE_ASSERT(m_OnCreateMethod, "Script class missing OnCreate method!");
+
+            if (!m_OnDestroyMethod)
+                return;
 
             InvokeMethod((MonoObject*)instance->GetRuntimeInstance(), m_OnDestroyMethod);
         }

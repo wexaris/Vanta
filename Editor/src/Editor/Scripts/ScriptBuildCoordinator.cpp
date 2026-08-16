@@ -13,25 +13,24 @@ namespace Vanta {
             return m_BuildConfiguration;
         }
 
-        bool ScriptBuildCoordinator::RebuildWithBuilder(const ScriptBuilder& builder, const Path& projectDirectory, bool clean, const char* failurePrefix) {
-            ScriptBuildOptions options;
-            options.Clean = clean;
-            options.Configuration = m_BuildConfiguration;
-
-            if (!builder.Build(projectDirectory, options)) {
-                VANTA_CORE_ERROR("{}", failurePrefix);
+        bool ScriptBuildCoordinator::RebuildWithBuilder(const ScriptBuilder& builder, bool clean) {
+            if (!Project::GetActive()) {
+                VANTA_CORE_ERROR("No active project to build scripts for");
                 return false;
             }
 
-            return true;
+            ScriptBuildOptions options;
+            options.Clean = clean;
+            options.Configuration = m_BuildConfiguration;
+            return builder.Build(options);
         }
 
         bool ScriptBuildCoordinator::RebuildNative(bool clean) {
-            return RebuildWithBuilder(m_NativeBuilder, Project::GetRootDirectory() / "Scripts" / "Native", clean, "Native script rebuild failed");
+            return RebuildWithBuilder(m_NativeBuilder, clean);
         }
 
         bool ScriptBuildCoordinator::RebuildCSharp(bool clean) {
-            return RebuildWithBuilder(m_CSharpBuilder, Project::GetRootDirectory() / "Scripts" / "CSharp", clean, "C# script rebuild failed");
+            return RebuildWithBuilder(m_CSharpBuilder, clean);
         }
 
     }

@@ -20,8 +20,8 @@ namespace Vanta {
             out << YAML::Key << "Name" << YAML::Value << config.Name;
             out << YAML::Key << "AssetDirectory" << YAML::Value << config.AssetDirectory.string();
             out << YAML::Key << "CacheDirectory" << YAML::Value << config.CacheDirectory.string();
-            out << YAML::Key << "NativeScriptAssemblyPath" << YAML::Value << config.NativeScriptAssemblyPath.string();
-            out << YAML::Key << "CSharpScriptAssemblyPath" << YAML::Value << config.CSharpScriptAssemblyPath.string();
+            out << YAML::Key << "NativeScriptDirectory" << YAML::Value << config.NativeScriptDirectory.string();
+            out << YAML::Key << "CSharpScriptDirectory" << YAML::Value << config.CSharpScriptDirectory.string();
             out << YAML::Key << "InitialScene" << YAML::Value << config.InitialScenePath.string();
             out << YAML::EndMap;
         }
@@ -49,12 +49,12 @@ namespace Vanta {
         auto& config = project->GetConfig();
 
         config.Name = data["Name"].as<std::string>();
-        VANTA_CORE_TRACE("Deserializing project: {}", config.Name);
+        VANTA_CORE_INFO("Deserializing project: {}", config.Name);
 
         config.AssetDirectory = data["AssetDirectory"].as<std::string>();
         config.CacheDirectory = data["CacheDirectory"].as<std::string>();
-        config.NativeScriptAssemblyPath = data["NativeScriptAssemblyPath"].as<std::string>();
-        config.CSharpScriptAssemblyPath = data["CSharpScriptAssemblyPath"].as<std::string>();
+        config.NativeScriptDirectory = data["NativeScriptDirectory"].as<std::string>();
+        config.CSharpScriptDirectory = data["CSharpScriptDirectory"].as<std::string>();
         config.InitialScenePath = data["InitialScene"].as<std::string>();
 
         return true;

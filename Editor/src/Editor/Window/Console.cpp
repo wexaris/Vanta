@@ -19,6 +19,7 @@ namespace Vanta {
         void Console::Execute(const std::string& input) {
             Log("# " + input + "\n");
             m_ScrollToBottom = true; // On input, scroll to bottom even if auto scroll is off
+            // TODO: Submit command to main thread
         }
 
         void Console::Clear() {

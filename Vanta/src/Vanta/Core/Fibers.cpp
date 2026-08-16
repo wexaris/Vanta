@@ -33,7 +33,7 @@ namespace Vanta {
                 WorkerRun();
             });
         }
-        
+
         // Set scheduling for the calling thread as well
         fibers::use_scheduling_algorithm<fibers::algo::work_stealing>(THREAD_COUNT, true);
     }

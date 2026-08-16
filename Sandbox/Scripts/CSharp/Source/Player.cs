@@ -14,7 +14,7 @@ namespace Sandbox {
         void OnCreate() {
             Log.Info("Player.OnCreate");
 
-            Camera = GetEntityByName("Camera")?.As<Camera>();
+            Camera = GetEntityByName<Camera>("Camera");
             Rigidbody = GetComponent<Rigidbody2DComponent>();
         }
 

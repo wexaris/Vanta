@@ -5,7 +5,7 @@
 
 namespace Vanta {
     void ScriptComponent::Create(entt::entity e, Scene* scene) {
-        if (!CSharp::ScriptEngine::ClassExists(ClassName))
+        if (!CSharp::ScriptEngine::EntityClassExists(ClassName))
             return;
 
         Entity entity(e, scene);

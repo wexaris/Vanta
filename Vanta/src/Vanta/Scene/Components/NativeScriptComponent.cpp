@@ -5,7 +5,7 @@
 
 namespace Vanta {
     void NativeScriptComponent::Create(entt::entity e, Scene* scene) {
-        if (!Native::ScriptEngine::ClassExists(ClassName))
+        if (!Native::ScriptEngine::EntityClassExists(ClassName))
             return;
 
         Entity entity(e, scene);

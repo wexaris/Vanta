@@ -12,6 +12,9 @@ build/
 out/
 vcpkg_installed/
 
+# Runtime
+*.log
+
 # Vanta
 Vanta/src/Vanta/Scripts/CSharp/BuildTemplate/bin
 Vanta/src/Vanta/Scripts/CSharp/BuildTemplate/obj

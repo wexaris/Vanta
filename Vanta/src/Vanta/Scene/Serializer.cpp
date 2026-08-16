@@ -61,12 +61,12 @@ namespace Vanta {
             out << YAML::BeginMap;
             out << YAML::Key << "Class" << YAML::Value << component.ClassName;
 
-            if (!CSharp::ScriptEngine::ClassExists(component.ClassName)) {
+            if (!CSharp::ScriptEngine::EntityClassExists(component.ClassName)) {
                 out << YAML::EndMap;
                 return;
             }
 
-            const auto& klass = CSharp::ScriptEngine::GetClass(component.ClassName);
+            const auto& klass = CSharp::ScriptEngine::GetEntityClass(component.ClassName);
             if (!klass) {
                 out << YAML::EndMap;
                 return;
@@ -134,12 +134,12 @@ namespace Vanta {
             out << YAML::BeginMap;
             out << YAML::Key << "Class" << YAML::Value << component.ClassName;
 
-            if (!Native::ScriptEngine::ClassExists(component.ClassName)) {
+            if (!Native::ScriptEngine::EntityClassExists(component.ClassName)) {
                 out << YAML::EndMap;
                 return;
             }
 
-            const auto& klass = Native::ScriptEngine::GetClass(component.ClassName);
+            const auto& klass = Native::ScriptEngine::GetEntityClass(component.ClassName);
             if (!klass) {
                 out << YAML::EndMap;
                 return;
@@ -375,11 +375,11 @@ namespace Vanta {
 
                 auto scriptFields = scriptComponent["Fields"];
                 if (scriptFields) {
-                    if (!CSharp::ScriptEngine::ClassExists(sc.ClassName)) {
+                    if (!CSharp::ScriptEngine::EntityClassExists(sc.ClassName)) {
                         VANTA_CORE_WARN("Class no longer exists: {}", sc.ClassName);
                         goto after_csharp_script_component;
                     }
-                    const auto& fields = CSharp::ScriptEngine::GetClass(sc.ClassName)->GetFields();
+                    const auto& fields = CSharp::ScriptEngine::GetEntityClass(sc.ClassName)->GetFields();
 
                     auto& instances = CSharp::ScriptEngine::GetFieldInstances(entity);
 
@@ -437,11 +437,11 @@ after_csharp_script_component:
 
                 auto scriptFields = scriptComponent["Fields"];
                 if (scriptFields) {
-                    if (!Native::ScriptEngine::ClassExists(sc.ClassName)) {
+                    if (!Native::ScriptEngine::EntityClassExists(sc.ClassName)) {
                         VANTA_CORE_WARN("Class no longer exists: {}", sc.ClassName);
                         goto after_native_script_component;
                     }
-                    const auto& fields = Native::ScriptEngine::GetClass(sc.ClassName)->GetFields();
+                    const auto& fields = Native::ScriptEngine::GetEntityClass(sc.ClassName)->GetFields();
 
                     auto& instances = Native::ScriptEngine::GetFieldInstances(entity);
 

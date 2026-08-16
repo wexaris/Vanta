@@ -2,7 +2,8 @@
 namespace Vanta {
 
     public abstract class Component {
-        public Entity Entity { get; internal set; }
+        public Entity Entity { get; internal init; } = Entity.Null;
+        internal Component() {}
     }
 
     public class TransformComponent : Component {
@@ -28,8 +29,8 @@ namespace Vanta {
     public class BoxCollider2DComponent : Component {}
     public class CircleCollider2DComponent : Component {}
 
-    public class SpriteComponent : Component { }
-    public class CircleRendererComponent : Component { }
+    public class SpriteComponent : Component {}
+    public class CircleRendererComponent : Component {}
 
     public class CameraComponent : Component {}
 

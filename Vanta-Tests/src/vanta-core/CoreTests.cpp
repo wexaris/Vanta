@@ -7,6 +7,7 @@
 #include "Scene/SceneRegistry.cpp"
 #include "Project/Project.cpp"
 #include "Scene/TransformCommandQueue.cpp"
+#include "Scripts/CSharp.cpp"
 
 using namespace Testing;
 
@@ -48,10 +49,16 @@ int main(int argc, char** argv) {
         { "DiagnosticsAccumulateAndReset",   DiagnosticsAccumulateAndReset   },
     });
 
+    TestSet testCSharpScripts("CSharpScripts", {
+        { "PlayerInstantiatesWithoutUuidConstructor", TestCSharpPlayerInstantiatesWithoutUuidConstructor },
+        { "PlayerLifecycleWithoutOnDestroy", TestCSharpPlayerLifecycleWithoutOnDestroy },
+    });
+
     return (testMath.IsGood()
         && testFibers.IsGood()
         && testEvents.IsGood()
         && testSceneRegistry.IsGood()
         && testProjectScaffolding.IsGood()
-        && testCommandQueue.IsGood()) ? 0 : 1;
+        && testCommandQueue.IsGood()
+        && testCSharpScripts.IsGood()) ? 0 : 1;
 }

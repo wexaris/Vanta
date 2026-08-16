@@ -15,5 +15,7 @@ namespace Vanta {
     class Process {
     public:
         static CommandResult Run(const std::vector<std::string_view>& commandParts, const Path& workingDirectory);
+
+        static int Run(const std::vector<std::string_view>& commandParts, const Path& workingDirectory, std::ostream& outputStream);
     };
 }

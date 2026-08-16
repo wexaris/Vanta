@@ -1,5 +1,6 @@
 #pragma once
 #include <Vanta/Vanta.hpp>
+#include <Vanta/Util/String.hpp>
 #include <spdlog/details/null_mutex.h>
 #include <spdlog/sinks/base_sink.h>
 #include <mutex>
@@ -44,7 +45,7 @@ namespace Vanta {
             void sink_it_(const spdlog::details::log_msg& msg) override {
                 spdlog::memory_buf_t formatted;
                 spdlog::sinks::base_sink<Mutex>::formatter_->format(msg, formatted);
-                std::string message = fmt::to_string(formatted);
+                std::string message = Vanta::String::Trim(fmt::to_string(formatted));
                 Console::Get().Log(message);
             }
 

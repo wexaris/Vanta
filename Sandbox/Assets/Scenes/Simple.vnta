@@ -4,7 +4,7 @@ Scene:
   Entities:
     - Entity: [Red, 4639143949621759840]
       TransformComponent:
-        Position: [2.4258096, 0.5356132, 0]
+        Position: [2.5797293, 1.0489914, 0]
         Rotation: [0, -0, 63.258823]
         Scale: [1.0000001, 1.0000001, 1]
       SpriteComponent:
@@ -46,7 +46,9 @@ Scene:
       ScriptComponent:
         Class: Sandbox.Player
         Fields:
-          []
+          - Name: Speed
+            Type: Float
+            Value: 1
       SpriteComponent:
         TilingFactor: 1
         Color: [0.34453872, 0.7035863, 0.83397686, 1]
@@ -99,6 +101,6 @@ Scene:
         Restitution: 0.3
         RollingResistance: 0.1
 
-ViewportCameraPosition: [-2.7509265, 4.2596807, 12.148241]
+ViewportCameraPosition: [-5.3198123, 5.491211, 12.391313]
 
-ViewportCameraRotation: [-23.76007, -17.200176, 0]
+ViewportCameraRotation: [-23.560123, -25.20021, 0]

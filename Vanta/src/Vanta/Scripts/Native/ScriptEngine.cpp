@@ -60,7 +60,7 @@ namespace Vanta {
             Box<IO::FileWatcher> AppAssemblyFileWatcher;
             bool AppAssemblyReloadPending = false;
 
-            std::unordered_map<UUID, std::unordered_map<std::string_view, Box<ScriptFieldInstance>>> EntityFieldInstances;
+            std::unordered_map<UUID, std::unordered_map<std::string, Box<ScriptFieldInstance>>> EntityFieldInstances;
         };
 
         static ScriptData s_Data;
@@ -137,7 +137,7 @@ namespace Vanta {
 
             VANTA_CORE_INFO("Reloading native script assembly!");
 
-            Path appAssemblyPath = Project::GetRootDirectory() / Project::GetActive()->GetConfig().NativeScriptAssemblyPath;
+            Path appAssemblyPath = ProjectScriptLibraryPath();
             if (!LoadAppAssembly(appAssemblyPath)) {
                 VANTA_CORE_CRITICAL("Failed to load app script assembly!");
                 return;
@@ -183,10 +183,10 @@ namespace Vanta {
 
         Ref<ScriptInstance> ScriptEngine::Instantiate(std::string className, Entity entity) {
             VANTA_PROFILE_FUNCTION();
-            VANTA_CORE_ASSERT(ClassExists(className), "Invalid class!");
+            VANTA_CORE_ASSERT(EntityClassExists(className), "Invalid class!");
             VANTA_CORE_ASSERT(entity, "Invalid entity!");
 
-            Ref<ScriptInstance> instance = NewRef<ScriptInstance>(GetClass(className), entity);
+            Ref<ScriptInstance> instance = NewRef<ScriptInstance>(GetEntityClass(className), entity);
 
             // Set variables modified in editor
             UUID entityId = entity.GetUUID();
@@ -197,13 +197,17 @@ namespace Vanta {
             return instance;
         }
 
-        bool ScriptEngine::ClassExists(const std::string& className) {
+        bool ScriptEngine::EntityClassExists(const std::string& className) {
             return s_Data.EntityClasses.contains(className);
         }
 
-        Ref<ScriptClass> ScriptEngine::GetClass(const std::string& className) {
-            VANTA_CORE_ASSERT(ClassExists(className), "Invalid class!");
-            return s_Data.EntityClasses.at(className);
+        Ref<ScriptClass> ScriptEngine::GetEntityClass(const std::string& className) {
+            auto it = s_Data.EntityClasses.find(className);
+            if (it == s_Data.EntityClasses.end()) {
+                VANTA_CORE_WARN("Script class '{}' does not exist!", className);
+                return nullptr;
+            }
+            return it->second;
         }
 
         Scene* ScriptEngine::GetContext() {
@@ -214,13 +218,17 @@ namespace Vanta {
             return s_Data.AppAssembly.get();
         }
 
-        std::unordered_map<std::string_view, Box<ScriptFieldInstance>>& ScriptEngine::GetFieldInstances(Entity entity) {
+        std::unordered_map<std::string, Box<ScriptFieldInstance>>& ScriptEngine::GetFieldInstances(Entity entity) {
             VANTA_CORE_ASSERT(entity, "Invalid entity!");
             return s_Data.EntityFieldInstances[entity.GetUUID()];
         }
 
         void ScriptEngine::ClearFieldInstances() {
             s_Data.EntityFieldInstances.clear();
+        }
+
+        Path ScriptEngine::ProjectScriptLibraryPath() {
+            return Project::GetScriptDirectory(Scripts::ScriptType::Native) / "Binaries" / "Scripts_Native.dll";
         }
     }
 }
