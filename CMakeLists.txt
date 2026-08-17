@@ -1,6 +1,14 @@
 cmake_minimum_required(VERSION 3.20)
 project(VantaProj)
 
+# Set CMake to export compile commands for tools like clangd and ccls
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+execute_process(
+    COMMAND ${CMAKE_COMMAND} -E create_symlink
+        ${CMAKE_BINARY_DIR}/compile_commands.json
+        ${CMAKE_SOURCE_DIR}/compile_commands.json
+)
+
 if(POLICY CMP0141)
 	cmake_policy(SET CMP0141 NEW)
 	# Use one consistent MSVC debug-info mode to avoid /Zi vs /ZI overrides.

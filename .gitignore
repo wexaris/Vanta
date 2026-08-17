@@ -3,13 +3,15 @@
 .vscode/
 CMakeSettings.json
 CMakePresets.json
+compile_commands.json
 *.idb
 *.pdb
 *.hint
 
 # Build
-build/
 out/
+build/
+install/
 vcpkg_installed/
 
 # Runtime

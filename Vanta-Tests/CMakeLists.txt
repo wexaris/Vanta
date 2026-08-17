@@ -20,6 +20,7 @@ function(vanta_configure_test_target target)
                 /W3 /RTC1 /sdl /Od>>
     )
 endfunction()
+
 add_subdirectory(src/vanta-test-utils)
 add_subdirectory(src/vanta-core)
 add_subdirectory(src/vanta-scripts-native)
