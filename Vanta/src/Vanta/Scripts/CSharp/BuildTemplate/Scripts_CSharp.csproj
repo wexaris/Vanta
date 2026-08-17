@@ -5,16 +5,26 @@ R"=(
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+
+        <!-- Disable generating runtime config files that your engine doesn't use -->
+        <GenerateRuntimeConfigurationFiles>false</GenerateRuntimeConfigurationFiles>
+        <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
     </PropertyGroup>
 
     <PropertyGroup>
-        <VantaScriptCoreLib Condition="'$(VantaScriptCoreLib)' == ''">$(MSBuildThisFileDirectory)../Binaries/Vanta-ScriptCore-CSharp.dll</VantaScriptCoreLib>
+        <!-- 1. Define fallback path logic properly -->
+        <CoreLibDir Condition="'$(VantaScriptCoreDir)' == ''">lib/</CoreLibDir>
+        <CoreLibDir Condition="'$(VantaScriptCoreDir)' != ''">$(VantaScriptCoreDir)</CoreLibDir>
+
+        <!-- 2. Clean trailing slashes to keep HintPath safe -->
+        <CoreLibDir>$([MSBuild]::EnsureTrailingSlash('$(CoreLibDir)'))</CoreLibDir>
     </PropertyGroup>
 
     <ItemGroup>
+        <!-- 3. Consume the evaluated property path here -->
         <Reference Include="Vanta-ScriptCore-CSharp">
-            <HintPath>$(VantaScriptCoreLib)</HintPath>
+            <HintPath>$(CoreLibDir)Vanta-ScriptCore-CSharp.dll</HintPath>
+            <Private>False</Private>
         </Reference>
     </ItemGroup>
 

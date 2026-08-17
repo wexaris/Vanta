@@ -22,14 +22,14 @@ namespace Vanta {
         std::filesystem::create_directories(GetCacheDirectory());
         std::filesystem::create_directories(GetAssetDirectory());
         std::filesystem::create_directories(GetAssetDirectory() / config.InitialScenePath.parent_path());
-        std::filesystem::create_directories(s_ActiveProject->m_RootDirectory / config.CSharpScriptDirectory / "Source");
-        std::filesystem::create_directories(s_ActiveProject->m_RootDirectory / config.NativeScriptDirectory / "Source");
+        std::filesystem::create_directories(GetScriptDirectory(Scripts::ScriptType::CSharp) / "Source");
+        std::filesystem::create_directories(GetScriptDirectory(Scripts::ScriptType::Native) / "Source");
 
         // Create script build files
-        IO::File csharp_csproj(s_ActiveProject->m_RootDirectory / config.CSharpScriptDirectory / "Scripts_CSharp.csproj");
+        IO::File csharp_csproj(GetScriptDirectory(Scripts::ScriptType::CSharp) / "Scripts_CSharp.csproj");
         csharp_csproj.Write(CSharp_Proj);
 
-        IO::File native_cmake(s_ActiveProject->m_RootDirectory / config.NativeScriptDirectory / "CMakeLists.txt");
+        IO::File native_cmake(GetScriptDirectory(Scripts::ScriptType::Native) / "CMakeLists.txt");
         native_cmake.Write(Native_CMake);
 
         // Create default scene

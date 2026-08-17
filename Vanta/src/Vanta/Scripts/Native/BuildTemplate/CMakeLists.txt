@@ -13,7 +13,7 @@ set(OUTPUT_DIR "${CMAKE_BINARY_DIR}/../Binaries")
 
 add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCE})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE "${VANTA_LIB}/Vanta-ScriptCore-Native")
+target_link_libraries(${PROJECT_NAME} PRIVATE "${VANTA_LIB}/Vanta-ScriptCore-Native.lib")
 target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${VANTA_INCLUDE})
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE -DVANTA_MODULE)
