@@ -2,7 +2,7 @@
 
 #include <Vanta/Project/Project.hpp>
 #include <Vanta/Scene/Serializer.hpp>
-#include <Vanta/Scripts/ScriptEngine.hpp>
+#include <Vanta/Scripts/ScriptManager.hpp>
 
 #include <imgui.h>
 #include <ImGuizmo.h>
@@ -251,7 +251,7 @@ namespace Vanta {
                     ImGui::Separator();
 
                     if (ImGui::MenuItem("Reload Assemblies"))
-                        ScriptEngine::ReloadAssemblies();
+                        Scripts::ScriptManager::ReloadAssemblies();
 
                     ImGui::EndMenu();
                 }
@@ -668,7 +668,7 @@ namespace Vanta {
 
             Ref<Project> project = Project::New(project_dir.value());
 
-            ScriptEngine::ReloadAssemblies();
+            Scripts::ScriptManager::ReloadAssemblies();
 
             OpenScene(project->GetConfig().InitialScenePath);
 
@@ -705,7 +705,7 @@ namespace Vanta {
                 return false;
             }
 
-            ScriptEngine::ReloadAssemblies();
+            Scripts::ScriptManager::ReloadAssemblies();
 
             if (IO::File(project->GetAssetDirectory() / project->GetConfig().InitialScenePath).Exists()) {
                 OpenScene(project->GetConfig().InitialScenePath);
@@ -754,7 +754,7 @@ namespace Vanta {
             }
 
             // Clear previous scene's script field instances
-            ScriptEngine::ClearFieldInstances();
+            Scripts::ScriptManager::ClearFieldInstances();
 
             // Deserialize scene
             Ref<Scene> newScene = NewRef<Scene>();

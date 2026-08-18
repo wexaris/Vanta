@@ -44,7 +44,7 @@ namespace Testing {
             return false;
         }
 
-        Vanta::Native::ScriptAssembly assembly(assemblyPath);
+        Vanta::Scripts::ScriptAssembly assembly(assemblyPath);
         if (!assembly.IsLoaded())
             return false;
 

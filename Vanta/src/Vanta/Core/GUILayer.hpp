@@ -1,5 +1,9 @@
 #pragma once
 #include "Vanta/Core/Layer.hpp"
+#include "Vanta/Event/WindowEvent.hpp"
+
+struct ImGuiIO;
+struct ImGuiStyle;
 
 namespace Vanta {
 
@@ -18,9 +22,13 @@ namespace Vanta {
 
         void OnEvent(Event& e) override;
 
-        void SetDarkThemeColors();
+        void SetDarkThemeColors(ImGuiStyle* style = nullptr);
 
     private:
         bool m_BlockEvents = true;
+
+        bool OnWindowContentScale(WindowContentScaleEvent& e);
+        void UpdateGuiStyle();
+        void LoadFonts(ImGuiIO* io, float scaleFactor = 1.0f);
     };
 }

@@ -208,6 +208,14 @@ namespace Vanta {
             data.EventCallback(event);
         });
 
+        glfwSetWindowContentScaleCallback(m_Window, [](GLFWwindow* window, float xScale, float yScale) {
+            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+            if (!data.EventCallback) return;
+
+            WindowContentScaleEvent event(xScale, yScale);
+            data.EventCallback(event);
+        });
+
         glfwSetWindowMaximizeCallback(m_Window, [](GLFWwindow* window, int maximized) {
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
             if (!data.EventCallback) return;

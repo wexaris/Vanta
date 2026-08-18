@@ -8,7 +8,7 @@ extern "C" {
 }
 
 namespace Vanta {
-    namespace CSharp {
+    namespace Scripts {
 
         class CSharpScriptField : public ScriptField {
         public:

@@ -1,12 +1,13 @@
 #include "vantapch.hpp"
 #include "Vanta/Scripts/Class.hpp"
+#include "Vanta/Scripts/Instance.hpp"
 #include "Vanta/Scripts/CSharp/Field.hpp"
 
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/object.h>
 
 namespace Vanta {
-    namespace CSharp {
+    namespace Scripts {
 
         namespace {
             static std::unordered_map<std::string, ScriptFieldType> s_MonoFieldTypeMap = {

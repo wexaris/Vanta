@@ -2,7 +2,7 @@
 #include "Vanta/Scripts/Native/Module/Assembly.hpp"
 
 namespace Vanta {
-    namespace Native {
+    namespace Scripts {
 
         ScriptAssembly::ScriptAssembly(const Path& filepath)
             : m_Library(filepath)

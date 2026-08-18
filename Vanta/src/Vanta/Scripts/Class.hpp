@@ -1,62 +1,29 @@
 #pragma once
 #include "Vanta/Scene/Entity.hpp"
-#include "Vanta/Scripts/Field.hpp"
 
 namespace Vanta {
+    namespace Scripts {
 
-    class ScriptInstance;
+        class ScriptInstance;
+        class ScriptField;
 
-    class ScriptClass {
-    public:
-        explicit ScriptClass() = default;
-        explicit ScriptClass(std::vector<Ref<ScriptField>> fields);
+        class ScriptClass {
+        public:
+            explicit ScriptClass() = default;
+            explicit ScriptClass(std::vector<Ref<ScriptField>> fields);
 
-        virtual void InvokeOnCreate(const ScriptInstance* instance) const = 0;
-        virtual void InvokeOnUpdate(const ScriptInstance* instance, double delta) const = 0;
-        virtual void InvokeOnDestroy(const ScriptInstance* instance) const = 0;
+            virtual void InvokeOnCreate(const ScriptInstance* instance) const = 0;
+            virtual void InvokeOnUpdate(const ScriptInstance* instance, double delta) const = 0;
+            virtual void InvokeOnDestroy(const ScriptInstance* instance) const = 0;
 
-        const std::unordered_map<std::string, Ref<ScriptField>>& GetFields() const { return m_Fields; }
+            const std::unordered_map<std::string, Ref<ScriptField>>& GetFields() const { return m_Fields; }
 
-    protected:
-        friend class ScriptInstance;
+        protected:
+            friend class ScriptInstance;
 
-        std::unordered_map<std::string, Ref<ScriptField>> m_Fields;
+            std::unordered_map<std::string, Ref<ScriptField>> m_Fields;
 
-        virtual void* InstantiateRuntimeInstance(Entity entity) const = 0;
-    };
-
-    class ScriptInstance {
-    public:
-        ScriptInstance(Ref<ScriptClass> klass, Entity entity);
-
-        virtual void OnCreate() const;
-        virtual void OnUpdate(float delta) const;
-        virtual void OnDestroy() const;
-
-        Ref<ScriptClass>& GetClass() { return m_ScriptClass; }
-
-        template<typename T>
-        T GetFieldValue(const std::string& name) {
-            static char buffer[sizeof(T)];
-            bool ok = ReadFieldValue(name, buffer);
-            if (!ok)
-                return T();
-            return *(T*)buffer;
-        }
-
-        template<typename T>
-        bool SetFieldValue(const std::string& name, const T& value) {
-            return WriteFieldValue(name, &value);
-        }
-
-        bool ReadFieldValue(const std::string& name, void* buffer);
-        bool WriteFieldValue(const std::string& name, const void* data);
-
-        const void* GetRuntimeInstance() const { return m_RuntimeInstance; }
-
-    protected:
-        Ref<ScriptClass> m_ScriptClass;
-        void* m_RuntimeInstance = nullptr;
-
-    };
+            virtual void* InstantiateRuntimeInstance(Entity entity) const = 0;
+        };
+    }
 }

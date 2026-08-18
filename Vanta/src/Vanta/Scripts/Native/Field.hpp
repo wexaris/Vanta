@@ -4,7 +4,7 @@
 #include "Vanta/Scripts/Field.hpp"
 
 namespace Vanta {
-    namespace Native {
+    namespace Scripts {
 
         class NativeScriptField : public ScriptField {
         public:

@@ -4,6 +4,4 @@ Project:
   CacheDirectory: Cache
   NativeScriptDirectory: Scripts/Native
   CSharpScriptDirectory: Scripts/CSharp
-  NativeScriptAssemblyPath: Scripts/Native/Binaries/Scripts_Native.dll
-  CSharpScriptAssemblyPath: Scripts/CSharp/Binaries/Scripts_CSharp.dll
   InitialScene: Scenes/Simple.vnta

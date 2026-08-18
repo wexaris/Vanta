@@ -5,15 +5,14 @@
 #include "Vanta/Scene/TransformCommandQueue.hpp"
 
 namespace Vanta {
-
-    using namespace Native;
-
     namespace NativeImpl {
 
         const glm::vec3& TransformComponent_GetPosition(UUID entityID) {
             static_assert(sizeof(Vector3) == sizeof(glm::vec3));
 
-            Scene* scene = Native::ScriptEngine::GetContext();
+            Scripts::NativeScriptEngine& engine = Scripts::NativeScriptEngine::Get();
+
+            Scene* scene = engine.GetContext();
             VANTA_CORE_ASSERT(scene, "Script engine context not set!");
             Entity entity = scene->GetEntityByID(entityID);
             VANTA_ASSERT(entity, "Entity referenced in script doesn't exist!");
@@ -25,7 +24,9 @@ namespace Vanta {
         void TransformComponent_SetPosition(UUID entityID, const glm::vec3& pos) {
             static_assert(sizeof(Vector3) == sizeof(glm::vec3));
 
-            Scene* scene = Native::ScriptEngine::GetContext();
+            Scripts::NativeScriptEngine& engine = Scripts::NativeScriptEngine::Get();
+
+            Scene* scene = engine.GetContext();
             VANTA_CORE_ASSERT(scene, "Engine scene context not set!");
             Entity entity = scene->GetEntityByID(entityID);
             VANTA_CORE_ASSERT(scene, "Engine scene context not set!");

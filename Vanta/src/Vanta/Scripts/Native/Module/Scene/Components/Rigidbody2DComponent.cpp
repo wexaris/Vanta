@@ -5,14 +5,14 @@
 #include <box2d/box2d.h>
 
 namespace Vanta {
-    using namespace Native;
-
     namespace NativeImpl {
 
         void Rigidbody2DComponent_ApplyLinearImpulseToCenter(UUID entityID, const glm::vec2& impulse, bool wake) {
             static_assert(sizeof(Vector2) == sizeof(glm::vec2));
 
-            Scene* scene = Native::ScriptEngine::GetContext();
+            Scripts::NativeScriptEngine& engine = Scripts::NativeScriptEngine::Get();
+
+            Scene* scene = engine.GetContext();
             VANTA_CORE_ASSERT(scene, "Script engine context not set!");
             Entity entity = scene->GetEntityByID(entityID);
             VANTA_ASSERT(entity, "Entity referenced in script doesn't exist!");

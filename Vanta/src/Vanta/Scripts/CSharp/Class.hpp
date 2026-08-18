@@ -11,7 +11,7 @@ extern "C" {
 }
 
 namespace Vanta {
-    namespace CSharp {
+    namespace Scripts {
 
         class CSharpScriptClass : public ScriptClass {
         public:

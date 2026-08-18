@@ -5,11 +5,12 @@
 
 namespace Vanta {
     void NativeScriptComponent::Create(entt::entity e, Scene* scene) {
-        if (!Native::ScriptEngine::EntityClassExists(ClassName))
+        Scripts::NativeScriptEngine& engine = Scripts::NativeScriptEngine::Get();
+        if (!engine.EntityClassExists(ClassName))
             return;
 
         Entity entity(e, scene);
-        Instance = Native::ScriptEngine::Instantiate(ClassName, entity);
+        Instance = engine.Instantiate(ClassName, entity);
     }
 
     void NativeScriptComponent::Destroy() {

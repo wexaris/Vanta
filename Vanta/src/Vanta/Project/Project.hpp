@@ -1,6 +1,5 @@
 #pragma once
-
-#include <Vanta/Scripts/ScriptType.hpp>
+#include "Vanta/Scripts/ScriptType.hpp"
 
 namespace Vanta {
 

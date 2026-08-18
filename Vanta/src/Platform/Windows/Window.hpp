@@ -2,7 +2,8 @@
 #include "Vanta/Core/Window.hpp"
 #include "Vanta/Render/GraphicsContext.hpp"
 
-#include <GLFW/glfw3.h>
+struct GLFWwindow;
+struct GLFWvidmode;
 
 namespace Vanta {
     struct WindowedParams {

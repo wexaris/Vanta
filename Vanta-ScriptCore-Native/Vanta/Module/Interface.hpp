@@ -2,7 +2,7 @@
 #include <Vanta/Math/Vector.hpp>
 
 namespace Vanta {
-    namespace Native {
+    namespace Scripts {
 
         typedef void ScriptObject;
 
@@ -41,20 +41,20 @@ namespace Vanta {
         };
     }
 
-    extern Native::EngineFunctions Internal;
+    extern Scripts::EngineFunctions Internal;
 }
 
-typedef      void (*RegisterEngineFunctions_Fn) (const Vanta::Native::EngineFunctions&);
-VANTA_EXPORT void RegisterEngineFunctions       (const Vanta::Native::EngineFunctions& funcs);
+typedef      void (*RegisterEngineFunctions_Fn) (const Vanta::Scripts::EngineFunctions&);
+VANTA_EXPORT void RegisterEngineFunctions       (const Vanta::Scripts::EngineFunctions& funcs);
 
 typedef      const char* const* (*GetClassList_Fn) (Vanta::usize&);
 VANTA_EXPORT const char* const* GetClassList       (Vanta::usize& count);
 
-typedef      Vanta::Native::ClassFunctions* (*GetClassFunctions_Fn) (const char*);
-VANTA_EXPORT Vanta::Native::ClassFunctions* GetClassFunctions       (const char* className);
+typedef      Vanta::Scripts::ClassFunctions* (*GetClassFunctions_Fn) (const char*);
+VANTA_EXPORT Vanta::Scripts::ClassFunctions* GetClassFunctions       (const char* className);
 
-typedef      const Vanta::Native::ClassField* (*GetClassFieldList_Fn) (const char*, Vanta::usize&);
-VANTA_EXPORT const Vanta::Native::ClassField* GetClassFieldList(const char* className, Vanta::usize& count);
+typedef      const Vanta::Scripts::ClassField* (*GetClassFieldList_Fn) (const char*, Vanta::usize&);
+VANTA_EXPORT const Vanta::Scripts::ClassField* GetClassFieldList(const char* className, Vanta::usize& count);
 
 typedef      const char* const* (*GetComponentList_Fn) (Vanta::usize&);
 VANTA_EXPORT const char* const* GetComponentList       (Vanta::usize& count);

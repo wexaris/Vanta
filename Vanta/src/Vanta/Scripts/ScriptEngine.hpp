@@ -1,39 +1,24 @@
 #pragma once
-#include "Vanta/Scripts/CSharp/ScriptEngine.hpp"
-#include "Vanta/Scripts/Native/ScriptEngine.hpp"
 
 namespace Vanta {
 
-    class ScriptEngine {
-    public:
-        static void Init() {
-            CSharp::ScriptEngine::Init();
-            Native::ScriptEngine::Init();
-        }
+    class Scene;
 
-        static void Shutdown() {
-            CSharp::ScriptEngine::Shutdown();
-            Native::ScriptEngine::Shutdown();
-        }
+    namespace Scripts {
+        
+        class ScriptEngine {
+        public:
+            virtual ~ScriptEngine() = default;
 
-        static void ReloadAssemblies() {
-            CSharp::ScriptEngine::ReloadAssembly();
-            Native::ScriptEngine::ReloadAssembly();
-        }
+            virtual void Init() = 0;
+            virtual void Shutdown() = 0;
 
-        static void RuntimeBegin(Scene* context) {
-            CSharp::ScriptEngine::RuntimeBegin(context);
-            Native::ScriptEngine::RuntimeBegin(context);
-        }
+            virtual void ReloadAssembly() = 0;
 
-        static void RuntimeEnd() {
-            CSharp::ScriptEngine::RuntimeEnd();
-            Native::ScriptEngine::RuntimeEnd();
-        }
+            virtual void RuntimeBegin(Scene* context) = 0;
+            virtual void RuntimeEnd() = 0;
 
-        static void ClearFieldInstances() {
-            CSharp::ScriptEngine::ClearFieldInstances();
-            Native::ScriptEngine::ClearFieldInstances();
-        }
-    };
+            virtual void ClearFieldInstances() = 0;
+        };
+    }
 }

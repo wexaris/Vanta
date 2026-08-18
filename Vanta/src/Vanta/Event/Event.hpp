@@ -7,7 +7,8 @@ namespace Vanta {
             None = 0,
             KeyPress, KeyType, KeyRelease,
             MouseButtonPress, MouseButtonRelease, MouseMove, MouseScroll,
-            WindowClose, WindowMove, WindowResize, WindowMaximize, WindowMinimize, WindowRestore,
+            WindowClose, WindowMove, WindowResize, WindowContentScale,
+            WindowMaximize, WindowMinimize, WindowRestore,
             WindowGainFocus, WindowLoseFocus,
         };
         enum Category {

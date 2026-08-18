@@ -1,9 +1,9 @@
 #pragma once
 
 namespace Vanta {
-    namespace Native {
+    namespace Scripts {
      
-        struct Interface {
+        struct NativeInterface {
             static void RegisterFunctions();
             static void RegisterComponents();
         };

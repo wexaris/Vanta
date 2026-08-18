@@ -61,12 +61,14 @@ namespace Vanta {
             out << YAML::BeginMap;
             out << YAML::Key << "Class" << YAML::Value << component.ClassName;
 
-            if (!CSharp::ScriptEngine::EntityClassExists(component.ClassName)) {
+            Scripts::CSharpScriptEngine& engine = Scripts::CSharpScriptEngine::Get();
+
+            if (!engine.EntityClassExists(component.ClassName)) {
                 out << YAML::EndMap;
                 return;
             }
 
-            const auto& klass = CSharp::ScriptEngine::GetEntityClass(component.ClassName);
+            const auto& klass = engine.GetEntityClass(component.ClassName);
             if (!klass) {
                 out << YAML::EndMap;
                 return;
@@ -78,7 +80,7 @@ namespace Vanta {
                 out << YAML::Key << "Fields";
                 out << YAML::BeginSeq;
 
-                auto& instances = CSharp::ScriptEngine::GetFieldInstances(entity);
+                auto& instances = engine.GetFieldInstances(entity);
                 for (const auto& [name, field] : fields) {
                     auto it = instances.find(name);
                     if (it == instances.end())
@@ -92,7 +94,7 @@ namespace Vanta {
                     out << YAML::Key << "Value" << YAML::Value;
 
 #define WRITE_SCRIPT_FIELD(fieldType, type) \
-    case ScriptFieldType::fieldType: { \
+    case Scripts::ScriptFieldType::fieldType: { \
         out << (type)instance->GetFieldValue<type>(); \
         break; \
     }
@@ -134,12 +136,14 @@ namespace Vanta {
             out << YAML::BeginMap;
             out << YAML::Key << "Class" << YAML::Value << component.ClassName;
 
-            if (!Native::ScriptEngine::EntityClassExists(component.ClassName)) {
+            Scripts::NativeScriptEngine& engine = Scripts::NativeScriptEngine::Get();
+            
+            if (!engine.EntityClassExists(component.ClassName)) {
                 out << YAML::EndMap;
                 return;
             }
 
-            const auto& klass = Native::ScriptEngine::GetEntityClass(component.ClassName);
+            const auto& klass = engine.GetEntityClass(component.ClassName);
             if (!klass) {
                 out << YAML::EndMap;
                 return;
@@ -151,7 +155,7 @@ namespace Vanta {
                 out << YAML::Key << "Fields";
                 out << YAML::BeginSeq;
 
-                auto& instances = Native::ScriptEngine::GetFieldInstances(entity);
+                auto& instances = engine.GetFieldInstances(entity);
                 for (const auto& [name, field] : fields) {
                     auto it = instances.find(name);
                     if (it == instances.end())
@@ -165,7 +169,7 @@ namespace Vanta {
                     out << YAML::Key << "Value" << YAML::Value;
 
 #define WRITE_SCRIPT_FIELD(fieldType, type) \
-    case ScriptFieldType::fieldType: { \
+    case Scripts::ScriptFieldType::fieldType: { \
         out << (type)instance->GetFieldValue<type>(); \
         break; \
     }
@@ -370,22 +374,25 @@ namespace Vanta {
 
             auto scriptComponent = item["ScriptComponent"];
             if (scriptComponent) {
+                Scripts::CSharpScriptEngine& engine = Scripts::CSharpScriptEngine::Get();
+
                 auto& sc = entity.AddComponent<ScriptComponent>();
                 sc.ClassName = scriptComponent["Class"].as<std::string>();
 
                 auto scriptFields = scriptComponent["Fields"];
                 if (scriptFields) {
-                    if (!CSharp::ScriptEngine::EntityClassExists(sc.ClassName)) {
+                    if (!engine.EntityClassExists(sc.ClassName)) {
                         VANTA_CORE_WARN("Class no longer exists: {}", sc.ClassName);
                         goto after_csharp_script_component;
                     }
-                    const auto& fields = CSharp::ScriptEngine::GetEntityClass(sc.ClassName)->GetFields();
+                    const auto& fields = engine.GetEntityClass(sc.ClassName)->GetFields();
 
-                    auto& instances = CSharp::ScriptEngine::GetFieldInstances(entity);
+                    auto& instances = engine.GetFieldInstances(entity);
 
                     for (auto scriptField : scriptFields) {
                         std::string fieldName = scriptField["Name"].as<std::string>();
-                        ScriptFieldType type(scriptField["Type"].as<std::string>());
+                        std::string typeName = scriptField["Type"].as<std::string>();
+                        Scripts::ScriptFieldType type = Scripts::ScriptFieldType::FromString(typeName);
 
                         const auto& it = fields.find(fieldName);
                         if (it == fields.end()) {
@@ -396,9 +403,9 @@ namespace Vanta {
                         const auto& field = it->second;
 
 #define READ_SCRIPT_FIELD(fieldType, type) \
-    case ScriptFieldType::fieldType: { \
+    case Scripts::ScriptFieldType::fieldType: { \
         type value = scriptField["Value"].as<type>(); \
-        instances[fieldName] = NewBox<ScriptFieldBuffer<type>>(field, value); \
+        instances[fieldName] = NewBox<Scripts::ScriptFieldBuffer<type>>(field, value); \
         break; \
     }
                         switch (type) {
@@ -432,22 +439,25 @@ after_csharp_script_component:
 
             auto nativeScriptComponent = item["NativeScriptComponent"];
             if (nativeScriptComponent) {
+                Scripts::NativeScriptEngine& engine = Scripts::NativeScriptEngine::Get();
+                
                 auto& sc = entity.AddComponent<NativeScriptComponent>();
                 sc.ClassName = nativeScriptComponent["Class"].as<std::string>();
 
                 auto scriptFields = scriptComponent["Fields"];
                 if (scriptFields) {
-                    if (!Native::ScriptEngine::EntityClassExists(sc.ClassName)) {
+                    if (!engine.EntityClassExists(sc.ClassName)) {
                         VANTA_CORE_WARN("Class no longer exists: {}", sc.ClassName);
                         goto after_native_script_component;
                     }
-                    const auto& fields = Native::ScriptEngine::GetEntityClass(sc.ClassName)->GetFields();
+                    const auto& fields = engine.GetEntityClass(sc.ClassName)->GetFields();
 
-                    auto& instances = Native::ScriptEngine::GetFieldInstances(entity);
+                    auto& instances = engine.GetFieldInstances(entity);
 
                     for (auto scriptField : scriptFields) {
                         std::string fieldName = scriptField["Name"].as<std::string>();
-                        ScriptFieldType type(scriptField["Type"].as<std::string>());
+                        std::string typeName = scriptField["Type"].as<std::string>();
+                        Scripts::ScriptFieldType type = Scripts::ScriptFieldType::FromString(typeName);
 
                         const auto& it = fields.find(fieldName);
                         if (it == fields.end()) {
@@ -458,9 +468,9 @@ after_csharp_script_component:
                         const auto& field = it->second;
 
 #define READ_SCRIPT_FIELD(fieldType, type) \
-    case ScriptFieldType::fieldType: { \
+    case Scripts::ScriptFieldType::fieldType: { \
         type value = scriptField["Value"].as<type>(); \
-        instances[fieldName] = NewBox<ScriptFieldBuffer<type>>(field, value); \
+        instances[fieldName] = NewBox<Scripts::ScriptFieldBuffer<type>>(field, value); \
         break; \
     }
                         switch (type) {
@@ -469,7 +479,9 @@ after_csharp_script_component:
 
                             READ_SCRIPT_FIELD(Int8, int8);
                             READ_SCRIPT_FIELD(Int16, int16);
-                            READ_SCRIPT_FIELD(Int32, int32);
+                            case Scripts::ScriptFieldType::Int32: {
+    int32 value = scriptField["Value"].as<int32>(); instances[fieldName] = NewBox<Scripts::ScriptFieldBuffer<int32>>(field, value); break;
+};
                             READ_SCRIPT_FIELD(Int64, int64);
 
                             READ_SCRIPT_FIELD(UInt8, uint8);

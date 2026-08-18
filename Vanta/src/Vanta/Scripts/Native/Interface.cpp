@@ -12,7 +12,7 @@ namespace Vanta {
 
     using namespace NativeImpl;
 
-    namespace Native {
+    namespace Scripts {
 
         /// <summary>
         /// Force assign a function pointer to target.
@@ -21,8 +21,8 @@ namespace Vanta {
         template<typename Target, typename Source>
         static void ForceAssign(Target& target, Source&& source) { target = (Target)source; }
      
-        void Interface::RegisterFunctions() {
-            ScriptAssembly* assembly = ScriptEngine::GetAppAssembly();
+        void NativeInterface::RegisterFunctions() {
+            ScriptAssembly* assembly = NativeScriptEngine::Get().GetAppAssembly();
 
             EngineFunctions functions = {};
 #define VANTA_REGISTER_FUNCTION(name) ForceAssign(functions.name, name);
@@ -48,8 +48,8 @@ namespace Vanta {
             assembly->RegisterEngineFunctions(functions);
         }
 
-        void Interface::RegisterComponents() {
-            ScriptAssembly* assembly = ScriptEngine::GetAppAssembly();
+        void NativeInterface::RegisterComponents() {
+            ScriptAssembly* assembly = NativeScriptEngine::Get().GetAppAssembly();
 
             auto [data, count] = assembly->GetComponentList();
             for (; count > 0; count--, data++) {

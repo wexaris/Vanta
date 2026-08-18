@@ -1,4 +1,5 @@
 #include "vantapch.hpp"
+#include "Vanta/Scripts/Instance.hpp"
 #include "Vanta/Scripts/CSharp/Class.hpp"
 #include "Vanta/Scripts/CSharp/ScriptEngine.hpp"
 
@@ -6,7 +7,7 @@
 #include <mono/metadata/class.h>
 
 namespace Vanta {
-    namespace CSharp {
+    namespace Scripts {
 
         CSharpScriptClass::CSharpScriptClass(MonoImage* image, const std::string& namespaceName, const std::string& className, std::vector<Ref<ScriptField>> fields)
             : ScriptClass(std::move(fields)), m_NamespaceName(namespaceName), m_ClassName(className)
@@ -26,10 +27,11 @@ namespace Vanta {
             VANTA_PROFILE_FUNCTION();
             VANTA_CORE_ASSERT(m_Class, "Invalid script class!");
 
-            auto& entityBase = ScriptEngine::GetEntityClass();
+            Scripts::CSharpScriptEngine& engine = Scripts::CSharpScriptEngine::Get();
+            auto& entityBase = engine.GetEntityClass();
 
             // Create new class instance
-            MonoObject* object = ScriptEngine::CreateObject(m_Class);
+            MonoObject* object = engine.CreateObject(m_Class);
 
             UUID entityID = entity.GetUUID();
             void* param = &entityID;

@@ -1,5 +1,6 @@
 #include "Editor/Window/SceneHierarchy.hpp"
 
+#include <Vanta/Scripts/Instance.hpp>
 #include <Vanta/Scripts/ScriptEngine.hpp>
 #include <Vanta/Scene/TransformCommandQueue.hpp>
 
@@ -301,7 +302,8 @@ namespace Vanta {
                 static char buffer[64];
                 strcpy_s(buffer, component.ClassName.c_str());
 
-                bool classExists = CSharp::ScriptEngine::EntityClassExists(component.ClassName);
+                Scripts::CSharpScriptEngine& engine = Scripts::CSharpScriptEngine::Get();
+                bool classExists = engine.EntityClassExists(component.ClassName);
 
                 if (!classExists)
                     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.9f, 0.2f, 0.3f, 1.0f));
@@ -317,7 +319,7 @@ namespace Vanta {
                     const auto& fields = component.Instance->GetClass()->GetFields();
                     for (const auto& [name, field] : fields) {
                         switch (field->Type) {
-                        case ScriptFieldType::Float: {
+                        case Scripts::ScriptFieldType::Float: {
                             float data = component.Instance->GetFieldValue<float>(name);
                             if (ImGui::DragFloat(name.data(), &data)) {
                                 component.Instance->SetFieldValue(name, data);
@@ -330,8 +332,8 @@ namespace Vanta {
                 }
                 // Editor field data
                 else if (classExists) {
-                    Ref<ScriptClass> klass = CSharp::ScriptEngine::GetEntityClass(component.ClassName);
-                    auto& instances = CSharp::ScriptEngine::GetFieldInstances(entity);
+                    Ref<Scripts::ScriptClass> klass = engine.GetEntityClass(component.ClassName);
+                    auto& instances = engine.GetFieldInstances(entity);
 
                     // Loop though every class field and check
                     // if an instance has already been created.
@@ -343,7 +345,7 @@ namespace Vanta {
                             auto& instance = it->second;
 
                             switch (field->Type) {
-                            case ScriptFieldType::Float: {
+                            case Scripts::ScriptFieldType::Float: {
                                 float data = instance->GetFieldValue<float>();
                                 if (ImGui::DragFloat(name.data(), &data)) {
                                     instance->SetFieldValue(data);
@@ -356,10 +358,10 @@ namespace Vanta {
                         // Create new field instance
                         else {
                             switch (field->Type) {
-                            case ScriptFieldType::Float: {
+                            case Scripts::ScriptFieldType::Float: {
                                 float data = 0.0f;
                                 if (ImGui::DragFloat(name.data(), &data)) {
-                                    instances[name] = NewBox<ScriptFieldBuffer<float>>(field, data);
+                                    instances[name] = NewBox<Scripts::ScriptFieldBuffer<float>>(field, data);
                                 }
                             }
                             // TODO: Add remaining types
@@ -374,7 +376,8 @@ namespace Vanta {
                 static char buffer[64];
                 strcpy_s(buffer, component.ClassName.c_str());
 
-                bool classExists = Native::ScriptEngine::EntityClassExists(component.ClassName);
+                Scripts::NativeScriptEngine& engine = Scripts::NativeScriptEngine::Get();
+                bool classExists = engine.EntityClassExists(component.ClassName);
 
                 if (!classExists)
                     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.9f, 0.2f, 0.3f, 1.0f));
@@ -390,7 +393,7 @@ namespace Vanta {
                     const auto& fields = component.Instance->GetClass()->GetFields();
                     for (const auto& [name, field] : fields) {
                         switch (field->Type) {
-                        case ScriptFieldType::Float: {
+                        case Scripts::ScriptFieldType::Float: {
                             float data = component.Instance->GetFieldValue<float>(name);
                             if (ImGui::DragFloat(name.data(), &data)) {
                                 component.Instance->SetFieldValue(name, data);
@@ -403,8 +406,8 @@ namespace Vanta {
                 }
                 // Editor field data
                 else if (classExists) {
-                    Ref<ScriptClass> klass = Native::ScriptEngine::GetEntityClass(component.ClassName);
-                    auto& instances = Native::ScriptEngine::GetFieldInstances(entity);
+                    Ref<Scripts::ScriptClass> klass = engine.GetEntityClass(component.ClassName);
+                    auto& instances = engine.GetFieldInstances(entity);
 
                     // Loop though every class field and check
                     // if an instance has already been created.
@@ -416,7 +419,7 @@ namespace Vanta {
                             auto& instance = it->second;
 
                             switch (field->Type) {
-                            case ScriptFieldType::Float: {
+                            case Scripts::ScriptFieldType::Float: {
                                 float data = instance->GetFieldValue<float>();
                                 if (ImGui::DragFloat(name.data(), &data)) {
                                     instance->SetFieldValue(data);
@@ -429,10 +432,10 @@ namespace Vanta {
                         // Create new field instance
                         else {
                             switch (field->Type) {
-                            case ScriptFieldType::Float: {
+                            case Scripts::ScriptFieldType::Float: {
                                 float data = 0.0f;
                                 if (ImGui::DragFloat(name.data(), &data)) {
-                                    instances[name] = NewBox<ScriptFieldBuffer<float>>(field, data);
+                                    instances[name] = NewBox<Scripts::ScriptFieldBuffer<float>>(field, data);
                                 }
                             }
                             // TODO: Add remaining types

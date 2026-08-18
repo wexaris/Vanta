@@ -57,6 +57,8 @@ set(${PROJECT_NAME}_SOURCE
     "src/Vanta/Scene/Components/NativeScriptComponent.cpp"
     "src/Vanta/Scripts/Class.cpp"
     "src/Vanta/Scripts/Field.cpp"
+    "src/Vanta/Scripts/Instance.cpp"
+    "src/Vanta/Scripts/ScriptManager.cpp"
     "src/Vanta/Scripts/CSharp/Class.cpp"
     "src/Vanta/Scripts/CSharp/Field.cpp"
     "src/Vanta/Scripts/CSharp/Interface.cpp"

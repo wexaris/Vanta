@@ -3,7 +3,7 @@
 #include "Vanta/Util/DynamicLibrary.hpp"
 
 namespace Vanta {
-    namespace Native {
+    namespace Scripts {
 
         class ScriptAssembly {
         public:

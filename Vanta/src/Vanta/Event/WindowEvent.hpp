@@ -42,6 +42,23 @@ namespace Vanta {
         VANTA_GEN_EVENT_CATEGORY(Category::Window);
     };
 
+    class WindowContentScaleEvent : public Event {
+    public:
+        const float ScaleX, ScaleY;
+
+        WindowContentScaleEvent(float scaleX, float scaleY) :
+            ScaleX(scaleX), ScaleY(scaleY)
+        {
+        }
+
+        std::string ToString() const override {
+            return FMT("WindowContentScale: {}, {}", ScaleX, ScaleY);
+        }
+
+        VANTA_GEN_EVENT_TYPE(WindowContentScale);
+        VANTA_GEN_EVENT_CATEGORY(Category::Window);
+    };
+
     class WindowMaximizeEvent : public Event {
     public:
         WindowMaximizeEvent() = default;

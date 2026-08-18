@@ -4,7 +4,7 @@
 #define VANTA_SCRIPT(name) \
     public: \
         constexpr static const char* GetClassName() { return ReflectionData::GetName(); } \
-        static const ::std::vector<::Vanta::Native::ClassField>& GetClassFields() { return ReflectionData::GetFields(); } \
+        static const ::std::vector<::Vanta::Scripts::ClassField>& GetClassFields() { return ReflectionData::GetFields(); } \
         static ::Vanta::Entity* InvokeConstructor(::Vanta::UUID entityID) { return new name(entityID); } \
         static void InvokeOnCreate(::Vanta::Entity* instance) { ((name*)instance)->OnCreate(); } \
         static void InvokeOnUpdate(::Vanta::Entity* instance, double delta) { ((name*)instance)->OnUpdate(delta); } \
@@ -12,21 +12,21 @@
     private: \
         class ReflectionData { \
             constexpr static const char* s_Name = #name; \
-            static ::std::vector<::Vanta::Native::ClassField> s_Fields; \
+            static ::std::vector<::Vanta::Scripts::ClassField> s_Fields; \
         public: \
             using Self = name; \
             constexpr static const char* GetName() { return s_Name; } \
-            static const ::std::vector<::Vanta::Native::ClassField>& GetFields() { return s_Fields; } \
+            static const ::std::vector<::Vanta::Scripts::ClassField>& GetFields() { return s_Fields; } \
             static bool RegisterField(const char* type, const char* name, void(*getter)(::Vanta::Entity*, void*), void(*setter)(::Vanta::Entity*, const void*)) { \
-                s_Fields.push_back(::Vanta::Native::ClassField{ type, name, \
-                    (void (*)(::Vanta::Native::ScriptObject*, void*))getter, \
-                    (void (*)(::Vanta::Native::ScriptObject*, const void*))setter \
+                s_Fields.push_back(::Vanta::Scripts::ClassField{ type, name, \
+                    (void (*)(::Vanta::Scripts::ScriptObject*, void*))getter, \
+                    (void (*)(::Vanta::Scripts::ScriptObject*, const void*))setter \
                 }); \
                 return true; \
             } \
         }; \
         name(::Vanta::UUID entityID) : ::Vanta::Entity(entityID) {} \
-        inline static bool CONCAT(_class_, name) = ::Vanta::Native::Registry::RegisterClass(GetClassName(), \
+        inline static bool CONCAT(_class_, name) = ::Vanta::Scripts::Registry::RegisterClass(GetClassName(), \
             &name::InvokeConstructor, &name::InvokeOnCreate, &name::InvokeOnUpdate, &name::InvokeOnDestroy);
 
 #define VANTA_FIELD(type, name) \
@@ -38,7 +38,7 @@
         auto inst = (ReflectionData::Self*)instance; \
         memcpy((void*)&inst->name, buffer, sizeof(type)); \
     } \
-    inline static bool CONCAT(_field_, name) = ::Vanta::Native::Registry::RegisterClassField(GetClassName(), #name, #type, \
+    inline static bool CONCAT(_field_, name) = ::Vanta::Scripts::Registry::RegisterClassField(GetClassName(), #name, #type, \
         &CONCAT(ReflectionData::Self::_Getter_, name), &CONCAT(ReflectionData::Self::_Setter_, name));
 
 namespace Vanta {

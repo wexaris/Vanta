@@ -1,9 +1,12 @@
 #pragma once
 #include "Vanta/Scene/Entity.hpp"
 #include "Vanta/Scripts/CSharp/Class.hpp"
-#include "Vanta/Scripts/CSharp/Field.hpp"
+#include "Vanta/Scripts/ScriptEngine.hpp"
+#include "Vanta/Util/Singleton.hpp"
 
 extern "C" {
+    typedef struct _MonoAssembly MonoAssembly;
+    typedef struct _MonoDomain MonoDomain;
     typedef struct _MonoImage MonoImage;
 }
 
@@ -11,48 +14,70 @@ namespace Vanta {
 
     class Scene;
 
-    namespace CSharp {
+    namespace Scripts {
 
-        class ScriptEngine {
+        class ScriptInstance;
+
+        class CSharpScriptEngine : public ScriptEngine, public Singleton<CSharpScriptEngine> {
         public:
-            static void Init();
-            static void Shutdown();
+            void Init() override;
+            void Shutdown() override;
 
-            static void ReloadAssembly();
+            void ReloadAssembly() override;
 
-            static void RuntimeBegin(Scene* scene);
-            static void RuntimeEnd();
+            void RuntimeBegin(Scene* scene) override;
+            void RuntimeEnd() override;
 
-            static Ref<ScriptInstance> Instantiate(std::string fullName, Entity entity);
+            Ref<ScriptInstance> Instantiate(std::string fullName, Entity entity);
 
-            static bool EntityClassExists(const std::string& fullName);
-            static Ref<ScriptClass> GetEntityClass(const std::string& fullName);
-            static const CSharpScriptClass& GetEntityClass();
+            bool EntityClassExists(const std::string& fullName) const;
+            Ref<ScriptClass> GetEntityClass(const std::string& fullName) const;
+            const CSharpScriptClass& GetEntityClass() const;
 
-            static Scene* GetContext();
-            static MonoImage* GetCoreAssemblyImage();
+            Scene* GetContext()               { return m_SceneContext; }
+            MonoImage* GetCoreAssemblyImage() { return m_CoreAssemblyImage; }
 
-            static std::unordered_map<std::string, Box<ScriptFieldInstance>>& GetFieldInstances(Entity entity);
-            static void ClearFieldInstances();
+            std::unordered_map<std::string, Box<ScriptFieldInstance>>& GetFieldInstances(Entity entity);
+            void ClearFieldInstances() override;
 
         private:
             friend class CSharpScriptClass;
             friend struct Interface;
 
-            ScriptEngine() = delete;
+            // Mono
+            MonoDomain* m_RootDomain = nullptr;
+            MonoDomain* m_AppDomain = nullptr;
 
-            static void InitMono();
-            static void ShutdownMono();
+            MonoAssembly* m_CoreAssembly = nullptr;
+            MonoImage* m_CoreAssemblyImage = nullptr;
 
-            static void CreateAppDomain();
-            static void DestroyAppDomain();
+            MonoAssembly* m_AppAssembly = nullptr;
+            MonoImage* m_AppAssemblyImage = nullptr;
 
-            static bool LoadCoreAssembly(const Path& filepath);
-            static bool LoadAppAssembly(const Path& filepath);
+            // Runtime
+            Scene* m_SceneContext = nullptr;
+            CSharpScriptClass m_EntityBaseClass;
+            std::unordered_map<std::string, Ref<CSharpScriptClass>> m_EntityClasses;
 
-            static void InspectAssemblyImage(MonoImage* image);
+            // Editor - reload
+            Path m_CoreAssemblyFilepath;
+            Box<IO::FileWatcher> m_AppAssemblyFileWatcher = nullptr;
 
-            static MonoObject* CreateObject(MonoClass* klass);
+            // Editor - fields
+            std::unordered_map<UUID, std::unordered_map<std::string, Box<ScriptFieldInstance>>> m_EntityFieldInstances;
+
+            void InitMono();
+            void ShutdownMono();
+
+            void CreateAppDomain();
+            void DestroyAppDomain();
+
+            bool LoadCoreAssembly(const Path& filepath);
+            bool LoadAppAssembly(const Path& filepath);
+
+            void InspectAssemblyImage(MonoImage* image);
+
+            MonoObject* CreateObject(MonoClass* klass);
 
             static Path EngineScriptCorePath();
             static Path ProjectScriptLibraryPath();

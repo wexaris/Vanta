@@ -5,7 +5,7 @@
 #include "Vanta/Scripts/Native/Module/Assembly.hpp"
 
 namespace Vanta {
-    namespace Native {
+    namespace Scripts {
 
         class NativeScriptClass : public ScriptClass {
         public:

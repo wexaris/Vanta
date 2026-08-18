@@ -3,7 +3,7 @@
 #include "Vanta/Input/Input.hpp"
 #include "Vanta/Render/Renderer.hpp"
 #include "Vanta/Scene/Scene.hpp"
-#include "Vanta/Scripts/ScriptEngine.hpp"
+#include "Vanta/Scripts/ScriptManager.hpp"
 #include "Vanta/Util/Time.hpp"
 
 namespace Vanta {
@@ -30,7 +30,7 @@ namespace Vanta {
 
         Fibers::Init();
         Renderer::Init();
-        ScriptEngine::Init();
+        Scripts::ScriptManager::Init();
 
         m_GUILayer = new GUILayer();
         PushOverlay(m_GUILayer);
@@ -38,7 +38,7 @@ namespace Vanta {
 
     Engine::~Engine() {
         VANTA_PROFILE_FUNCTION();
-        ScriptEngine::Shutdown();
+        Scripts::ScriptManager::Shutdown();
         Renderer::Shutdown();
         Fibers::Shutdown();
     }

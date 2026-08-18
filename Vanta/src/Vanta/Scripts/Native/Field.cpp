@@ -1,8 +1,9 @@
 #include "vantapch.hpp"
+#include "Vanta/Scripts/Instance.hpp"
 #include "Vanta/Scripts/Native/Field.hpp"
 
 namespace Vanta {
-    namespace Native {
+    namespace Scripts {
 
         NativeScriptField::NativeScriptField(std::string name, ScriptFieldType type, void (*getValueFunc)(ScriptObject*, void*), void (*setValueFunc)(ScriptObject*, const void*))
             : ScriptField(std::move(name), type), GetValueFunc(getValueFunc), SetValueFunc(setValueFunc)

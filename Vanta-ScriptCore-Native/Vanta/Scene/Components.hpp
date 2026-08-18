@@ -12,7 +12,7 @@
 
 #define VANTA_COMPONENT_REGISTER(name) \
     ::Vanta::usize name::GetComponentID() { return typeid(name).hash_code(); } \
-    bool name::CONCAT(_register_, name) = ::Vanta::Native::Registry::RegisterComponent(#name, name::GetComponentID());
+    bool name::CONCAT(_register_, name) = ::Vanta::Scripts::Registry::RegisterComponent(#name, name::GetComponentID());
 
 namespace Vanta {
 

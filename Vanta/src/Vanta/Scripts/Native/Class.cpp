@@ -1,8 +1,9 @@
 #include "vantapch.hpp"
+#include "Vanta/Scripts/Instance.hpp"
 #include "Vanta/Scripts/Native/Class.hpp"
 
 namespace Vanta {
-    namespace Native {
+    namespace Scripts {
 
         NativeScriptClass::NativeScriptClass(ScriptAssembly* assembly, std::string className, std::vector<Ref<ScriptField>> fields)
             : ScriptClass(std::move(fields)), m_ClassName(std::move(className))

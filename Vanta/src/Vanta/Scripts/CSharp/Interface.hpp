@@ -1,9 +1,9 @@
 #pragma once
 
 namespace Vanta {
-    namespace CSharp {
+    namespace Scripts {
 
-        struct Interface {
+        struct CSharpInterface {
             static void RegisterFunctions();
             static void RegisterComponents();
         };

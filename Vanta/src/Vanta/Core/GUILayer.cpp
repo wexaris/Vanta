@@ -33,32 +33,7 @@ namespace Vanta {
         //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
         //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
         
-        // Setup fonts
-        {
-            VANTA_PROFILE_SCOPE("AddFontFromFileTTF()");
-
-            auto opensans_bold_path =
-                (Engine::RuntimeResourceDirectory() / "Fonts/OpenSans/OpenSans-Bold.ttf").string();
-            auto opensans_regular_path =
-                (Engine::RuntimeResourceDirectory() / "Fonts/OpenSans/OpenSans-Regular.ttf").string();
-
-            float fontSize = 18.0f;// *2.0f;
-            io.Fonts->AddFontFromFileTTF(opensans_bold_path.c_str(), fontSize);
-            io.FontDefault = io.Fonts->AddFontFromFileTTF(opensans_regular_path.c_str(), fontSize);
-        }
-
-        // Setup style
-        ImGui::StyleColorsDark();
-        //ImGui::StyleColorsClassic();
-
-        // Since viewports are enabled, tweak WindowRounding/WindowBg so platform windows look the same
-        ImGuiStyle& style = ImGui::GetStyle();
-        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
-            style.WindowRounding = 0.0f;
-            style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-        }
-
-        SetDarkThemeColors();
+        UpdateGuiStyle();
 
         {
             VANTA_PROFILE_SCOPE("ImGui_OpenGL3_Init()");
@@ -104,6 +79,10 @@ namespace Vanta {
 
     void GUILayer::OnEvent(Event& e) {
         VANTA_PROFILE_FUNCTION();
+
+        EventDispatcher dispatcher(e);
+        dispatcher.Dispatch<WindowContentScaleEvent>(EVENT_METHOD(GUILayer::OnWindowContentScale));
+
         if (m_BlockEvents) {
             ImGuiIO& io = ImGui::GetIO();
             e.Handled |= e.IsCategory(Event::Category::Mouse);// & io.WantCaptureMouse;
@@ -111,8 +90,70 @@ namespace Vanta {
         }
     }
 
-    void GUILayer::SetDarkThemeColors() {
-        auto& colors = ImGui::GetStyle().Colors;
+    bool GUILayer::OnWindowContentScale(WindowContentScaleEvent&) {
+        VANTA_PROFILE_FUNCTION();
+        UpdateGuiStyle();
+        return false;
+    }
+
+    void GUILayer::UpdateGuiStyle() {
+        VANTA_PROFILE_FUNCTION();
+
+
+        // Get the current content scale factor for the window
+        GLFWwindow* window = static_cast<GLFWwindow*>(Engine::Get().GetWindow().GetNativeWindow());
+        float scaleFactor = ImGui_ImplGlfw_GetContentScaleForWindow(window);
+        
+        // Load fonts with the new scale factor
+        ImGuiIO& io = ImGui::GetIO();
+        LoadFonts(&io, scaleFactor);
+
+        // Reset style to default values
+        ImGuiStyle& style = ImGui::GetStyle();
+        style = ImGuiStyle();              
+
+        // Set theme colors and other style properties
+        SetDarkThemeColors(&style);
+
+        // If viewports are enabled, tweak WindowRounding/WindowBg so platform windows look the same
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+            style.WindowRounding = 0.0f;
+            style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+        }
+        
+        // Multiply sizes by the scale factor
+        style.ScaleAllSizes(scaleFactor);  
+    }
+
+    void  GUILayer::LoadFonts(ImGuiIO* io, float scaleFactor) {
+        VANTA_PROFILE_FUNCTION();
+
+        if (!io)
+            io = &ImGui::GetIO();
+
+        // Clear the existing fonts to avoid memory leaks and ensure that the new font size is applied correctly
+        io->Fonts->Clear();
+
+        // Load fonts with the new scale factor. You can adjust the font size based on the scale factor.
+        auto resourceDir = Engine::RuntimeResourceDirectory();
+        auto opensansRegularPath = resourceDir / "Fonts/OpenSans/OpenSans-Regular.ttf";
+        auto opensansBoldPath = resourceDir / "Fonts/OpenSans/OpenSans-Bold.ttf";
+
+        constexpr float BaseFontSize = 16.0f;
+        io->Fonts->AddFontFromFileTTF(opensansRegularPath.string().c_str(), BaseFontSize * scaleFactor);
+        io->Fonts->AddFontFromFileTTF(opensansBoldPath.string().c_str(), BaseFontSize * scaleFactor);
+    }
+
+    void GUILayer::SetDarkThemeColors(ImGuiStyle* style) {
+        VANTA_PROFILE_FUNCTION();
+
+        if (!style)
+            style = &ImGui::GetStyle();
+
+        // Set the base dark theme colors
+        ImGui::StyleColorsDark(style);
+        
+        auto& colors = style->Colors;
         colors[ImGuiCol_WindowBg] = ImVec4{ 0.1f, 0.105f, 0.11f, 1.0f };
 
         // Header

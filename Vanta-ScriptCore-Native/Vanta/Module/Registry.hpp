@@ -10,7 +10,7 @@ namespace Vanta {
     
     class Entity;
 
-    namespace Native {
+    namespace Scripts {
 
         class Registry {
         public:

@@ -7,8 +7,9 @@
 #include "Vanta/Scene/Entity.hpp"
 #include "Vanta/Scene/Scene.hpp"
 #include "Vanta/Scene/SceneCamera.hpp"
-#include "Vanta/Scripts/ScriptEngine.hpp"
-
+#include "Vanta/Scripts/Class.hpp"
+#include "Vanta/Scripts/Instance.hpp"
+#include "Vanta/Scripts/ScriptManager.hpp"
 
 namespace Vanta {
 
@@ -91,7 +92,7 @@ namespace Vanta {
     }
 
     void Scene::InitScripts() {
-        ScriptEngine::RuntimeBegin(this);
+        Scripts::ScriptManager::RuntimeBegin(this);
 
         // Instantiate native scripts
         View<NativeScriptComponent>([&](entt::entity e, NativeScriptComponent& script) {
@@ -137,7 +138,7 @@ namespace Vanta {
             script.Destroy();
         });
 
-        ScriptEngine::RuntimeEnd();
+        Scripts::ScriptManager::RuntimeEnd();
     }
 
     void Scene::InitPhysics() {

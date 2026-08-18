@@ -1,5 +1,6 @@
 #include "vantapch.hpp"
 #include "Vanta/Input/Input.hpp"
+#include "Vanta/Scripts/Instance.hpp"
 #include "Vanta/Scripts/CSharp/Interface.hpp"
 #include "Vanta/Scripts/CSharp/ScriptEngine.hpp"
 #include "Vanta/Scene/TransformCommandQueue.hpp"
@@ -10,11 +11,9 @@
 #include <box2d/box2d.h>
 
 namespace Vanta {
-    namespace CSharp {
+    namespace Scripts {
 
         static std::unordered_map<MonoType*, std::function<bool(Entity)>> s_EntityHasComponent;
-
-#define VANTA_ADD_INTERNAL_CALL(name) mono_add_internal_call("Vanta.Internal::" #name, name)
 
         static void Log_Trace(MonoString* msg) {
             char* str = mono_string_to_utf8(msg);
@@ -55,7 +54,7 @@ namespace Vanta {
         }
 
         static uint64 Entity_GetEntityByName(MonoString* str) {
-            Scene* scene = ScriptEngine::GetContext();
+            Scene* scene = CSharpScriptEngine::Get().GetContext();
             VANTA_CORE_ASSERT(scene, "Script engine context not set!");
 
             char* name = mono_string_to_utf8(str);
@@ -69,7 +68,7 @@ namespace Vanta {
         }
 
         static MonoObject* Entity_GetScriptInstance(UUID id) {
-            Scene* scene = ScriptEngine::GetContext();
+            Scene* scene = CSharpScriptEngine::Get().GetContext();
             VANTA_CORE_ASSERT(scene, "Script engine context not set!");
             Entity entity = scene->GetEntityByID(id);
             VANTA_CORE_ASSERT(entity, "Entity referenced in script doesn't exist!");
@@ -87,7 +86,7 @@ namespace Vanta {
         }
 
         static bool Entity_HasComponent(UUID id, MonoReflectionType* type) {
-            Scene* scene = ScriptEngine::GetContext();
+            Scene* scene = CSharpScriptEngine::Get().GetContext();
             VANTA_CORE_ASSERT(scene, "Script engine context not set!");
             Entity entity = scene->GetEntityByID(id);
             VANTA_CORE_ASSERT(entity, "Entity referenced in script doesn't exist!");
@@ -101,7 +100,7 @@ namespace Vanta {
         }
 
         static void TransformComponent_GetPosition(UUID id, glm::vec3* pos) {
-            Scene* scene = ScriptEngine::GetContext();
+            Scene* scene = CSharpScriptEngine::Get().GetContext();
             VANTA_CORE_ASSERT(scene, "Script engine context not set!");
             Entity entity = scene->GetEntityByID(id);
             VANTA_ASSERT(entity, "Entity referenced in script doesn't exist!");
@@ -111,7 +110,7 @@ namespace Vanta {
         }
 
         static void TransformComponent_SetPosition(UUID id, glm::vec3* pos) {
-            Scene* scene = ScriptEngine::GetContext();
+            Scene* scene = CSharpScriptEngine::Get().GetContext();
             VANTA_CORE_ASSERT(scene, "Script engine context not set!");
             Entity entity = scene->GetEntityByID(id);
             VANTA_CORE_ASSERT(entity, "Entity referenced in script doesn't exist!");
@@ -123,7 +122,7 @@ namespace Vanta {
         }
 
         static void Rigidbody2DComponent_ApplyLinearImpulseToCenter(UUID id, glm::vec2* impulse, bool wake) {
-            Scene* scene = ScriptEngine::GetContext();
+            Scene* scene = CSharpScriptEngine::Get().GetContext();
             VANTA_CORE_ASSERT(scene, "Script engine context not set!");
             Entity entity = scene->GetEntityByID(id);
             VANTA_ASSERT(entity, "Entity referenced in script doesn't exist!");
@@ -132,7 +131,9 @@ namespace Vanta {
             b2Body_ApplyLinearImpulseToCenter(rb.RuntimeBody, b2Vec2(impulse->x, impulse->y), wake);
         }
 
-        void Interface::RegisterFunctions() {
+        void CSharpInterface::RegisterFunctions() {
+#define VANTA_ADD_INTERNAL_CALL(name) mono_add_internal_call("Vanta.Internal::" #name, name)
+
             VANTA_ADD_INTERNAL_CALL(Log_Trace);
             VANTA_ADD_INTERNAL_CALL(Log_Info);
             VANTA_ADD_INTERNAL_CALL(Log_Warn);
@@ -154,11 +155,13 @@ namespace Vanta {
 
         template<typename Component>
         static void RegisterComponent() {
+            Scripts::CSharpScriptEngine& engine = Scripts::CSharpScriptEngine::Get();
+
             std::string_view name = typeid(Component).name();
             name = name.substr(name.rfind(':') + 1);
 
             std::string managedName = FMT("Vanta.{}", name);
-            MonoImage* coreImage = ScriptEngine::GetCoreAssemblyImage();
+            MonoImage* coreImage = engine.GetCoreAssemblyImage();
             MonoType* type = mono_reflection_type_from_name(managedName.data(), coreImage);
             if (!type) {
                 VANTA_CORE_ERROR("Script component type missing: {}", managedName);
@@ -173,7 +176,7 @@ namespace Vanta {
             ((RegisterComponent<Components>()), ...);
         }
 
-        void Interface::RegisterComponents() {
+        void CSharpInterface::RegisterComponents() {
             RegisterComponent(AllComponents());
         }
     }

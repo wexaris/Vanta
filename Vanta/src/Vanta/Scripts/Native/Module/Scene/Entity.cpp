@@ -4,9 +4,6 @@
 #include "Vanta/Scripts/Native/Module/Scene/Entity.hpp"
 
 namespace Vanta {
-
-    using namespace Native;
-
     namespace NativeImpl {
 
         // Map component ID to Entity::HasComponent
@@ -35,7 +32,9 @@ namespace Vanta {
         }
 
         uint64 Entity_GetEntityByName(const char* name) {
-            Scene* scene = Native::ScriptEngine::GetContext();
+            Scripts::NativeScriptEngine& engine = Scripts::NativeScriptEngine::Get();
+
+            Scene* scene = engine.GetContext();
             VANTA_CORE_ASSERT(scene, "Script engine context not set!");
 
             Entity entity = scene->GetEntityByName(name);
@@ -46,7 +45,9 @@ namespace Vanta {
         }
 
         bool Entity_HasComponent(UUID entityID, usize componentID) {
-            Scene* scene = Native::ScriptEngine::GetContext();
+            Scripts::NativeScriptEngine& engine = Scripts::NativeScriptEngine::Get();
+
+            Scene* scene = engine.GetContext();
             VANTA_CORE_ASSERT(scene, "Script engine context not set!");
             Entity entity = scene->GetEntityByID(entityID);
             VANTA_ASSERT(entity, "Entity referenced in script doesn't exist!");

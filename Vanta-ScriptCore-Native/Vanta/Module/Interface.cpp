@@ -2,25 +2,25 @@
 #include <Vanta/Vanta.hpp>
 
 namespace Vanta {
-    Native::EngineFunctions Internal;
+    Scripts::EngineFunctions Internal;
 }
 
-VANTA_EXPORT void RegisterEngineFunctions(const Vanta::Native::EngineFunctions& funcs) {
+VANTA_EXPORT void RegisterEngineFunctions(const Vanta::Scripts::EngineFunctions& funcs) {
     Vanta::Internal = funcs;
 }
 
 VANTA_EXPORT const char* const* GetClassList(Vanta::usize& count) {
-    auto& list = Vanta::Native::Registry::GetClassList();
+    auto& list = Vanta::Scripts::Registry::GetClassList();
     count = list.size();
     return list.data();
 }
 
-VANTA_EXPORT Vanta::Native::ClassFunctions* GetClassFunctions(const char* className) {
-    return Vanta::Native::Registry::GetClassFunctions(className);
+VANTA_EXPORT Vanta::Scripts::ClassFunctions* GetClassFunctions(const char* className) {
+    return Vanta::Scripts::Registry::GetClassFunctions(className);
 }
 
-VANTA_EXPORT const Vanta::Native::ClassField* GetClassFieldList(const char* className, Vanta::usize& count) {
-    auto list = Vanta::Native::Registry::GetClassFieldList(className);
+VANTA_EXPORT const Vanta::Scripts::ClassField* GetClassFieldList(const char* className, Vanta::usize& count) {
+    auto list = Vanta::Scripts::Registry::GetClassFieldList(className);
     if (!list) {
         return nullptr;
     }
@@ -30,13 +30,13 @@ VANTA_EXPORT const Vanta::Native::ClassField* GetClassFieldList(const char* clas
 }
 
 VANTA_EXPORT const char* const* GetComponentList(Vanta::usize& count) {
-    auto& list = Vanta::Native::Registry::GetComponentList();
+    auto& list = Vanta::Scripts::Registry::GetComponentList();
     count = list.size();
     return list.data();
 }
 
 VANTA_EXPORT Vanta::usize GetComponentHash(const char* componentName) {
-    return Vanta::Native::Registry::GetComponentHash(componentName);
+    return Vanta::Scripts::Registry::GetComponentHash(componentName);
 }
 
 VANTA_EXPORT void Destroy(void* data) {

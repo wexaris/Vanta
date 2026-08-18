@@ -1,4 +1,5 @@
 #include <vanta-test-utils/CoreTestsCommon.hpp>
+#include <Vanta/Scripts/Instance.hpp>
 
 namespace Testing {
 
@@ -24,7 +25,7 @@ namespace Testing {
         if (!appAssemblyFile.Exists())
             return false;
 
-        CSharp::ScriptEngine::ReloadAssembly();
+        Scripts::CSharpScriptEngine::Get().ReloadAssembly();
 
         loaded = true;
         return true;
@@ -32,7 +33,9 @@ namespace Testing {
 
     bool TestCSharpPlayerInstantiatesWithoutUuidConstructor() {
         TRUE_OR_FAIL(EnsureSandboxCSharpAssemblyLoaded());
-        TRUE_OR_FAIL(CSharp::ScriptEngine::EntityClassExists("Sandbox.Player"));
+
+        Scripts::CSharpScriptEngine& engine = Scripts::CSharpScriptEngine::Get();
+        TRUE_OR_FAIL(engine.EntityClassExists("Sandbox.Player"));
 
         Scene scene;
         Entity player = scene.CreateEntity("Player");
@@ -40,7 +43,7 @@ namespace Testing {
         auto& script = scene.AddComponent<ScriptComponent>(player.GetHandle());
         script.ClassName = "Sandbox.Player";
 
-        CSharp::ScriptEngine::RuntimeBegin(&scene);
+        engine.RuntimeBegin(&scene);
         script.Create(player.GetHandle(), &scene);
 
         TRUE_OR_FAIL(script.Instance != nullptr);
@@ -48,7 +51,7 @@ namespace Testing {
         TRUE_OR_FAIL(runtimeInstance != nullptr);
 
         script.Destroy();
-        CSharp::ScriptEngine::RuntimeEnd();
+        engine.RuntimeEnd();
         return true;
     }
 

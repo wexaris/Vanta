@@ -1,13 +1,14 @@
 #include "vantapch.hpp"
 #include "Vanta/Core/Engine.hpp"
 #include "Vanta/Project/Project.hpp"
+#include "Vanta/Scripts/Instance.hpp"
 #include "Vanta/Scripts/Native/Field.hpp"
 #include "Vanta/Scripts/Native/Interface.hpp"
 #include "Vanta/Scripts/Native/ScriptEngine.hpp"
 #include "Vanta/Util/DynamicLibrary.hpp"
 
 namespace Vanta {
-    namespace Native {
+    namespace Scripts {
 
         namespace detail {
             static std::unordered_map<std::string, ScriptFieldType> s_NativeFieldTypeMap = {
@@ -48,34 +49,19 @@ namespace Vanta {
             }
         }
 
-        struct ScriptData {
-            Box<ScriptAssembly> AppAssembly;
-
-            std::unordered_map<std::string, Ref<NativeScriptClass>> EntityClasses;
-
-            // Runtime
-            Scene* SceneContext = nullptr;
-
-            // Editor
-            Box<IO::FileWatcher> AppAssemblyFileWatcher;
-            bool AppAssemblyReloadPending = false;
-
-            std::unordered_map<UUID, std::unordered_map<std::string, Box<ScriptFieldInstance>>> EntityFieldInstances;
-        };
-
-        static ScriptData s_Data;
-
-        void ScriptEngine::Init() {
+        void NativeScriptEngine::Init() {
             VANTA_PROFILE_FUNCTION();
         }
 
-        void ScriptEngine::Shutdown() {
+        void NativeScriptEngine::Shutdown() {
             VANTA_PROFILE_FUNCTION();
         }
 
-        static void OnAppAssemblyFileChange(const std::string&, const filewatch::Event type) {
-            if (!s_Data.AppAssemblyReloadPending && type == filewatch::Event::modified) {
-                s_Data.AppAssemblyReloadPending = true;
+        static std::unordered_map<std::string, bool> s_FileReloadPending = {};
+
+        static void OnAppAssemblyFileChange(const std::string& filepath, const filewatch::Event type) {
+            if (!s_FileReloadPending[filepath] && (type == filewatch::Event::added || type == filewatch::Event::modified)) {
+                s_FileReloadPending[filepath] = true;
 
                 // TODO: Figure out better way to avoid simultaneous read/write
                 using namespace std::chrono_literals;
@@ -83,21 +69,21 @@ namespace Vanta {
 
                 // Queue app assembly reload with main thread
                 Engine::Get().SubmitToMainThread([]() {
-                    ScriptEngine::ReloadAssembly();
+                    Scripts::NativeScriptEngine::Get().ReloadAssembly();
                 });
             }
         }
 
-        bool ScriptEngine::LoadAppAssembly(const Path& filepath) {
+        bool NativeScriptEngine::LoadAppAssembly(const Path& filepath) {
             VANTA_PROFILE_FUNCTION();
 
             if (!std::filesystem::exists(filepath))
                 return false;
 
             // Remove file watcher
-            s_Data.AppAssemblyFileWatcher.reset();
+            m_AppAssemblyFileWatcher.reset();
 
-            s_Data.AppAssembly.reset();
+            m_AppAssembly.reset();
 
             // Create copy, so original can be monitored for overwrite
             Path pdbFilepath = filepath;
@@ -118,21 +104,22 @@ namespace Vanta {
             }
 
             // Load assembly
-            s_Data.AppAssembly = NewBox<ScriptAssembly>(copyDllFilepath);
-            if (!s_Data.AppAssembly->IsLoaded())
+            m_AppAssembly = NewBox<ScriptAssembly>(copyDllFilepath);
+            if (!m_AppAssembly->IsLoaded())
                 return false;
 
             // Get needed data from assembly
-            InspectAssembly(s_Data.AppAssembly.get());
+            InspectAssembly(m_AppAssembly.get());
 
             // Attach file watcher to original
-            s_Data.AppAssemblyFileWatcher = NewBox<IO::FileWatcher>(filepath.string(), OnAppAssemblyFileChange);
-            s_Data.AppAssemblyReloadPending = false;
+            std::string filepathStr = filepath.string();
+            m_AppAssemblyFileWatcher = NewBox<IO::FileWatcher>(filepathStr, OnAppAssemblyFileChange);
+            s_FileReloadPending[filepathStr] = false;
 
             return true;
         }
 
-        void ScriptEngine::ReloadAssembly() {
+        void NativeScriptEngine::ReloadAssembly() {
             VANTA_PROFILE_FUNCTION();
 
             VANTA_CORE_INFO("Reloading native script assembly!");
@@ -143,11 +130,11 @@ namespace Vanta {
                 return;
             }
 
-            Interface::RegisterFunctions();
-            Interface::RegisterComponents();
+            NativeInterface::RegisterFunctions();
+            NativeInterface::RegisterComponents();
         }
 
-        void ScriptEngine::InspectAssembly(ScriptAssembly* assembly) {
+        void NativeScriptEngine::InspectAssembly(ScriptAssembly* assembly) {
             VANTA_PROFILE_FUNCTION();
 
             auto [data, class_count] = assembly->GetClassList();
@@ -167,21 +154,21 @@ namespace Vanta {
                 }
 
                 Ref<NativeScriptClass> scriptClass = NewRef<NativeScriptClass>(assembly, className, std::move(classFields));
-                s_Data.EntityClasses[className] = scriptClass;
+                m_EntityClasses[className] = scriptClass;
             }
         }
 
-        void ScriptEngine::RuntimeBegin(Scene* scene) {
+        void NativeScriptEngine::RuntimeBegin(Scene* scene) {
             VANTA_PROFILE_FUNCTION();
-            s_Data.SceneContext = scene;
+            m_SceneContext = scene;
         }
 
-        void ScriptEngine::RuntimeEnd() {
+        void NativeScriptEngine::RuntimeEnd() {
             VANTA_PROFILE_FUNCTION();
-            s_Data.SceneContext = nullptr;
+            m_SceneContext = nullptr;
         }
 
-        Ref<ScriptInstance> ScriptEngine::Instantiate(std::string className, Entity entity) {
+        Ref<ScriptInstance> NativeScriptEngine::Instantiate(std::string className, Entity entity) {
             VANTA_PROFILE_FUNCTION();
             VANTA_CORE_ASSERT(EntityClassExists(className), "Invalid class!");
             VANTA_CORE_ASSERT(entity, "Invalid entity!");
@@ -190,44 +177,36 @@ namespace Vanta {
 
             // Set variables modified in editor
             UUID entityId = entity.GetUUID();
-            for (auto& [name, field] : s_Data.EntityFieldInstances[entityId]) {
+            for (auto& [name, field] : m_EntityFieldInstances[entityId]) {
                 instance->WriteFieldValue(name, field->GetFieldData());
             }
 
             return instance;
         }
 
-        bool ScriptEngine::EntityClassExists(const std::string& className) {
-            return s_Data.EntityClasses.contains(className);
+        bool NativeScriptEngine::EntityClassExists(const std::string& className) {
+            return m_EntityClasses.contains(className);
         }
 
-        Ref<ScriptClass> ScriptEngine::GetEntityClass(const std::string& className) {
-            auto it = s_Data.EntityClasses.find(className);
-            if (it == s_Data.EntityClasses.end()) {
+        Ref<ScriptClass> NativeScriptEngine::GetEntityClass(const std::string& className) {
+            auto it = m_EntityClasses.find(className);
+            if (it == m_EntityClasses.end()) {
                 VANTA_CORE_WARN("Script class '{}' does not exist!", className);
                 return nullptr;
             }
             return it->second;
         }
 
-        Scene* ScriptEngine::GetContext() {
-            return s_Data.SceneContext;
-        }
-
-        ScriptAssembly* ScriptEngine::GetAppAssembly() {
-            return s_Data.AppAssembly.get();
-        }
-
-        std::unordered_map<std::string, Box<ScriptFieldInstance>>& ScriptEngine::GetFieldInstances(Entity entity) {
+        std::unordered_map<std::string, Box<ScriptFieldInstance>>& NativeScriptEngine::GetFieldInstances(Entity entity) {
             VANTA_CORE_ASSERT(entity, "Invalid entity!");
-            return s_Data.EntityFieldInstances[entity.GetUUID()];
+            return m_EntityFieldInstances[entity.GetUUID()];
         }
 
-        void ScriptEngine::ClearFieldInstances() {
-            s_Data.EntityFieldInstances.clear();
+        void NativeScriptEngine::ClearFieldInstances() {
+            m_EntityFieldInstances.clear();
         }
 
-        Path ScriptEngine::ProjectScriptLibraryPath() {
+        Path NativeScriptEngine::ProjectScriptLibraryPath() {
             return Project::GetScriptDirectory(Scripts::ScriptType::Native) / "Binaries" / "Scripts_Native.dll";
         }
     }

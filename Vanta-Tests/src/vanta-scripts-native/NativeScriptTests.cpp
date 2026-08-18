@@ -75,7 +75,7 @@ namespace Testing {
             return false;
         }
 
-        Vanta::Native::ScriptAssembly assembly(assemblyPath);
+        Vanta::Scripts::ScriptAssembly assembly(assemblyPath);
         if (!assembly.IsLoaded())
             return false;
 
@@ -94,7 +94,7 @@ namespace Testing {
             return false;
 
         for (const std::string& className : expectations.Classes) {
-            Vanta::Native::ClassFunctions* functions = assembly.GetClassFunctions(className.c_str());
+            Vanta::Scripts::ClassFunctions* functions = assembly.GetClassFunctions(className.c_str());
             if (functions == nullptr)
                 return false;
             if (functions->Constructor == nullptr || functions->OnCreate == nullptr || functions->OnUpdate == nullptr || functions->OnDestroy == nullptr)
