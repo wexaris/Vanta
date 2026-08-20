@@ -10,7 +10,7 @@ namespace Vanta {
             : m_ScriptClass(std::move(klass))
         {
             VANTA_PROFILE_FUNCTION();
-            m_RuntimeInstance = m_ScriptClass->InstantiateRuntimeInstance(entity);
+            m_InstanceHandle = m_ScriptClass->InstantiateRuntimeInstance(entity);
         }
 
         void ScriptInstance::OnCreate() const {

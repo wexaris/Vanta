@@ -59,14 +59,14 @@ namespace Vanta {
             VANTA_CORE_ASSERT(instance, "Script object instance cannot be null!");
             VANTA_CORE_ASSERT(buffer, "Buffer cannot be null!");
             VANTA_CORE_ASSERT(MonoField, "MonoField cannot be null!");
-            mono_field_get_value((MonoObject*)instance->GetRuntimeInstance(), MonoField, buffer);
+            mono_field_get_value(static_cast<MonoObject*>(instance->GetRuntimeObject()), MonoField, buffer);
         }
 
         void CSharpScriptField::SetValue(ScriptInstance* instance, const void* value) const {
             VANTA_CORE_ASSERT(instance, "Script object instance cannot be null!");
             VANTA_CORE_ASSERT(value, "Value cannot be null!");
             VANTA_CORE_ASSERT(MonoField, "MonoField cannot be null!");
-            mono_field_set_value((MonoObject*)instance->GetRuntimeInstance(), MonoField, const_cast<void*>(value));
+            mono_field_set_value(static_cast<MonoObject*>(instance->GetRuntimeObject()), MonoField, const_cast<void*>(value));
         }
 
     }

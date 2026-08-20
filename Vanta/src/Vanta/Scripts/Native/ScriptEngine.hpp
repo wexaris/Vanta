@@ -1,17 +1,14 @@
 #pragma once
 #include "Vanta/Scene/Entity.hpp"
+#include "Vanta/Scripts/Class.hpp"
 #include "Vanta/Scripts/ScriptEngine.hpp"
-#include "Vanta/Scripts/Native/Class.hpp"
 #include "Vanta/Scripts/Native/Module/Assembly.hpp"
 #include "Vanta/Util/Singleton.hpp"
 
 namespace Vanta {
-
-    class Scene;
-
     namespace Scripts {
 
-        class ScriptInstance;
+        class NativeScriptClass;
 
         class NativeScriptEngine : public ScriptEngine, public Singleton<NativeScriptEngine> {
         public:
@@ -23,19 +20,25 @@ namespace Vanta {
             void RuntimeBegin(Scene* scene) override;
             void RuntimeEnd() override;
 
-            Ref<ScriptInstance> Instantiate(std::string fullName, Entity entity);
+            bool EntityClassExists(const std::string& className) const override;
+            Ref<ScriptClass> GetEntityClass(const std::string& className) const override;
 
-            bool EntityClassExists(const std::string& className);
-            Ref<ScriptClass> GetEntityClass(const std::string& className);
+            Scene* GetContext() const              { return m_SceneContext; }
+            ScriptAssembly* GetAppAssembly() const { return m_AppAssembly.get(); }
 
-            Scene* GetContext()              { return m_SceneContext; }
-            ScriptAssembly* GetAppAssembly() { return m_AppAssembly.get(); }
-
-            std::unordered_map<std::string, Box<ScriptFieldInstance>>& GetFieldInstances(Entity entity);
+            Opt<ValueRef<const std::unordered_map<std::string, Box<ScriptFieldInstance>>>> GetFieldInstances(Entity entity) const override;
+            void SetFieldInstance(Entity entity, Box<ScriptFieldInstance> instance) override;
             void ClearFieldInstances() override;
+
+        protected:
+            friend class Singleton<NativeScriptEngine>;
+
+            NativeScriptEngine();
+            ~NativeScriptEngine();
 
         private:
             friend struct Interface;
+            friend class NativeScriptInstanceHandle;
 
             // Assembly
             Box<ScriptAssembly> m_AppAssembly;
@@ -52,6 +55,8 @@ namespace Vanta {
 
             bool LoadAppAssembly(const Path& filepath);
             void InspectAssembly(ScriptAssembly* assembly);
+
+            void ReleaseObject(void* obj) const;
 
             static Path ProjectScriptLibraryPath();
         };

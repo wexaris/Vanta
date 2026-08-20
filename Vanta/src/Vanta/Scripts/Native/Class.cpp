@@ -1,6 +1,6 @@
 #include "vantapch.hpp"
-#include "Vanta/Scripts/Instance.hpp"
 #include "Vanta/Scripts/Native/Class.hpp"
+#include "Vanta/Scripts/Native/Instance.hpp"
 
 namespace Vanta {
     namespace Scripts {
@@ -12,21 +12,22 @@ namespace Vanta {
             m_Functions = *assembly->GetClassFunctions(m_ClassName.c_str());
         }
 
-        void* NativeScriptClass::InstantiateRuntimeInstance(Entity entity) const {
+        Box<ScriptInstanceHandle> NativeScriptClass::InstantiateRuntimeInstance(Entity entity) const {
             VANTA_PROFILE_FUNCTION();
-            return m_Functions.Constructor(entity.GetUUID());
+            void* object = m_Functions.Constructor(entity.GetUUID());
+            return NewBox<NativeScriptInstanceHandle>(object);
         }
 
         void NativeScriptClass::InvokeOnCreate(const ScriptInstance* instance) const {
-            m_Functions.OnCreate((ScriptObject*)instance->GetRuntimeInstance());
+            m_Functions.OnCreate((ScriptObject*)instance->GetRuntimeObject());
         }
 
         void NativeScriptClass::InvokeOnUpdate(const ScriptInstance* instance, double delta) const {
-            m_Functions.OnUpdate((ScriptObject*)instance->GetRuntimeInstance(), delta);
+            m_Functions.OnUpdate((ScriptObject*)instance->GetRuntimeObject(), delta);
         }
 
         void NativeScriptClass::InvokeOnDestroy(const ScriptInstance* instance) const {
-            m_Functions.OnDestroy((ScriptObject*)instance->GetRuntimeInstance());
+            m_Functions.OnDestroy((ScriptObject*)instance->GetRuntimeObject());
         }
     }
 }

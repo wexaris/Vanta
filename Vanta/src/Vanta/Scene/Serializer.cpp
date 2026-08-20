@@ -2,6 +2,7 @@
 #include "Vanta/Project/Project.hpp"
 #include "Vanta/Scene/Entity.hpp"
 #include "Vanta/Scene/Serializer.hpp"
+#include "Vanta/Scripts/Field.hpp"
 #include "Vanta/Scripts/CSharp/ScriptEngine.hpp"
 #include "Vanta/Scripts/Native/ScriptEngine.hpp"
 
@@ -75,18 +76,25 @@ namespace Vanta {
             }
 
             const auto& fields = klass->GetFields();
+            auto fieldInstances = engine.GetFieldInstances(entity);
 
-            if (fields.size() > 0) {
+            if (fields.size() > 0 && fieldInstances) {
                 out << YAML::Key << "Fields";
                 out << YAML::BeginSeq;
 
-                auto& instances = engine.GetFieldInstances(entity);
                 for (const auto& [name, field] : fields) {
-                    auto it = instances.find(name);
-                    if (it == instances.end())
-                        continue;
+                    auto instance = fieldInstances
+                        .and_then([&name](auto t) -> Opt<Scripts::ScriptFieldInstance*>
+                            {
+                            const auto& map = t.get();
+                            auto iter = map.find(name);
+                            if (iter != map.end()) return iter->second.get();
+                            return None;
+                        })
+                        .value_or(nullptr);
 
-                    auto& instance = it->second;
+                    if (!instance)
+                        continue;
 
                     out << YAML::BeginMap; // Field
                     out << YAML::Key << "Name" << YAML::Value << name;
@@ -150,18 +158,25 @@ namespace Vanta {
             }
 
             const auto& fields = klass->GetFields();
+            auto fieldInstances = engine.GetFieldInstances(entity);
 
-            if (fields.size() > 0) {
+            if (fields.size() > 0 && fieldInstances) {
                 out << YAML::Key << "Fields";
                 out << YAML::BeginSeq;
 
-                auto& instances = engine.GetFieldInstances(entity);
                 for (const auto& [name, field] : fields) {
-                    auto it = instances.find(name);
-                    if (it == instances.end())
-                        continue;
+                    auto instance = fieldInstances
+                        .and_then([&name](auto t) -> Opt<Scripts::ScriptFieldInstance*>
+                            {
+                                const auto& map = t.get();
+                                auto iter = map.find(name);
+                                if (iter != map.end()) return iter->second.get();
+                                return None;
+                            })
+                        .value_or(nullptr);
 
-                    auto& instance = it->second;
+                    if (!instance)
+                        continue;
 
                     out << YAML::BeginMap; // Field
                     out << YAML::Key << "Name" << YAML::Value << name;
@@ -376,18 +391,17 @@ namespace Vanta {
             if (scriptComponent) {
                 Scripts::CSharpScriptEngine& engine = Scripts::CSharpScriptEngine::Get();
 
-                auto& sc = entity.AddComponent<ScriptComponent>();
+                auto& sc = entity.AddComponent<CSharpScriptComponent>();
                 sc.ClassName = scriptComponent["Class"].as<std::string>();
+
+                if (!engine.EntityClassExists(sc.ClassName)) {
+                    VANTA_CORE_WARN("Class no longer exists: {}", sc.ClassName);
+                    goto after_csharp_script_component;
+                }
 
                 auto scriptFields = scriptComponent["Fields"];
                 if (scriptFields) {
-                    if (!engine.EntityClassExists(sc.ClassName)) {
-                        VANTA_CORE_WARN("Class no longer exists: {}", sc.ClassName);
-                        goto after_csharp_script_component;
-                    }
                     const auto& fields = engine.GetEntityClass(sc.ClassName)->GetFields();
-
-                    auto& instances = engine.GetFieldInstances(entity);
 
                     for (auto scriptField : scriptFields) {
                         std::string fieldName = scriptField["Name"].as<std::string>();
@@ -405,7 +419,7 @@ namespace Vanta {
 #define READ_SCRIPT_FIELD(fieldType, type) \
     case Scripts::ScriptFieldType::fieldType: { \
         type value = scriptField["Value"].as<type>(); \
-        instances[fieldName] = NewBox<Scripts::ScriptFieldBuffer<type>>(field, value); \
+        engine.SetFieldInstance(entity, NewBox<Scripts::ScriptFieldBuffer<type>>(field, value)); \
         break; \
     }
                         switch (type) {
@@ -444,15 +458,14 @@ after_csharp_script_component:
                 auto& sc = entity.AddComponent<NativeScriptComponent>();
                 sc.ClassName = nativeScriptComponent["Class"].as<std::string>();
 
+                if (!engine.EntityClassExists(sc.ClassName)) {
+                    VANTA_CORE_WARN("Class no longer exists: {}", sc.ClassName);
+                    goto after_native_script_component;
+                }
+
                 auto scriptFields = scriptComponent["Fields"];
                 if (scriptFields) {
-                    if (!engine.EntityClassExists(sc.ClassName)) {
-                        VANTA_CORE_WARN("Class no longer exists: {}", sc.ClassName);
-                        goto after_native_script_component;
-                    }
                     const auto& fields = engine.GetEntityClass(sc.ClassName)->GetFields();
-
-                    auto& instances = engine.GetFieldInstances(entity);
 
                     for (auto scriptField : scriptFields) {
                         std::string fieldName = scriptField["Name"].as<std::string>();
@@ -470,7 +483,7 @@ after_csharp_script_component:
 #define READ_SCRIPT_FIELD(fieldType, type) \
     case Scripts::ScriptFieldType::fieldType: { \
         type value = scriptField["Value"].as<type>(); \
-        instances[fieldName] = NewBox<Scripts::ScriptFieldBuffer<type>>(field, value); \
+        engine.SetFieldInstance(entity, NewBox<Scripts::ScriptFieldBuffer<type>>(field, value)); \
         break; \
     }
                         switch (type) {
@@ -479,9 +492,7 @@ after_csharp_script_component:
 
                             READ_SCRIPT_FIELD(Int8, int8);
                             READ_SCRIPT_FIELD(Int16, int16);
-                            case Scripts::ScriptFieldType::Int32: {
-    int32 value = scriptField["Value"].as<int32>(); instances[fieldName] = NewBox<Scripts::ScriptFieldBuffer<int32>>(field, value); break;
-};
+                            READ_SCRIPT_FIELD(Int32, int32);
                             READ_SCRIPT_FIELD(Int64, int64);
 
                             READ_SCRIPT_FIELD(UInt8, uint8);

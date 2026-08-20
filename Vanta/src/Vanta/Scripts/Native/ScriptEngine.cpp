@@ -2,6 +2,7 @@
 #include "Vanta/Core/Engine.hpp"
 #include "Vanta/Project/Project.hpp"
 #include "Vanta/Scripts/Instance.hpp"
+#include "Vanta/Scripts/Native/Class.hpp"
 #include "Vanta/Scripts/Native/Field.hpp"
 #include "Vanta/Scripts/Native/Interface.hpp"
 #include "Vanta/Scripts/Native/ScriptEngine.hpp"
@@ -48,6 +49,9 @@ namespace Vanta {
                 return it->second;
             }
         }
+
+        NativeScriptEngine::NativeScriptEngine() = default;
+        NativeScriptEngine::~NativeScriptEngine() = default;
 
         void NativeScriptEngine::Init() {
             VANTA_PROFILE_FUNCTION();
@@ -168,27 +172,15 @@ namespace Vanta {
             m_SceneContext = nullptr;
         }
 
-        Ref<ScriptInstance> NativeScriptEngine::Instantiate(std::string className, Entity entity) {
-            VANTA_PROFILE_FUNCTION();
-            VANTA_CORE_ASSERT(EntityClassExists(className), "Invalid class!");
-            VANTA_CORE_ASSERT(entity, "Invalid entity!");
-
-            Ref<ScriptInstance> instance = NewRef<ScriptInstance>(GetEntityClass(className), entity);
-
-            // Set variables modified in editor
-            UUID entityId = entity.GetUUID();
-            for (auto& [name, field] : m_EntityFieldInstances[entityId]) {
-                instance->WriteFieldValue(name, field->GetFieldData());
-            }
-
-            return instance;
+        void NativeScriptEngine::ReleaseObject(void* obj) const {
+            m_AppAssembly->Destroy(obj);
         }
 
-        bool NativeScriptEngine::EntityClassExists(const std::string& className) {
+        bool NativeScriptEngine::EntityClassExists(const std::string& className) const {
             return m_EntityClasses.contains(className);
         }
 
-        Ref<ScriptClass> NativeScriptEngine::GetEntityClass(const std::string& className) {
+        Ref<ScriptClass> NativeScriptEngine::GetEntityClass(const std::string& className) const {
             auto it = m_EntityClasses.find(className);
             if (it == m_EntityClasses.end()) {
                 VANTA_CORE_WARN("Script class '{}' does not exist!", className);
@@ -197,9 +189,16 @@ namespace Vanta {
             return it->second;
         }
 
-        std::unordered_map<std::string, Box<ScriptFieldInstance>>& NativeScriptEngine::GetFieldInstances(Entity entity) {
+        Opt<ValueRef<const std::unordered_map<std::string, Box<ScriptFieldInstance>>>> NativeScriptEngine::GetFieldInstances(Entity entity) const {
             VANTA_CORE_ASSERT(entity, "Invalid entity!");
-            return m_EntityFieldInstances[entity.GetUUID()];
+            auto iter = m_EntityFieldInstances.find(entity.GetUUID());
+            if (iter == m_EntityFieldInstances.end()) return None;
+            return std::cref(iter->second);
+        }
+
+        void NativeScriptEngine::SetFieldInstance(Entity entity, Box<ScriptFieldInstance> instance) {
+            VANTA_CORE_ASSERT(entity, "Invalid entity!");
+            m_EntityFieldInstances[entity.GetUUID()][instance->Field->Name] = std::move(instance);
         }
 
         void NativeScriptEngine::ClearFieldInstances() {

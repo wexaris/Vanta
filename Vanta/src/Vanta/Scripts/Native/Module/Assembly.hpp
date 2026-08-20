@@ -18,6 +18,8 @@ namespace Vanta {
             std::pair<const char* const*, usize> GetComponentList() const;
             usize GetComponentHash(const char* componentName) const;
 
+            void Destroy(void* obj) const;
+
             bool IsLoaded() const { return (bool)m_Library; }
 
         private:

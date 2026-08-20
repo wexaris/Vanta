@@ -3,7 +3,7 @@
 
 namespace Vanta {
 
-    struct NativeScriptComponent : public ScriptComponent {
+    struct CSharpScriptComponent : public ScriptComponent {
         void Create(entt::entity e, Scene* scene) override;
         void Destroy() override;
     };

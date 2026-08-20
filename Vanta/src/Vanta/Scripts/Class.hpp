@@ -4,8 +4,9 @@
 namespace Vanta {
     namespace Scripts {
 
-        class ScriptInstance;
         class ScriptField;
+        class ScriptInstance;
+        class ScriptInstanceHandle;
 
         class ScriptClass {
         public:
@@ -23,7 +24,7 @@ namespace Vanta {
 
             std::unordered_map<std::string, Ref<ScriptField>> m_Fields;
 
-            virtual void* InstantiateRuntimeInstance(Entity entity) const = 0;
+            virtual Box<ScriptInstanceHandle> InstantiateRuntimeInstance(Entity entity) const = 0;
         };
     }
 }

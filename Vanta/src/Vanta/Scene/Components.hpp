@@ -11,7 +11,7 @@
 #include "Vanta/Scene/Components/CircleCollider2DComponent.hpp"
 #include "Vanta/Scene/Components/SpriteComponent.hpp"
 #include "Vanta/Scene/Components/CircleRendererComponent.hpp"
-#include "Vanta/Scene/Components/ScriptComponent.hpp"
+#include "Vanta/Scene/Components/CSharpScriptComponent.hpp"
 #include "Vanta/Scene/Components/NativeScriptComponent.hpp"
 
 namespace Vanta {
@@ -32,5 +32,5 @@ namespace Vanta {
 
     using AllComponents = ComponentList<TransformComponent, CameraComponent,
         Rigidbody2DComponent, BoxCollider2DComponent, CircleCollider2DComponent,
-        SpriteComponent, CircleRendererComponent, ScriptComponent, NativeScriptComponent>;
+        SpriteComponent, CircleRendererComponent, CSharpScriptComponent, NativeScriptComponent>;
 }

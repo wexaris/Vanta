@@ -40,15 +40,15 @@ namespace Testing {
         Scene scene;
         Entity player = scene.CreateEntity("Player");
 
-        auto& script = scene.AddComponent<ScriptComponent>(player.GetHandle());
+        auto& script = scene.AddComponent<CSharpScriptComponent>(player.GetHandle());
         script.ClassName = "Sandbox.Player";
 
         engine.RuntimeBegin(&scene);
         script.Create(player.GetHandle(), &scene);
 
         TRUE_OR_FAIL(script.Instance != nullptr);
-        const void* runtimeInstance = script.Instance->GetRuntimeInstance();
-        TRUE_OR_FAIL(runtimeInstance != nullptr);
+        const void* runtimeObject = script.Instance->GetRuntimeObject();
+        TRUE_OR_FAIL(runtimeObject != nullptr);
 
         script.Destroy();
         engine.RuntimeEnd();
@@ -61,7 +61,7 @@ namespace Testing {
         Scene scene;
         Entity player = scene.CreateEntity("Player");
 
-        auto& script = scene.AddComponent<ScriptComponent>(player.GetHandle());
+        auto& script = scene.AddComponent<CSharpScriptComponent>(player.GetHandle());
         script.ClassName = "Sandbox.Player";
 
         scene.OnRuntimeBegin();

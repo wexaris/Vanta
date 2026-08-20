@@ -11,14 +11,13 @@ namespace Vanta {
 
     struct ScriptComponent {
         std::string ClassName;
-
-        // Script runtime instance
         Ref<Scripts::ScriptInstance> Instance = nullptr;
-
-        void Create(entt::entity e, Scene* scene);
-        void Destroy();
 
         ScriptComponent() = default;
         ScriptComponent(const ScriptComponent&) = default;
+        virtual ~ScriptComponent() = default;
+
+        virtual void Create(entt::entity e, Scene* scene) = 0;
+        virtual void Destroy() = 0;
     };
 }

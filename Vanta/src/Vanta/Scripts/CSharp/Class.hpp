@@ -22,7 +22,7 @@ namespace Vanta {
             void InvokeOnUpdate(const ScriptInstance* instance, double delta) const override;
             void InvokeOnDestroy(const ScriptInstance* instance) const override;
 
-            operator MonoClass* () { return m_Class; }
+            MonoClass* GetHandle() const { return m_Class; }
 
         private:
             friend class ScriptEngine;
@@ -37,7 +37,7 @@ namespace Vanta {
             MonoMethod* m_OnUpdateMethod = nullptr;
             MonoMethod* m_OnDestroyMethod = nullptr;
 
-            void* InstantiateRuntimeInstance(Entity entity) const override;
+            Box<ScriptInstanceHandle> InstantiateRuntimeInstance(Entity entity) const override;
 
             MonoMethod* TryGetMethod(const std::string& name, int paramCount) const;
             MonoObject* InvokeMethod(MonoObject* instance, MonoMethod* method, void** params = nullptr) const;

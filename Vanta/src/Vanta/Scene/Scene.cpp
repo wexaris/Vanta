@@ -100,7 +100,7 @@ namespace Vanta {
         });
 
         // Instantiate C# scripts
-        View<ScriptComponent>([&](entt::entity e, ScriptComponent& script) {
+        View<CSharpScriptComponent>([&](entt::entity e, CSharpScriptComponent& script) {
             script.Create(e, this);
         });
 
@@ -111,7 +111,7 @@ namespace Vanta {
                 script.Instance->OnCreate();
         });
 
-        View<ScriptComponent>([](entt::entity, ScriptComponent& script) {
+        View<CSharpScriptComponent>([](entt::entity, CSharpScriptComponent& script) {
             if (script.Instance)
                 script.Instance->OnCreate();
         });
@@ -125,7 +125,7 @@ namespace Vanta {
         });
 
         // Destroy C# scripts
-        View<ScriptComponent>([](entt::entity, ScriptComponent& script) {
+        View<CSharpScriptComponent>([](entt::entity, CSharpScriptComponent& script) {
             if (script.Instance)
                 script.Instance->OnDestroy();
         });
@@ -134,7 +134,7 @@ namespace Vanta {
             script.Destroy();
         });
 
-        View<ScriptComponent>([](entt::entity, ScriptComponent& script) {
+        View<CSharpScriptComponent>([](entt::entity, CSharpScriptComponent& script) {
             script.Destroy();
         });
 
@@ -252,7 +252,7 @@ namespace Vanta {
                 script.Instance->OnUpdate((float)delta);
         });
 
-        View<ScriptComponent>([&](entt::entity, ScriptComponent& script) {
+        View<CSharpScriptComponent>([&](entt::entity, CSharpScriptComponent& script) {
             if (script.Instance)
                 script.Instance->OnUpdate((float)delta);
         });

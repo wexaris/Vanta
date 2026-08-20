@@ -1,6 +1,6 @@
 #pragma once
 #include "Vanta/Scene/Entity.hpp"
-#include "Vanta/Scripts/CSharp/Class.hpp"
+#include "Vanta/Scripts/Class.hpp"
 #include "Vanta/Scripts/ScriptEngine.hpp"
 #include "Vanta/Util/Singleton.hpp"
 
@@ -8,15 +8,14 @@ extern "C" {
     typedef struct _MonoAssembly MonoAssembly;
     typedef struct _MonoDomain MonoDomain;
     typedef struct _MonoImage MonoImage;
+    typedef struct _MonoClass MonoClass;
+    typedef struct _MonoObject MonoObject;
 }
 
 namespace Vanta {
-
-    class Scene;
-
     namespace Scripts {
 
-        class ScriptInstance;
+        class CSharpScriptClass;
 
         class CSharpScriptEngine : public ScriptEngine, public Singleton<CSharpScriptEngine> {
         public:
@@ -28,21 +27,27 @@ namespace Vanta {
             void RuntimeBegin(Scene* scene) override;
             void RuntimeEnd() override;
 
-            Ref<ScriptInstance> Instantiate(std::string fullName, Entity entity);
+            bool EntityClassExists(const std::string& fullName) const override;
+            Ref<ScriptClass> GetEntityClass(const std::string& fullName) const override;
+            const Ref<CSharpScriptClass>& GetEntityClass() const { return m_EntityBaseClass; }
 
-            bool EntityClassExists(const std::string& fullName) const;
-            Ref<ScriptClass> GetEntityClass(const std::string& fullName) const;
-            const CSharpScriptClass& GetEntityClass() const;
+            Scene* GetContext() const               { return m_SceneContext; }
+            MonoImage* GetCoreAssemblyImage() const { return m_CoreAssemblyImage; }
 
-            Scene* GetContext()               { return m_SceneContext; }
-            MonoImage* GetCoreAssemblyImage() { return m_CoreAssemblyImage; }
-
-            std::unordered_map<std::string, Box<ScriptFieldInstance>>& GetFieldInstances(Entity entity);
+            Opt<ValueRef<const std::unordered_map<std::string, Box<ScriptFieldInstance>>>> GetFieldInstances(Entity entity) const override;
+            void SetFieldInstance(Entity entity, Box<ScriptFieldInstance> instance) override;
             void ClearFieldInstances() override;
 
+        protected:
+            friend class Singleton<CSharpScriptEngine>;
+
+            CSharpScriptEngine();
+            ~CSharpScriptEngine();
+
         private:
-            friend class CSharpScriptClass;
             friend struct Interface;
+            friend class CSharpScriptClass;
+            friend class CSharpScriptInstanceHandle;
 
             // Mono
             MonoDomain* m_RootDomain = nullptr;
@@ -56,7 +61,7 @@ namespace Vanta {
 
             // Runtime
             Scene* m_SceneContext = nullptr;
-            CSharpScriptClass m_EntityBaseClass;
+            Ref<CSharpScriptClass> m_EntityBaseClass;
             std::unordered_map<std::string, Ref<CSharpScriptClass>> m_EntityClasses;
 
             // Editor - reload
@@ -74,10 +79,11 @@ namespace Vanta {
 
             bool LoadCoreAssembly(const Path& filepath);
             bool LoadAppAssembly(const Path& filepath);
-
             void InspectAssemblyImage(MonoImage* image);
 
-            MonoObject* CreateObject(MonoClass* klass);
+            uint32 CreateObject(MonoClass* klass) const;
+            MonoObject* GetObjectByHandle(uint32 handle) const;
+            void ReleaseObject(uint32 handle) const;
 
             static Path EngineScriptCorePath();
             static Path ProjectScriptLibraryPath();

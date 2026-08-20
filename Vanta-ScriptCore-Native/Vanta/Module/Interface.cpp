@@ -39,6 +39,6 @@ VANTA_EXPORT Vanta::usize GetComponentHash(const char* componentName) {
     return Vanta::Scripts::Registry::GetComponentHash(componentName);
 }
 
-VANTA_EXPORT void Destroy(void* data) {
-    delete data;
+VANTA_EXPORT void Destroy(void* obj) {
+    delete obj;
 }

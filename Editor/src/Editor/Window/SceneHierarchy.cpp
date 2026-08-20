@@ -1,5 +1,6 @@
 #include "Editor/Window/SceneHierarchy.hpp"
 
+#include <Vanta/Scripts/Field.hpp>
 #include <Vanta/Scripts/Instance.hpp>
 #include <Vanta/Scripts/ScriptEngine.hpp>
 #include <Vanta/Scene/TransformCommandQueue.hpp>
@@ -9,6 +10,11 @@
 
 namespace Vanta {
     namespace Editor {
+
+        template<typename T, typename UIFunction>
+        static void DrawComponent(const std::string& name, Entity entity, UIFunction uiFunction);
+        static void DrawScriptComponent(Entity entity, ScriptComponent& component, Scripts::ScriptEngine& engine);
+        static void DrawVec3Control(const std::string& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f);
 
         SceneHierarchy::SceneHierarchy(const Ref<Scene>& context) {
             SetContext(context);
@@ -85,111 +91,6 @@ namespace Vanta {
             }
         }
 
-        static void DrawVec3Control(const std::string& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f) {
-            ImGuiIO& io = ImGui::GetIO();
-            auto boldFont = io.Fonts->Fonts[0];
-
-            ImGui::PushID(label.c_str());
-
-            ImGui::Columns(2);
-            ImGui::SetColumnWidth(0, columnWidth);
-            ImGui::Text(label.c_str());
-            ImGui::NextColumn();
-
-            ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
-            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
-
-            float lineHeight = GImGui->FontSize + GImGui->Style.FramePadding.y * 2.0f;
-            ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
-
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
-            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.2f, 1.0f });
-            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
-            ImGui::PushFont(boldFont);
-            if (ImGui::Button("X", buttonSize))
-                values.x = resetValue;
-            ImGui::PopFont();
-            ImGui::PopStyleColor(3);
-
-            ImGui::SameLine();
-            ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, 0.0f, "%.2f");
-            ImGui::PopItemWidth();
-            ImGui::SameLine();
-
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
-            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.3f, 0.8f, 0.3f, 1.0f });
-            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
-            ImGui::PushFont(boldFont);
-            if (ImGui::Button("Y", buttonSize))
-                values.y = resetValue;
-            ImGui::PopFont();
-            ImGui::PopStyleColor(3);
-
-            ImGui::SameLine();
-            ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, "%.2f");
-            ImGui::PopItemWidth();
-            ImGui::SameLine();
-
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
-            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f, 0.35f, 0.9f, 1.0f });
-            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
-            ImGui::PushFont(boldFont);
-            if (ImGui::Button("Z", buttonSize))
-                values.z = resetValue;
-            ImGui::PopFont();
-            ImGui::PopStyleColor(3);
-
-            ImGui::SameLine();
-            ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f");
-            ImGui::PopItemWidth();
-
-            ImGui::PopStyleVar();
-
-            ImGui::Columns(1);
-
-            ImGui::PopID();
-        }
-
-        template<typename T, typename UIFunction>
-        static void DrawComponent(const std::string& name, Entity entity, UIFunction uiFunction) {
-            const ImGuiTreeNodeFlags flags =
-                ImGuiTreeNodeFlags_DefaultOpen |
-                ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_FramePadding |
-                ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowOverlap;
-
-            if (entity.HasComponent<T>()) {
-                ImVec2 contentRegion = ImGui::GetContentRegionAvail();
-
-                ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
-                float lineHeight = GImGui->FontSize + GImGui->Style.FramePadding.y * 2.0f;
-                ImGui::Separator();
-                bool open = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), flags, name.c_str());
-                ImGui::PopStyleVar();
-
-                ImGui::SameLine(contentRegion.x - lineHeight * 0.5f);
-                if (ImGui::Button("+", ImVec2{ lineHeight, lineHeight })) {
-                    ImGui::OpenPopup("ComponentSettings");
-                }
-
-                bool removeComponent = false;
-                if (ImGui::BeginPopup("ComponentSettings")) {
-                    if (ImGui::MenuItem("Remove component"))
-                        removeComponent = true;
-
-                    ImGui::EndPopup();
-                }
-
-                if (open) {
-                    uiFunction(entity.GetComponent<T>());
-                    ImGui::TreePop();
-                }
-
-                if (removeComponent) {
-                    entity.RemoveComponent<T>();
-                }
-            }
-        }
-
         void SceneHierarchy::DrawComponents(Entity entity) {
             auto& name = entity.GetComponent<IDComponent>().Name;
 
@@ -208,7 +109,7 @@ namespace Vanta {
 
             if (ImGui::BeginPopup("AddComponent")) {
                 DrawAddComponentMenu<CameraComponent>("Camera");
-                DrawAddComponentMenu<ScriptComponent>("Script");
+                DrawAddComponentMenu<CSharpScriptComponent>("CSharp Script");
                 DrawAddComponentMenu<NativeScriptComponent>("Native Script");
                 DrawAddComponentMenu<SpriteComponent>("Sprite Renderer");
                 DrawAddComponentMenu<CircleRendererComponent>("Circle Renderer");
@@ -221,7 +122,6 @@ namespace Vanta {
             ImGui::PopItemWidth();
 
             DrawComponent<TransformComponent>("Transform", entity, [&](TransformComponent& tr) {
-
                 glm::vec3 position = tr.GetPosition();
                 glm::vec3 rotation = tr.GetRotationDegrees();
                 glm::vec3 scale = tr.GetScale();
@@ -242,6 +142,16 @@ namespace Vanta {
                     });
                 }
             });
+
+            DrawComponent<CSharpScriptComponent>("CSharp Script", entity, [entity](CSharpScriptComponent& component) {
+                Scripts::CSharpScriptEngine& engine = Scripts::CSharpScriptEngine::Get();
+                DrawScriptComponent(entity, component, engine);
+             });
+
+            DrawComponent<NativeScriptComponent>("Native Script", entity, [entity](NativeScriptComponent& component) {
+                Scripts::NativeScriptEngine& engine = Scripts::NativeScriptEngine::Get();
+                DrawScriptComponent(entity, component, engine);
+             });
 
             DrawComponent<CameraComponent>("Camera", entity, [&](auto& component) {
                 SceneCamera* camera = component.Camera.get();
@@ -295,154 +205,6 @@ namespace Vanta {
                         camera->SetOrthographicFarClip(orthoFar);
 
                     //ImGui::Checkbox("Fixed Aspect Ratio", &component.FixedAspectRatio);
-                }
-            });
-
-            DrawComponent<ScriptComponent>("Script", entity, [entity](ScriptComponent& component) {
-                static char buffer[64];
-                strcpy_s(buffer, component.ClassName.c_str());
-
-                Scripts::CSharpScriptEngine& engine = Scripts::CSharpScriptEngine::Get();
-                bool classExists = engine.EntityClassExists(component.ClassName);
-
-                if (!classExists)
-                    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.9f, 0.2f, 0.3f, 1.0f));
-
-                if (ImGui::InputText("Class", buffer, sizeof(buffer)))
-                    component.ClassName = buffer;
-
-                if (!classExists)
-                    ImGui::PopStyleColor();
-
-                // Runtime field data
-                if (component.Instance) {
-                    const auto& fields = component.Instance->GetClass()->GetFields();
-                    for (const auto& [name, field] : fields) {
-                        switch (field->Type) {
-                        case Scripts::ScriptFieldType::Float: {
-                            float data = component.Instance->GetFieldValue<float>(name);
-                            if (ImGui::DragFloat(name.data(), &data)) {
-                                component.Instance->SetFieldValue(name, data);
-                            }
-                        }
-                        // TODO: Add remaining types
-                        default: break;
-                        }
-                    }
-                }
-                // Editor field data
-                else if (classExists) {
-                    Ref<Scripts::ScriptClass> klass = engine.GetEntityClass(component.ClassName);
-                    auto& instances = engine.GetFieldInstances(entity);
-
-                    // Loop though every class field and check
-                    // if an instance has already been created.
-                    for (auto& [name, field] : klass->GetFields()) {
-                        auto it = instances.find(name);
-
-                        // Field instance exists
-                        if (it != instances.end()) {
-                            auto& instance = it->second;
-
-                            switch (field->Type) {
-                            case Scripts::ScriptFieldType::Float: {
-                                float data = instance->GetFieldValue<float>();
-                                if (ImGui::DragFloat(name.data(), &data)) {
-                                    instance->SetFieldValue(data);
-                                }
-                            }
-                            // TODO: Add remaining types
-                            default:;
-                            }
-                        }
-                        // Create new field instance
-                        else {
-                            switch (field->Type) {
-                            case Scripts::ScriptFieldType::Float: {
-                                float data = 0.0f;
-                                if (ImGui::DragFloat(name.data(), &data)) {
-                                    instances[name] = NewBox<Scripts::ScriptFieldBuffer<float>>(field, data);
-                                }
-                            }
-                            // TODO: Add remaining types
-                            default:;
-                            }
-                        }
-                    }
-                }
-            });
-
-            DrawComponent<NativeScriptComponent>("Native Script", entity, [entity](NativeScriptComponent& component) {
-                static char buffer[64];
-                strcpy_s(buffer, component.ClassName.c_str());
-
-                Scripts::NativeScriptEngine& engine = Scripts::NativeScriptEngine::Get();
-                bool classExists = engine.EntityClassExists(component.ClassName);
-
-                if (!classExists)
-                    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.9f, 0.2f, 0.3f, 1.0f));
-
-                if (ImGui::InputText("Class", buffer, sizeof(buffer)))
-                    component.ClassName = buffer;
-
-                if (!classExists)
-                    ImGui::PopStyleColor();
-
-                // Runtime field data
-                if (component.Instance) {
-                    const auto& fields = component.Instance->GetClass()->GetFields();
-                    for (const auto& [name, field] : fields) {
-                        switch (field->Type) {
-                        case Scripts::ScriptFieldType::Float: {
-                            float data = component.Instance->GetFieldValue<float>(name);
-                            if (ImGui::DragFloat(name.data(), &data)) {
-                                component.Instance->SetFieldValue(name, data);
-                            }
-                        }
-                        // TODO: Add remaining types
-                        default: break;
-                        }
-                    }
-                }
-                // Editor field data
-                else if (classExists) {
-                    Ref<Scripts::ScriptClass> klass = engine.GetEntityClass(component.ClassName);
-                    auto& instances = engine.GetFieldInstances(entity);
-
-                    // Loop though every class field and check
-                    // if an instance has already been created.
-                    for (auto& [name, field] : klass->GetFields()) {
-                        auto it = instances.find(name);
-
-                        // Field instance exists
-                        if (it != instances.end()) {
-                            auto& instance = it->second;
-
-                            switch (field->Type) {
-                            case Scripts::ScriptFieldType::Float: {
-                                float data = instance->GetFieldValue<float>();
-                                if (ImGui::DragFloat(name.data(), &data)) {
-                                    instance->SetFieldValue(data);
-                                }
-                            }
-                            // TODO: Add remaining types
-                            default:;
-                            }
-                        }
-                        // Create new field instance
-                        else {
-                            switch (field->Type) {
-                            case Scripts::ScriptFieldType::Float: {
-                                float data = 0.0f;
-                                if (ImGui::DragFloat(name.data(), &data)) {
-                                    instances[name] = NewBox<Scripts::ScriptFieldBuffer<float>>(field, data);
-                                }
-                            }
-                            // TODO: Add remaining types
-                            default:;
-                            }
-                        }
-                    }
                 }
             });
 
@@ -536,6 +298,219 @@ namespace Vanta {
                     ImGui::CloseCurrentPopup();
                 }
             }
+        }
+
+        template<typename T, typename UIFunction>
+        static void DrawComponent(const std::string& name, Entity entity, UIFunction uiFunction) {
+            const ImGuiTreeNodeFlags flags =
+                ImGuiTreeNodeFlags_DefaultOpen |
+                ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_FramePadding |
+                ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowOverlap;
+
+            if (entity.HasComponent<T>()) {
+                ImVec2 contentRegion = ImGui::GetContentRegionAvail();
+
+                ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
+                float lineHeight = GImGui->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+                ImGui::Separator();
+                bool open = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), flags, name.c_str());
+                ImGui::PopStyleVar();
+
+                ImGui::SameLine(contentRegion.x - lineHeight * 0.5f);
+                if (ImGui::Button("+", ImVec2{ lineHeight, lineHeight })) {
+                    ImGui::OpenPopup("ComponentSettings");
+                }
+
+                bool removeComponent = false;
+                if (ImGui::BeginPopup("ComponentSettings")) {
+                    if (ImGui::MenuItem("Remove component"))
+                        removeComponent = true;
+
+                    ImGui::EndPopup();
+                }
+
+                if (open) {
+                    uiFunction(entity.GetComponent<T>());
+                    ImGui::TreePop();
+                }
+
+                if (removeComponent) {
+                    entity.RemoveComponent<T>();
+                }
+            }
+        }
+
+        static void DrawScriptComponent(Entity entity, ScriptComponent& component, Scripts::ScriptEngine& engine) {
+            static char buffer[64];
+            strcpy_s(buffer, component.ClassName.c_str());
+
+            bool classExists = engine.EntityClassExists(component.ClassName);
+
+            if (!classExists)
+                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.9f, 0.2f, 0.3f, 1.0f));
+
+            if (ImGui::InputText("Class", buffer, sizeof(buffer)))
+                component.ClassName = buffer;
+
+            if (!classExists)
+                ImGui::PopStyleColor();
+
+            // Runtime field data
+            if (component.Instance) {
+                const auto& fields = component.Instance->GetClass()->GetFields();
+                for (const auto& [name, field] : fields) {
+                    switch (field->Type) {
+                    case Scripts::ScriptFieldType::Float: {
+                        float data = component.Instance->GetFieldValue<float>(name);
+                        if (ImGui::DragFloat(name.data(), &data)) {
+                            component.Instance->SetFieldValue(name, data);
+                        }
+                        break;
+                    }
+                                                        // TODO: Add remaining types
+                    default:;
+                    }
+                }
+            }
+            // Editor field data
+            else if (classExists) {
+                Ref<Scripts::ScriptClass> klass = engine.GetEntityClass(component.ClassName);
+                auto fieldInstances = engine.GetFieldInstances(entity);
+
+                // Loop though every class field and check
+                // if an instance has already been created.
+                for (auto& [name, field] : klass->GetFields()) {
+                    auto* instance = fieldInstances
+                        .and_then([&name](auto t) -> Opt<Scripts::ScriptFieldInstance*>
+                            {
+                                const auto& map = t.get();
+                                auto iter = map.find(name);
+                                if (iter == map.end()) return None;
+                                return iter->second.get();
+                            })
+                        .value_or(nullptr);
+
+#if 0
+                    // TODO:
+                    // (1) save default script field values when loading assembly classes
+                    // (2) add an "override" flag to field instances
+
+                    if (!instance) {
+                        // Something's wrong. All exposed fields should have a field value instance.
+                        // TODO: display some error value
+                        VANTA_CORE_ERROR("Field value missing: {}.{}", entity, name);
+                        continue;
+                    }
+
+                    switch (field->Type) {
+                    case Scripts::ScriptFieldType::Float: {
+                        float data = instance->GetFieldValue<float>();
+                        if (ImGui::DragFloat(name.data(), &data)) {
+                            instance->SetFieldValue(data);
+                        }
+                        break;
+                    }
+                    // TODO: Add remaining types
+                    default:;
+                    }
+#else
+
+                    // Field instance exists
+                    if (instance) {
+                        switch (field->Type) {
+                        case Scripts::ScriptFieldType::Float: {
+                            float data = instance->GetFieldValue<float>();
+                            if (ImGui::DragFloat(name.data(), &data)) {
+                                instance->SetFieldValue(data);
+                            }
+                            break;
+                        }
+                        // TODO: Add remaining types
+                        default:;
+                        }
+                    }
+                    // Create new field instance
+                    else {
+                        switch (field->Type) {
+                        case Scripts::ScriptFieldType::Float: {
+                            float data = 0.0f;
+                            if (ImGui::DragFloat(name.data(), &data)) {
+                                engine.SetFieldInstance(entity, NewBox<Scripts::ScriptFieldBuffer<float>>(field, data));
+                            }
+                            break;
+                        }
+                        // TODO: Add remaining types
+                        default:;
+                        }
+                    }
+#endif
+                }
+            }
+        }
+
+        static void DrawVec3Control(const std::string& label, glm::vec3& values, float resetValue, float columnWidth) {
+            ImGuiIO& io = ImGui::GetIO();
+            auto boldFont = io.Fonts->Fonts[0];
+
+            ImGui::PushID(label.c_str());
+
+            ImGui::Columns(2);
+            ImGui::SetColumnWidth(0, columnWidth);
+            ImGui::Text(label.c_str());
+            ImGui::NextColumn();
+
+            ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+            float lineHeight = GImGui->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+            ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.2f, 1.0f });
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
+            ImGui::PushFont(boldFont);
+            if (ImGui::Button("X", buttonSize))
+                values.x = resetValue;
+            ImGui::PopFont();
+            ImGui::PopStyleColor(3);
+
+            ImGui::SameLine();
+            ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, 0.0f, "%.2f");
+            ImGui::PopItemWidth();
+            ImGui::SameLine();
+
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.3f, 0.8f, 0.3f, 1.0f });
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
+            ImGui::PushFont(boldFont);
+            if (ImGui::Button("Y", buttonSize))
+                values.y = resetValue;
+            ImGui::PopFont();
+            ImGui::PopStyleColor(3);
+
+            ImGui::SameLine();
+            ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, "%.2f");
+            ImGui::PopItemWidth();
+            ImGui::SameLine();
+
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f, 0.35f, 0.9f, 1.0f });
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
+            ImGui::PushFont(boldFont);
+            if (ImGui::Button("Z", buttonSize))
+                values.z = resetValue;
+            ImGui::PopFont();
+            ImGui::PopStyleColor(3);
+
+            ImGui::SameLine();
+            ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f");
+            ImGui::PopItemWidth();
+
+            ImGui::PopStyleVar();
+
+            ImGui::Columns(1);
+
+            ImGui::PopID();
         }
     }
 }

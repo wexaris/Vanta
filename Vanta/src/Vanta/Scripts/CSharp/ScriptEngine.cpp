@@ -3,6 +3,8 @@
 #include "Vanta/Project/Project.hpp"
 #include "Vanta/Scene/Scene.hpp"
 #include "Vanta/Scripts/Instance.hpp"
+#include "Vanta/Scripts/CSharp/Class.hpp"
+#include "Vanta/Scripts/CSharp/Field.hpp"
 #include "Vanta/Scripts/CSharp/Interface.hpp"
 #include "Vanta/Scripts/CSharp/ScriptEngine.hpp"
 
@@ -73,6 +75,9 @@ namespace Vanta {
                 }
             }
         }
+
+        CSharpScriptEngine::CSharpScriptEngine() = default;
+        CSharpScriptEngine::~CSharpScriptEngine() = default;
 
         void CSharpScriptEngine::Init() {
             VANTA_PROFILE_FUNCTION();
@@ -176,7 +181,7 @@ namespace Vanta {
             m_CoreAssemblyImage = mono_assembly_get_image(m_CoreAssembly);
 
             // Save entity class
-            m_EntityBaseClass = CSharpScriptClass(m_CoreAssemblyImage, "Vanta", "Entity", {});
+            m_EntityBaseClass = NewRef<CSharpScriptClass>(m_CoreAssemblyImage, "Vanta", "Entity", std::vector<Ref<ScriptField>>{});
 
             return true;
         }
@@ -283,10 +288,10 @@ namespace Vanta {
 
                 MonoClass* klass = mono_class_from_name(image, namespaceName, className);
 
-                if (klass == m_EntityBaseClass)
+                if (klass == m_EntityBaseClass->GetHandle())
                     continue;
 
-                bool isEntity = mono_class_is_subclass_of(klass, (MonoClass*)m_EntityBaseClass, false);
+                bool isEntity = mono_class_is_subclass_of(klass, m_EntityBaseClass->GetHandle(), false);
                 if (!isEntity)
                     continue;
 
@@ -325,25 +330,20 @@ namespace Vanta {
             m_SceneContext = nullptr;
         }
 
-        Ref<ScriptInstance> CSharpScriptEngine::Instantiate(std::string fullName, Entity entity) {
-            VANTA_PROFILE_FUNCTION();
-            VANTA_CORE_ASSERT(EntityClassExists(fullName), "Invalid class!");
-            VANTA_CORE_ASSERT(entity, "Invalid entity!");
-
-            Ref<ScriptInstance> instance = NewRef<ScriptInstance>(GetEntityClass(fullName), entity);
-
-            // Set variables modified in editor
-            UUID entityId = entity.GetUUID();
-            for (auto& [name, field] : m_EntityFieldInstances[entityId]) {
-                instance->WriteFieldValue(name, field->GetFieldData());
-            }
-
-            return instance;
+        uint32 CSharpScriptEngine::CreateObject(MonoClass* klass) const {
+            VANTA_CORE_ASSERT(klass, "Invalid class!");
+            MonoObject* obj = mono_object_new(m_AppDomain, klass);
+            return mono_gchandle_new(obj, false);
         }
 
-        MonoObject* CSharpScriptEngine::CreateObject(MonoClass* klass) {
-            VANTA_CORE_ASSERT(klass, "Invalid class!");
-            return mono_object_new(m_AppDomain, klass);
+        MonoObject* CSharpScriptEngine::GetObjectByHandle(uint32 handle) const {
+            VANTA_CORE_ASSERT(handle != 0, "Attempting to retrieve already released object!");
+            return mono_gchandle_get_target(handle);
+        }
+
+        void CSharpScriptEngine::ReleaseObject(uint32 handle) const {
+            VANTA_CORE_ASSERT(handle != 0, "Attempting to release already released object!");
+            mono_gchandle_free(handle);
         }
 
         bool CSharpScriptEngine::EntityClassExists(const std::string& fullName) const {
@@ -359,19 +359,22 @@ namespace Vanta {
             return it->second;
         }
 
-        const CSharpScriptClass& CSharpScriptEngine::GetEntityClass() const {
-            return m_EntityBaseClass;
+        Opt<ValueRef<const std::unordered_map<std::string, Box<ScriptFieldInstance>>>> CSharpScriptEngine::GetFieldInstances(Entity entity) const {
+            VANTA_CORE_ASSERT(entity, "Invalid entity!");
+            auto iter = m_EntityFieldInstances.find(entity.GetUUID());
+            if (iter == m_EntityFieldInstances.end()) return None;
+            return std::cref(iter->second);
         }
 
-        std::unordered_map<std::string, Box<ScriptFieldInstance>>& CSharpScriptEngine::GetFieldInstances(Entity entity) {
+        void CSharpScriptEngine::SetFieldInstance(Entity entity, Box<ScriptFieldInstance> instance) {
             VANTA_CORE_ASSERT(entity, "Invalid entity!");
-            return m_EntityFieldInstances[entity.GetUUID()];
+            m_EntityFieldInstances[entity.GetUUID()][instance->Field->Name] = std::move(instance);
         }
 
         void CSharpScriptEngine::ClearFieldInstances() {
             m_EntityFieldInstances.clear();
         }
-    
+
         Path CSharpScriptEngine::EngineScriptCorePath() {
             return Engine::RuntimeScriptDirectory(Scripts::ScriptType::CSharp) / "Vanta-ScriptCore-CSharp.dll";
         }

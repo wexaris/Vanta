@@ -1,5 +1,6 @@
 #include "vantapch.hpp"
 #include "Vanta/Scene/Entity.hpp"
+#include "Vanta/Scripts/Instance.hpp"
 #include "Vanta/Scripts/Native/ScriptEngine.hpp"
 #include "Vanta/Scene/Components/NativeScriptComponent.hpp"
 

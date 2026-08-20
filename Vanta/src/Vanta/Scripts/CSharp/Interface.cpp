@@ -79,7 +79,7 @@ namespace Vanta {
                 return nullptr;
             }
 
-            MonoObject* instance = (MonoObject*)sc->Instance->GetRuntimeInstance();
+            MonoObject* instance = (MonoObject*)sc->Instance->GetRuntimeObject();
             VANTA_CORE_ASSERT(instance, "Script hasn't been instantiated!");
 
             return instance;

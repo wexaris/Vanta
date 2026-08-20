@@ -7,6 +7,8 @@
 namespace Vanta {
     namespace Scripts {
 
+        class ScriptInstanceHandle;
+
         class NativeScriptClass : public ScriptClass {
         public:
             NativeScriptClass() = default;
@@ -20,7 +22,7 @@ namespace Vanta {
             std::string m_ClassName;
             ClassFunctions m_Functions;
 
-            void* InstantiateRuntimeInstance(Entity entity) const override;
+            Box<ScriptInstanceHandle> InstantiateRuntimeInstance(Entity entity) const override;
         };
     }
 }

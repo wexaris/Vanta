@@ -14,14 +14,14 @@ namespace Vanta {
             VANTA_CORE_ASSERT(instance, "Script object instance cannot be null!");
             VANTA_CORE_ASSERT(buffer, "Buffer cannot be null!");
             VANTA_CORE_ASSERT(GetValueFunc, "GetValueFunc cannot be null!");
-            GetValueFunc((ScriptObject*)instance->GetRuntimeInstance(), buffer);
+            GetValueFunc(static_cast<ScriptObject*>(instance->GetRuntimeObject()), buffer);
         }
 
         void NativeScriptField::SetValue(ScriptInstance* instance, const void* value) const {
             VANTA_CORE_ASSERT(instance, "Script object instance cannot be null!");
             VANTA_CORE_ASSERT(value, "Value cannot be null!");
             VANTA_CORE_ASSERT(SetValueFunc, "SetValueFunc cannot be null!");
-            SetValueFunc((ScriptObject*)instance->GetRuntimeInstance(), value);
+            SetValueFunc(static_cast<ScriptObject*>(instance->GetRuntimeObject()), value);
         }
     }
 }

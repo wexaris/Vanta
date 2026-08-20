@@ -1,6 +1,6 @@
 #include "vantapch.hpp"
-#include "Vanta/Scripts/Instance.hpp"
 #include "Vanta/Scripts/CSharp/Class.hpp"
+#include "Vanta/Scripts/CSharp/Instance.hpp"
 #include "Vanta/Scripts/CSharp/ScriptEngine.hpp"
 
 #include <mono/jit/jit.h>
@@ -23,21 +23,22 @@ namespace Vanta {
             m_OnDestroyMethod = TryGetMethod("OnDestroy", 0);
         }
 
-        void* CSharpScriptClass::InstantiateRuntimeInstance(Entity entity) const {
+        Box<ScriptInstanceHandle> CSharpScriptClass::InstantiateRuntimeInstance(Entity entity) const {
             VANTA_PROFILE_FUNCTION();
             VANTA_CORE_ASSERT(m_Class, "Invalid script class!");
 
-            Scripts::CSharpScriptEngine& engine = Scripts::CSharpScriptEngine::Get();
-            auto& entityBase = engine.GetEntityClass();
-
             // Create new class instance
-            MonoObject* object = engine.CreateObject(m_Class);
+            Scripts::CSharpScriptEngine& engine = Scripts::CSharpScriptEngine::Get();
 
+            uint32 handle = engine.CreateObject(m_Class);
+
+            MonoObject* object = engine.GetObjectByHandle(handle);
+            const Ref<CSharpScriptClass>& entityBase = engine.GetEntityClass();
             UUID entityID = entity.GetUUID();
             void* param = &entityID;
-            InvokeMethod(object, entityBase.m_Constructor, &param);
+            InvokeMethod(object, entityBase->m_Constructor, &param);
 
-            return object;
+            return NewBox<CSharpScriptInstanceHandle>(handle);
         }
 
         void CSharpScriptClass::InvokeOnCreate(const ScriptInstance* instance) const {
@@ -46,7 +47,7 @@ namespace Vanta {
             if (!m_OnCreateMethod)
                 return;
 
-            InvokeMethod((MonoObject*)instance->GetRuntimeInstance(), m_OnCreateMethod);
+            InvokeMethod((MonoObject*)instance->GetRuntimeObject(), m_OnCreateMethod);
         }
 
         void CSharpScriptClass::InvokeOnUpdate(const ScriptInstance* instance, double delta) const {
@@ -56,7 +57,7 @@ namespace Vanta {
                 return;
 
             void* param = &delta;
-            InvokeMethod((MonoObject*)instance->GetRuntimeInstance(), m_OnUpdateMethod, &param);
+            InvokeMethod((MonoObject*)instance->GetRuntimeObject(), m_OnUpdateMethod, &param);
         }
 
         void CSharpScriptClass::InvokeOnDestroy(const ScriptInstance* instance) const {
@@ -65,7 +66,7 @@ namespace Vanta {
             if (!m_OnDestroyMethod)
                 return;
 
-            InvokeMethod((MonoObject*)instance->GetRuntimeInstance(), m_OnDestroyMethod);
+            InvokeMethod((MonoObject*)instance->GetRuntimeObject(), m_OnDestroyMethod);
         }
 
         MonoMethod* CSharpScriptClass::TryGetMethod(const std::string& name, int paramCount) const {

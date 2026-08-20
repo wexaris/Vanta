@@ -88,4 +88,10 @@ namespace Vanta {
     using Opt = std::optional<T>;
 
     constexpr std::nullopt_t None = std::nullopt;
+
+
+    /// ///////////////// REFERENCES /////////////////
+
+    template<typename T>
+    using ValueRef = std::reference_wrapper<T>;
 }

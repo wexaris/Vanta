@@ -64,5 +64,10 @@ namespace Vanta {
             VANTA_CORE_ASSERT(GetComponentHash_Impl, "Calling unknown native script function!");
             return GetComponentHash_Impl(className);
         }
+
+        void ScriptAssembly::Destroy(void* obj) const {
+            VANTA_CORE_ASSERT(Destroy_Impl, "Calling unknown native script function!");
+            return Destroy_Impl(obj);
+        }
     }
 }

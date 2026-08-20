@@ -1,10 +1,22 @@
-#pragma once 
+#pragma once
 #include  "Vanta/Scene/Entity.hpp"
 
 namespace Vanta {
     namespace Scripts {
 
         class ScriptClass;
+
+        class ScriptInstanceHandle {
+        public:
+            ScriptInstanceHandle() = default;
+            virtual ~ScriptInstanceHandle() = default;
+
+            ScriptInstanceHandle(const ScriptInstanceHandle&) = delete;
+            ScriptInstanceHandle& operator=(const ScriptInstanceHandle&) = delete;
+
+            virtual void* GetRuntimeObject() const = 0;
+            virtual void Release() = 0;
+        };
 
         class ScriptInstance {
         public:
@@ -33,11 +45,11 @@ namespace Vanta {
             bool ReadFieldValue(const std::string& name, void* buffer);
             bool WriteFieldValue(const std::string& name, const void* data);
 
-            const void* GetRuntimeInstance() const { return m_RuntimeInstance; }
+            void* GetRuntimeObject() const { return m_InstanceHandle->GetRuntimeObject(); }
 
         protected:
             Ref<ScriptClass> m_ScriptClass;
-            void* m_RuntimeInstance = nullptr;
+            Box<ScriptInstanceHandle> m_InstanceHandle;
         };
     }
 }
